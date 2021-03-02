@@ -1,0 +1,320 @@
+/*Fonts*/
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700&display=swap');
+
+/*Base*/
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	box-sizing: border-box;
+	font: 100%;
+	font-weight: normal;
+	outline: none;
+	vertical-align: baseline;
+	scroll-behavior: smooth;
+}
+
+/*Body*/
+body {
+	height: 800px;
+	background: #424242;
+	font-family: 'Montserrat', sans-serif;
+}
+
+/*Header*/
+.header {
+	position: fixed;
+	top: 0px;
+	width: 100%;
+	background: #23272A;
+	padding: 15px 0;
+	z-index: 10;
+}
+
+.container {
+	width: 980px;
+	margin: 0 auto;
+	padding: 0;
+	position: relative;
+}
+
+.header_menu {
+	text-align: center;
+}
+
+.header_menu ul {
+	list-style-type: none;
+}
+
+.header_menu ul li {
+	display: inline-block;
+	margin: 10px;
+}
+
+.header_menu ul li a {
+	color: #fff;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-decoration: none;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+/*Intro*/
+.intro {
+	height: 400px;
+	background: linear-gradient(to bottom right, #c0392b, #8e44ad);
+	margin-top: 70px;
+	text-align: center;
+	padding-top: 70px; 
+}
+
+.intro h1 {
+	font-size: 7em;
+	color: #23272A;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-align: center;
+	margin-bottom: 70px;
+}
+
+.btn {
+	width: 300px;
+	height: 60px;
+	position: relative;
+	font-family: 'Montserrat', sans-serif;
+	font-size: 15px;
+	text-transform: uppercase;
+	letter-spacing: 2.5px;
+	font-weight: 500;
+	color: #fff;
+	background-color: #23272A;
+	border: none;
+	border-radius: .3rem;
+	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease 0s;
+	cursor: pointer;
+	outline: none;
+}
+  
+.btn a {
+	color: #fff;
+	text-decoration: none;
+	font-size: 13px;
+	text-align: center;
+	padding: 30px 0px 0px 0px;
+}
+
+.btn:hover {
+	background-color: #7289DA;
+	box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
+	color: #fff;
+	transform: translateY(-7px);
+}
+
+.inline {
+	display: inline;
+}
+
+/*About*/
+.about {
+	background: #23272A;
+	
+}
+
+.about_title h2{
+	font-size: 2em;
+	font-weight: bold;
+	padding: 20px 0;
+	text-align: center;
+	color: #fff;
+}
+
+.about_title h2:before, .about_title h2:after {
+	content: "";
+	display: block;
+	width: 60px;
+	height: 3px;
+	background: #7289DA;
+	margin: 15px auto 10px auto;
+}
+
+.about_content .txt {
+	font-size: 17px;
+	color: #d2d8ea;
+	line-height: 27px;
+	margin: 0;
+	padding: 30px 120px 78px;
+	text-align: center;
+}
+
+/*Functions*/
+.func {
+	height: 500px; /* testando o comprimento */
+	background: #23272A;
+}
+
+.func .func_title {
+	position: relative;
+	text-align: center;
+}
+
+.func .func_title h2 {
+	font-size: 2em;
+	font-weight: bold;
+	padding: 20px 0;
+	text-align: center;
+	color: #fff;
+}
+
+.func_img {
+	width: auto;
+	height: 250px;
+	transition: 0.3s;
+	cursor: pointer;
+}
+
+.func_img:hover {
+	overflow: hidden;
+	transform: scale(0.9);
+}
+
+.func h2:before, .func h2:after {
+	content: "";
+	display: block;
+	width: 60px;
+	height: 3px;
+	background: #7289DA;
+	margin: 15px auto 15px auto;
+}
+
+.func img {
+	float: left;
+	padding: 15px 30px;
+}
+
+.func_subtitle h3 {
+	position: relative;
+	font-size: 1em;
+	font-weight: 500;
+	padding: 20px 0;
+	text-align: center;
+	color: #fff;
+}
+
+.func_subtitle p {
+	position: relative;
+	padding: 5px 30px;
+	color: #C9D8D2;
+}
+
+.left img {
+	float: right;
+}
+
+/* Info */
+.info {
+	height: 346px;
+	background: #2C2F33;
+	margin-top: 0px;
+	text-align: center;
+	padding-top: 70px; 
+}
+
+.info_title h2 {
+	font-size: 2em;
+	color: #fff;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-align: center;
+	margin-bottom: 70px;
+}
+
+.info h2:before, .info h2:after {
+	content: "";
+	display: block;
+	width: 60px;
+	height: 3px;
+	background: #7289DA;
+	margin: 15px auto 15px auto;
+}
+
+.info .btn {
+	margin: 0px 30px;
+	padding: 20px 10px;
+}
+
+.info .btn a {
+	color: #fff;
+	font-size: 14px;
+	text-align: center;
+	padding: 30px 0px 0px 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+footer {
+	display: none;
+	height: 60px;
+	background: red;
+}
+
+
