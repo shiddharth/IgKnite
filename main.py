@@ -60,7 +60,7 @@ print(
 async def on_ready():
     print(f"\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~")
     await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'{prefix}help, call me anytime! | Injected in {len(bot.guilds)} servers.'))
-    
+
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
@@ -110,7 +110,7 @@ async def ping(ctx):
 @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
 async def send_dm(ctx, user: discord.User, *, message):
     await user.send(f"**{message}**")
-    await user.send(f"Sent by {ctx.author.display_name} by IgKnite :)")
+    await user.send(f"Sent by {ctx.author.display_name} using IgKnite :)")
     await ctx.send('DM Sent! :slight_smile:')
     time.sleep(1)
     await ctx.channel.purge(limit=2)
@@ -124,12 +124,20 @@ async def clear(ctx, amount=1):
 @bot.command(name='restore-msg', help='Tries to restore previously filtered message if it was deleted by mistake.', aliases=['rest-msg'])
 @commands.has_any_role('BotMod', 'BotAdmin')
 async def restore_msg(ctx):
+    await ctx.send('I\'m checking the records for deleted messages. The details will be sent to your account shortly after I mess around with the files for a bit!')
     for filtered_message in filtered_messages:
         if filtered_message[1] == ctx.guild:
-            await ctx.send('**Recovered message details:**')
-            await ctx.send(f'Author: {filtered_message[0]}, Message: ||{filtered_message[2]}||, Date: {filtered_message[3]}')
-            await ctx.send('~')
+            filtered_messages_guild = []
+            filtered_messages_guild.append(filtered_message)
             filtered_messages.remove(filtered_message)
+
+        if len(filtered_messages_guild) == 0:
+            await ctx.send('No messages were removed by me in the recent timeline.')
+
+        else:
+            await ctx.send(f'Yep! Found some messages in the trashcan. I\'m sending the details in our DM channel, {ctx.message.author.mention}')
+            for filtered_message_guild in filtered_messages_guild:
+                await ctx.message.author.send(f'Author: {filtered_message_guild[0]}, Message: ||{filtered_message_guild[2]}||, Date: {filtered_message_guild[3]}')
 
 @bot.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
 @commands.has_any_role('BotMod', 'BotAdmin')
@@ -139,7 +147,7 @@ async def jail(ctx, member: discord.Member, *, reason='none'):
             await ctx.send('You can\'t jail an admin :/')
 
         else:
-            jail_members.append([member, ctx.guild, reason])
+            jail_members.append([member, ctx.guild, reason, ctx.message.author])
             await ctx.message.delete()
             await ctx.send(f'You\'ve been captured, {member.mention} | Reason: {reason}')
 
