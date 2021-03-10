@@ -131,20 +131,26 @@ async def restore_msg(ctx):
             filtered_messages_guild.append(filtered_message)
             filtered_messages.remove(filtered_message)
 
-        if len(filtered_messages_guild) == 0:
-            await ctx.send('No messages were removed by me in the recent timeline.')
+    if len(filtered_messages_guild) == 0:
+        await ctx.send('No messages were removed by me in the recent timeline.')
 
-        else:
-            await ctx.send(f'Yep! Found some messages in the trashcan. I\'m sending the details in our DM channel, {ctx.message.author.mention}')
-            for filtered_message_guild in filtered_messages_guild:
-                await ctx.message.author.send(f'Author: {filtered_message_guild[0]}, Message: ||{filtered_message_guild[2]}||, Date: {filtered_message_guild[3]}')
+    else:
+        await ctx.send(f'Yep! Found some messages in the trashcan. I\'m sending the details in our DM channel, {ctx.message.author.mention}')
+        for filtered_message_guild in filtered_messages_guild:
+            await ctx.message.author.send(f'Author: {filtered_message_guild[0]}, Message: ||{filtered_message_guild[2]}||, Date: {filtered_message_guild[3]}')
 
 @bot.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
 @commands.has_any_role('BotMod', 'BotAdmin')
 async def jail(ctx, member: discord.Member, *, reason='none'):
     if member != ctx.message.author:
         if member.guild_permissions.administrator:
-            await ctx.send('You can\'t jail an admin :/')
+            if ctx.message.author.guild_permissions.administrator:
+                jail_members.append([member, ctx.guild, reason, ctx.message.author])
+                await ctx.message.delete()
+                await ctx.send(f'You\'ve been captured, {member.mention} | Reason: {reason}')
+
+            else:
+                await ctx.send('You can\'t jail an admin :/')
 
         else:
             jail_members.append([member, ctx.guild, reason, ctx.message.author])
