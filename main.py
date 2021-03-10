@@ -124,14 +124,15 @@ async def clear(ctx, amount=1):
 @bot.command(name='restore-msg', help='Tries to restore previously filtered message if it was deleted by mistake.', aliases=['rest-msg'])
 @commands.has_any_role('BotMod', 'BotAdmin')
 async def restore_msg(ctx):
+    filtered_messages_guild = []
+
     await ctx.send('Checking the wastes...')
     for filtered_message in filtered_messages:
         if filtered_message[1] == ctx.guild:
-            filtered_messages_guild = []
             filtered_messages_guild.append(filtered_message)
             filtered_messages.remove(filtered_message)
 
-    if len(filtered_messages_guild) == 0:
+    if not filtered_messages_guild == 0:
         await ctx.send('No messages were removed by me in the recent timeline.')
 
     else:
