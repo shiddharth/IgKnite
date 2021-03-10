@@ -124,7 +124,7 @@ async def clear(ctx, amount=1):
 @bot.command(name='restore-msg', help='Tries to restore previously filtered message if it was deleted by mistake.', aliases=['rest-msg'])
 @commands.has_any_role('BotMod', 'BotAdmin')
 async def restore_msg(ctx):
-    await ctx.send('I\'m checking the records for deleted messages. The details will be sent to your account shortly after I mess around with the files for a bit!')
+    await ctx.send('Checking the wastes...')
     for filtered_message in filtered_messages:
         if filtered_message[1] == ctx.guild:
             filtered_messages_guild = []
