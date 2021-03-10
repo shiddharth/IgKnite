@@ -132,7 +132,7 @@ async def restore_msg(ctx):
             filtered_messages_guild.append(filtered_message)
             filtered_messages.remove(filtered_message)
 
-    if not filtered_messages_guild == 0:
+    if not filtered_messages_guild:
         await ctx.send('No messages were removed by me in the recent timeline.')
 
     else:
