@@ -47,7 +47,7 @@ jail_members = list()
 
 # Main interface.
 os.system('clear')
-print("IgKnite | Bot Console (Read-only)")
+print("IgKnite | Bot Console (Read-only)\n")
 
 
 # Events.
