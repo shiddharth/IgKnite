@@ -72,14 +72,13 @@ async def on_message(message):
     for msg_word in msg.split():
         for symbol in symbol:
             if symbol in msg_word:
-                msg_word_processed = msg_word.replace(symbol, '')
+                msg_word = msg_word.replace(symbol, '')
 
-                for filtered_word in filtered_wordlist:
-                    if filtered_word.lower() == msg_word_processed.lower():
-                        filtered_messages.append([message.author, message.guild, message.content, message.created_at])
-                        await message.delete()
-
-                        skip_command = True
+        for filtered_word in filtered_wordlist:
+            if filtered_word.lower() == msg_word.lower():
+                filtered_messages.append([message.author, message.guild, message.content, message.created_at])
+                await message.delete()
+                skip_command = True
 
     for jail_member in jail_members:
         if jail_member[1] == message.guild:
