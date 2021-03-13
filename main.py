@@ -244,6 +244,7 @@ async def delete_channel(ctx, channel_name: discord.TextChannel):
 @commands.has_role('BotAdmin')
 async def freeze(ctx):
     frozen.append([ctx.message.author, ctx.guild])
+    await ctx.message.delete()
     await ctx.send(f'**Chat was frozen by {ctx.message.author.mention}!**')
 
 @bot.command(name='thaw-chat', help="Removes frozen state from chat.", aliases=['open-chat'])
