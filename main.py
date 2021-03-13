@@ -304,6 +304,7 @@ async def freeze(ctx):
     await ctx.send(f'**Chat was frozen by {ctx.message.author.mention}!**')
 
 @bot.command(name='thaw-chat', help="Removes frozen state from chat.", aliases=['open-chat'])
+@commands.has_role('BotAdmin')
 async def thaw(ctx):
     for frozen_guild in frozen:
         if frozen_guild[1] == ctx.guild:
