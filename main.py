@@ -70,7 +70,7 @@ async def on_message(message):
 
     for msg_word in msg.split():
         for filtered_word in filtered_wordlist:
-            if filtered_word.lower() in msg_word.lower():
+            if filtered_word.lower() == msg_word.lower():
                 filtered_messages.append([message.author, message.guild, message.content, message.created_at])
                 await message.delete()
 
@@ -164,9 +164,16 @@ async def jail(ctx, member: discord.Member, *, reason='none'):
 @bot.command(name='jailed', help='Views jailed members.', aliases=['view-jail'])
 @commands.has_any_role('BotMod', 'BotAdmin')
 async def jailed(ctx):
+    jailed_member_guild = []
     for jail_member in jail_members:
         if jail_member[1] == ctx.guild:
-            await ctx.send(f'**Prisoner!** | Name: {jail_member[0].mention}, Reason: {jail_member[2]}')
+            jail_member_guild.append(jail_member)
+
+    if not jailed_member_guild:
+        await ctx.send('No members are inside the jail!')
+
+    else:
+        await ctx.send(f'**Prisoner!** | Name: {jail_member[0].mention}, Reason: {jail_member[2]}')
 
 @bot.command(name='unjail', help='Removes a member from jail.', aliases=['release'])
 @commands.has_any_role('BotMod', 'BotAdmin')
