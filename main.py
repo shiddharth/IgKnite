@@ -62,6 +62,7 @@ async def on_ready():
 async def on_member_join(ctx, member):
     await member.send(f'Hi there, {member.mention}! Hope you enjoy your stay at {member.guild.name}!')
 
+@bot.event
 async def on_command_error(self, ctx, error):
     if hasattr(ctx.command, 'on_error'):
         return
