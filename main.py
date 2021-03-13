@@ -181,7 +181,7 @@ async def jailed(ctx):
     jailed_member_guild = []
     for jail_member in jail_members:
         if jail_member[1] == ctx.guild:
-            jail_member_guild.append(jail_member)
+            jailed_member_guild.append(jail_member)
 
     if not jailed_member_guild:
         await ctx.send('No members are inside the jail!')
