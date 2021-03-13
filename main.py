@@ -67,8 +67,13 @@ async def on_message(message):
 
     msg = message.content
     skip_command = False
+    symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/', '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
 
     for msg_word in msg.split():
+        for symbol in symbol:
+            if symbol in msg_word:
+                msg_word = msg_word.replace(symbol, '')
+                
         for filtered_word in filtered_wordlist:
             if filtered_word.lower() == msg_word.lower():
                 filtered_messages.append([message.author, message.guild, message.content, message.created_at])
