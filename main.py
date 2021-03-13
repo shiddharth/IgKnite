@@ -20,8 +20,7 @@ from discord.ext import commands
 from keep_alive import keep_alive
 
 
-# Define command prefix, also refresh the window.
-os.system('clear')
+# Define command prefix and description.
 prefix = os.getenv('COMMAND_PREFIX')
 bot = commands.Bot(command_prefix=prefix, description='Visit https://shiddharth.github.io/IgKnite for more information about me!')
 
@@ -47,12 +46,8 @@ jail_members = list()
 
 
 # Main interface.
-print(
-    "---------------------------"
-    "\n|         IgKnite         |"
-    "\n|   Bot Control Console   |"
-    "\n---------------------------\n"
-    )
+os.system('clear')
+print("IgKnite | Bot Console (Read-only)")
 
 
 # Events.
@@ -60,6 +55,10 @@ print(
 async def on_ready():
     print(f"\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~")
     await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'{prefix}help, call me anytime! | Injected in {len(bot.guilds)} servers.'))
+
+@bot.event
+async def on_member_join(ctx, member):
+    await member.send(f'Hi there, {member.mention}! Hope you enjoy your stay at {member.guild.name}!')
 
 @bot.event
 async def on_message(message):
@@ -143,30 +142,31 @@ async def restore_msg(ctx):
 @bot.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
 @commands.has_any_role('BotMod', 'BotAdmin')
 async def jail(ctx, member: discord.Member, *, reason='none'):
+    do_jail = False
+
     if member != ctx.message.author:
         if member.guild_permissions.administrator:
             if ctx.message.author.guild_permissions.administrator:
-                jail_members.append([member, ctx.guild, reason, ctx.message.author])
-                await ctx.message.delete()
-                await ctx.send(f'You\'ve been captured, {member.mention} | Reason: {reason}')
-
+                do_jail = True
             else:
                 await ctx.send('You can\'t jail an admin :/')
-
         else:
-            jail_members.append([member, ctx.guild, reason, ctx.message.author])
-            await ctx.message.delete()
-            await ctx.send(f'You\'ve been captured, {member.mention} | Reason: {reason}')
+            do_jail = True
 
     else:
         await ctx.send('You can\'t jail yourself :/')
+
+    if do_jail == True:
+        jail_members.append([member, ctx.guild, reason, ctx.message.author])
+        await ctx.message.delete()
+        await ctx.send(f'You\'ve been captured, {member.mention} | Reason: {reason}')
 
 @bot.command(name='jailed', help='Views jailed members.', aliases=['view-jail'])
 @commands.has_any_role('BotMod', 'BotAdmin')
 async def jailed(ctx):
     for jail_member in jail_members:
         if jail_member[1] == ctx.guild:
-            await ctx.send(f'**Prisoner Details** | Prisoner Name: {jail_member[0].mention}, Reason: {jail_member[2]}')
+            await ctx.send(f'**Prisoner!** | Name: {jail_member[0].mention}, Reason: {jail_member[2]}')
 
 @bot.command(name='unjail', help='Removes a member from jail.', aliases=['release'])
 @commands.has_any_role('BotMod', 'BotAdmin')
@@ -183,8 +183,8 @@ async def unjail(ctx, member: discord.Member):
 @bot.command(name='mk-role', help='Creates a role.')
 @commands.has_role('BotAdmin')
 async def create_new_role(ctx, *, role):
-    guild=ctx.guild
-    await guild.create_role(name=role)
+    guild = ctx.guild
+    await guild.create_role(name = role)
     await ctx.message.add_reaction('✅')
 
 @bot.command(name='rm-role', help='Removes an existing role.')
