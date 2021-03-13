@@ -40,9 +40,11 @@ with open('filtered.txt', 'r') as filtered_wordfile:
     filtered_wordlist = filtered_wordfile.read().split()
     filtered_messages = list()
 
-# Opening members list for jail command.
+# Opening members list for jail command and guild list for freeze command.
 global jail_members
 jail_members = list()
+global frozen
+frozen = list()
 
 
 # Main interface.
@@ -62,35 +64,43 @@ async def on_member_join(ctx, member):
 
 @bot.event
 async def on_message(message):
+    skip_command = False
+    skip_swearcheck = False
+
     if message.author == bot.user:
         return
 
-    msg = message.content
-    skip_command = False
-    symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/', '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
-
-    for msg_word in msg.split():
-        for symbol in symbols:
-            if symbol in msg_word:
-                msg_word = msg_word.replace(symbol, '')
-
-        for filtered_word in filtered_wordlist:
-            if filtered_word.lower() == msg_word.lower():
-                filtered_messages.append([message.author, message.guild, message.content, message.created_at])
+    for frozen_guild in frozen:
+        if frozen_guild[1] == message.guild:
+            if frozen_guild[0] != message.author:
                 await message.delete()
                 skip_command = True
+                skip_swearcheck = True
 
-    for jail_member in jail_members:
-        if jail_member[1] == message.guild:
-            if jail_member[0] == message.author:
-                if skip_command != True:
+    if skip_swearcheck != True:
+        msg = message.content
+        symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/', '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
+
+        for msg_word in msg.split():
+            for symbol in symbols:
+                if symbol in msg_word:
+                    msg_word = msg_word.replace(symbol, '')
+
+            for filtered_word in filtered_wordlist:
+                if filtered_word.lower() == msg_word.lower():
+                    filtered_messages.append([message.author, message.guild, message.content, message.created_at])
                     await message.delete()
                     skip_command = True
 
+        for jail_member in jail_members:
+            if jail_member[1] == message.guild:
+                if jail_member[0] == message.author:
+                    if skip_command != True:
+                        await message.delete()
+                        skip_command = True
+
     if skip_command != True:
         await bot.process_commands(message)
-
-    skip_command = False
 
 
 # No category commands.
@@ -163,7 +173,7 @@ async def jail(ctx, member: discord.Member, *, reason='none'):
     if do_jail == True:
         jail_members.append([member, ctx.guild, reason, ctx.message.author])
         await ctx.message.delete()
-        await ctx.send(f'You\'ve been captured, {member.mention} | Reason: {reason}')
+        await ctx.send(f'You\'ve been captured! {member.mention} | Reason: {reason}')
 
 @bot.command(name='jailed', help='Views jailed members.', aliases=['view-jail'])
 @commands.has_any_role('BotMod', 'BotAdmin')
@@ -183,13 +193,14 @@ async def jailed(ctx):
 @commands.has_any_role('BotMod', 'BotAdmin')
 async def unjail(ctx, member: discord.Member):
     for jail_member in jail_members:
-        if member != ctx.message.author:
-            if jail_member[0] == member:
-                jail_members.remove(jail_member)
-                await ctx.message.add_reaction('✅')
+        if jail_member[1] == ctx.guild:
+            if member != ctx.message.author:
+                if jail_member[0] == member:
+                    jail_members.remove(jail_member)
+                    await ctx.message.add_reaction('✅')
 
-        else:
-            await ctx.send('You can\'t free yourself :/')
+            else:
+                await ctx.send('You can\'t free yourself :/')
 
 @bot.command(name='mk-role', help='Creates a role.')
 @commands.has_role('BotAdmin')
@@ -228,6 +239,19 @@ async def create_channel(ctx, channel_name):
 async def delete_channel(ctx, channel_name: discord.TextChannel):
     await channel_name.delete()
     await ctx.message.add_reaction('✅')
+
+@bot.command(name='freeze-chat', help="Calms down chat / freezes it.", aliases=['kill-chat'])
+@commands.has_role('BotAdmin')
+async def freeze(ctx):
+    frozen.append([ctx.message.author, ctx.guild])
+    await ctx.send(f'**Chat was frozen by {ctx.message.author.mention}!**')
+
+@bot.command(name='thaw-chat', help="Removes frozen state from chat.", aliases=['open-chat'])
+async def thaw(ctx):
+    for frozen_guild in frozen:
+        if frozen_guild[1] == ctx.guild:
+            frozen.remove(frozen_guild)
+            await ctx.message.add_reaction('✅')
 
 # Music category commands.
 class YTDLSource(discord.PCMVolumeTransformer):
