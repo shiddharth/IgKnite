@@ -113,6 +113,11 @@ async def sayhi(ctx, member: discord.Member):
     response = random.choice(greeting_messages)
     await ctx.send(response)
 
+@sayhi.error
+async def sayhi_error(ctx, error):
+    if isinstance(error, commands.MissingAnyRole):
+        await ctx.send('You\'re missing a role required to run this command! [Minimum: BotPilot]')
+
 @bot.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
 @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
 async def ping(ctx):
