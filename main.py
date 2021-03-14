@@ -219,7 +219,7 @@ async def remove_role(ctx, *, role: discord.Role):
         await role.delete()
         await ctx.message.add_reaction('✅')
 
-@bot.command(name='assign-role', help='Assigns an existing role to a server member.')
+@bot.command(name='assign-role', help='Assigns an existing role to a server member.', pass_context=True)
 @commands.has_role('BotAdmin')
 async def assign_role(ctx, member: discord.Member, role: discord.Role):
     await member.add_roles(role)
