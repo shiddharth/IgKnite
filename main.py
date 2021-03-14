@@ -6,10 +6,12 @@ Made with <3 by Shiddharth
 
 # Import modules.
 import os
+import sys
 import time
 import math
 import random
 import asyncio
+import traceback
 import functools
 import itertools
 
@@ -103,162 +105,158 @@ async def on_message(message):
         await bot.process_commands(message)
 
 
-# No category commands.
-@bot.command(name='sayhi', help='Helps to greet channel members.', aliases=['greet', 'welcome'])
-@commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
-async def sayhi(ctx, member: discord.Member):
-    greeting_messages = [f"Hi {member.mention} Glad you're here.", f"Hello there! {member.mention}", f"Hey {member.mention}! Nice to meet you.", f"Hey, {member.mention} What's up?", f"Looks like someone just spoke my name. Anyway, how are you doing {member.mention}?", f"Happy to see you here, {member.mention}",f"Welcome! {member.mention} Have fun chatting!"]
+# Moderation category commands.
+class Moderation(commands.Cog):
+    @commands.command(name='sayhi', help='Helps to greet channel members.', aliases=['greet', 'welcome'])
+    @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
+    async def sayhi(self, ctx, member: discord.Member):
+        greeting_messages = [f"Hi {member.mention} Glad you're here.", f"Hello there! {member.mention}", f"Hey {member.mention}! Nice to meet you.", f"Hey, {member.mention} What's up?", f"Looks like someone just spoke my name. Anyway, how are you doing {member.mention}?", f"Happy to see you here, {member.mention}",f"Welcome! {member.mention} Have fun chatting!"]
 
-    await ctx.message.delete()
-    response = random.choice(greeting_messages)
-    await ctx.send(response)
-
-@sayhi.error
-async def sayhi_error(ctx, error):
-    if isinstance(error, commands.MissingAnyRole):
-        await ctx.send('You\'re missing a role required to run this command! [Minimum: BotPilot]')
-
-@bot.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
-@commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
-async def ping(ctx):
-    await ctx.message.delete()
-    await ctx.send(f'Pong! {bot.latency}ms')
-
-@bot.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
-@commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
-async def send_dm(ctx, user: discord.User, *, message):
-    await user.send(f"**{message}**")
-    await user.send(f"Sent by {ctx.author.display_name} using IgKnite :)")
-    await ctx.send('DM Sent! :slight_smile:')
-    time.sleep(1)
-    await ctx.channel.purge(limit=2)
-
-@bot.command(name='clear', help='Clears messages inside the given index.', aliases=['cls'])
-@commands.has_any_role('BotMod', 'BotAdmin')
-async def clear(ctx, amount=1):
-    amount += 1
-    await ctx.channel.purge(limit=amount)
-
-@bot.command(name='restore-msg', help='Tries to restore previously filtered message if it was deleted by mistake.', aliases=['rest-msg'])
-@commands.has_any_role('BotMod', 'BotAdmin')
-async def restore_msg(ctx):
-    filtered_messages_guild = []
-
-    await ctx.send('Checking the wastes...')
-    for filtered_message in filtered_messages:
-        if filtered_message[1] == ctx.guild:
-            filtered_messages_guild.append(filtered_message)
-            filtered_messages.remove(filtered_message)
-
-    if not filtered_messages_guild:
-        await ctx.send('No messages were removed by me in the recent timeline.')
-
-    else:
-        await ctx.send(f'Yep! Found some messages in the trashcan. I\'m sending the details in our DM channel, {ctx.message.author.mention}')
-        for filtered_message_guild in filtered_messages_guild:
-            await ctx.message.author.send(f'Author: {filtered_message_guild[0]}, Message: ||{filtered_message_guild[2]}||, Date: {filtered_message_guild[3]}')
-
-@bot.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
-@commands.has_any_role('BotMod', 'BotAdmin')
-async def jail(ctx, member: discord.Member, *, reason='none'):
-    do_jail = False
-
-    if member != ctx.message.author:
-        if member.guild_permissions.administrator:
-            if ctx.message.author.guild_permissions.administrator:
-                do_jail = True
-            else:
-                await ctx.send('You can\'t jail an admin :/')
-        else:
-            do_jail = True
-
-    else:
-        await ctx.send('You can\'t jail yourself :/')
-
-    if do_jail == True:
-        jail_members.append([member, ctx.guild, reason, ctx.message.author])
         await ctx.message.delete()
-        await ctx.send(f'You\'ve been captured! {member.mention} | Reason: {reason}')
+        response = random.choice(greeting_messages)
+        await ctx.send(response)
 
-@bot.command(name='jailed', help='Views jailed members.', aliases=['view-jail'])
-@commands.has_any_role('BotMod', 'BotAdmin')
-async def jailed(ctx):
-    jailed_member_guild = []
-    for jail_member in jail_members:
-        if jail_member[1] == ctx.guild:
-            jailed_member_guild.append(jail_member)
+    @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
+    @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
+    async def ping(self, ctx):
+        await ctx.message.delete()
+        await ctx.send(f'Pong! {bot.latency}ms')
 
-    if not jailed_member_guild:
-        await ctx.send('No members are inside the jail!')
+    @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
+    @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
+    async def send_dm(self, ctx, user: discord.User, *, message):
+        await user.send(f"**{message}**")
+        await user.send(f"Sent by {ctx.author.display_name} using IgKnite :)")
+        await ctx.send('DM Sent! :slight_smile:')
+        time.sleep(1)
+        await ctx.channel.purge(limit=2)
 
-    else:
-        await ctx.send(f'**Prisoner!** | Name: {jail_member[0].mention}, Reason: {jail_member[2]}')
+    @commands.command(name='clear', help='Clears messages inside the given index.', aliases=['cls'])
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def clear(self, ctx, amount=1):
+        amount += 1
+        await ctx.channel.purge(limit=amount)
 
-@bot.command(name='unjail', help='Removes a member from jail.', aliases=['release'])
-@commands.has_any_role('BotMod', 'BotAdmin')
-async def unjail(ctx, member: discord.Member):
-    for jail_member in jail_members:
-        if jail_member[1] == ctx.guild:
-            if member != ctx.message.author:
-                if jail_member[0] == member:
-                    jail_members.remove(jail_member)
-                    await ctx.message.add_reaction('✅')
+    @commands.command(name='restore-msg', help='Tries to restore previously filtered message if it was deleted by mistake.', aliases=['rest-msg'])
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def restore_msg(self, ctx):
+        filtered_messages_guild = []
 
+        await ctx.send('Checking the wastes...')
+        for filtered_message in filtered_messages:
+            if filtered_message[1] == ctx.guild:
+                filtered_messages_guild.append(filtered_message)
+                filtered_messages.remove(filtered_message)
+
+        if not filtered_messages_guild:
+            await ctx.send('No messages were removed by me in the recent timeline.')
+
+        else:
+            await ctx.send(f'Yep! Found some messages in the trashcan. I\'m sending the details in our DM channel, {ctx.message.author.mention}')
+            for filtered_message_guild in filtered_messages_guild:
+                await ctx.message.author.send(f'Author: {filtered_message_guild[0]}, Message: ||{filtered_message_guild[2]}||, Date: {filtered_message_guild[3]}')
+
+    @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def jail(self, ctx, member: discord.Member, *, reason='none'):
+        do_jail = False
+
+        if member != ctx.message.author:
+            if member.guild_permissions.administrator:
+                if ctx.message.author.guild_permissions.administrator:
+                    do_jail = True
+                else:
+                    await ctx.send('You can\'t jail an admin :/')
             else:
-                await ctx.send('You can\'t free yourself :/')
+                do_jail = True
 
-@bot.command(name='mk-role', help='Creates a role.')
-@commands.has_role('BotAdmin')
-async def create_new_role(ctx, *, role):
-    guild = ctx.guild
-    await guild.create_role(name = role)
-    await ctx.message.add_reaction('✅')
+        else:
+            await ctx.send('You can\'t jail yourself :/')
 
-@bot.command(name='rm-role', help='Removes an existing role.')
-@commands.has_role('BotAdmin')
-async def remove_role(ctx, *, role: discord.Role):
-    if role is None:
-        await ctx.send('That\'s not a role, I guess? :/')
+        if do_jail == True:
+            jail_members.append([member, ctx.guild, reason, ctx.message.author])
+            await ctx.message.delete()
+            await ctx.send(f'You\'ve been captured! {member.mention} | Reason: {reason}')
 
-    else:
-        await role.delete()
+    @commands.command(name='jailed', help='Views jailed members.', aliases=['view-jail'])
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def jailed(self, ctx):
+        jailed_member_guild = []
+        for jail_member in jail_members:
+            if jail_member[1] == ctx.guild:
+                jailed_member_guild.append(jail_member)
+
+        if not jailed_member_guild:
+            await ctx.send('No members are inside the jail!')
+
+        else:
+            await ctx.send(f'**Prisoner!** | Name: {jail_member[0].mention}, Reason: {jail_member[2]}')
+
+    @commands.command(name='unjail', help='Removes a member from jail.', aliases=['release'])
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def unjail(self, ctx, member: discord.Member):
+        for jail_member in jail_members:
+            if jail_member[1] == ctx.guild:
+                if member != ctx.message.author:
+                    if jail_member[0] == member:
+                        jail_members.remove(jail_member)
+                        await ctx.message.add_reaction('✅')
+
+                else:
+                    await ctx.send('You can\'t free yourself :/')
+
+    @commands.command(name='mk-role', help='Creates a role.')
+    @commands.has_role('BotAdmin')
+    async def create_new_role(self, ctx, *, role):
+        guild = ctx.guild
+        await guild.create_role(name = role)
         await ctx.message.add_reaction('✅')
 
-@bot.command(name='assign-role', help='Assigns an existing role to a server member.', pass_context=True)
-@commands.has_role('BotAdmin')
-async def assign_role(ctx, member: discord.Member, role: discord.Role):
-    await member.add_roles(role)
-    await ctx.send(f'Role {role.mention} has been given to {member.mention}, peace! :partying_face:')
+    @commands.command(name='rm-role', help='Removes an existing role.')
+    @commands.has_role('BotAdmin')
+    async def remove_role(self, ctx, *, role: discord.Role):
+        if role is None:
+            await ctx.send('That\'s not a role, I guess? :/')
 
-@bot.command(name='mk-ch', help='Creates a server channel.')
-@commands.has_role('BotAdmin')
-async def create_channel(ctx, channel_name):
-    guild = ctx.guild
-    existing_channel = discord.utils.get(guild.channels, name=channel_name)
-    if not existing_channel:
-        await guild.create_text_channel(channel_name)
-        await ctx.message.add_reaction('✅')
-
-@bot.command(name='rm-ch', help='Removes an existing server channel.')
-@commands.has_role('BotAdmin')
-async def delete_channel(ctx, channel_name: discord.TextChannel):
-    await channel_name.delete()
-    await ctx.message.add_reaction('✅')
-
-@bot.command(name='freeze-chat', help="Calms down chat / freezes it.", aliases=['kill-chat'])
-@commands.has_role('BotAdmin')
-async def freeze(ctx):
-    frozen.append([ctx.message.author, ctx.guild])
-    await ctx.message.delete()
-    await ctx.send(f'**Chat was frozen by {ctx.message.author.mention}!**')
-
-@bot.command(name='thaw-chat', help="Removes frozen state from chat.", aliases=['open-chat'])
-@commands.has_role('BotAdmin')
-async def thaw(ctx):
-    for frozen_guild in frozen:
-        if frozen_guild[1] == ctx.guild:
-            frozen.remove(frozen_guild)
+        else:
+            await role.delete()
             await ctx.message.add_reaction('✅')
+
+    @commands.command(name='assign-role', help='Assigns an existing role to a server member.', pass_context=True)
+    @commands.has_role('BotAdmin')
+    async def assign_role(self, ctx, member: discord.Member, role: discord.Role):
+        await member.add_roles(role)
+        await ctx.send(f'Role {role.mention} has been given to {member.mention}, peace! :partying_face:')
+
+    @commands.command(name='mk-ch', help='Creates a server channel.')
+    @commands.has_role('BotAdmin')
+    async def create_channel(self, ctx, channel_name):
+        guild = ctx.guild
+        existing_channel = discord.utils.get(guild.channels, name=channel_name)
+        if not existing_channel:
+            await guild.create_text_channel(channel_name)
+            await ctx.message.add_reaction('✅')
+
+    @commands.command(name='rm-ch', help='Removes an existing server channel.')
+    @commands.has_role('BotAdmin')
+    async def delete_channel(self, ctx, channel_name: discord.TextChannel):
+        await channel_name.delete()
+        await ctx.message.add_reaction('✅')
+
+    @commands.command(name='freeze-chat', help="Calms down chat / freezes it.", aliases=['kill-chat'])
+    @commands.has_role('BotAdmin')
+    async def freeze(self, ctx):
+        frozen.append([ctx.message.author, ctx.guild])
+        await ctx.message.delete()
+        await ctx.send(f'**Chat was frozen by {ctx.message.author.mention}!**')
+
+    @commands.command(name='thaw-chat', help="Removes frozen state from chat.", aliases=['open-chat'])
+    @commands.has_role('BotAdmin')
+    async def thaw(self, ctx):
+        for frozen_guild in frozen:
+            if frozen_guild[1] == ctx.guild:
+                frozen.remove(frozen_guild)
+                await ctx.message.add_reaction('✅')
 
 # Music category commands.
 class YTDLSource(discord.PCMVolumeTransformer):
@@ -691,8 +689,8 @@ class Music(commands.Cog):
 
 
 # Add cogs.
+bot.add_cog(Moderation(bot))
 bot.add_cog(Music(bot))
-
 
 # Run the bot.
 keep_alive()
