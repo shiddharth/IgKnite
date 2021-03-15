@@ -1,6 +1,6 @@
 '''
 IgKnite
-Made with <3 by Shiddharth
+A Discord Moderation Bot
 '''
 
 
