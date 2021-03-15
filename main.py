@@ -133,7 +133,7 @@ class Moderation(commands.Cog):
                 pass
 
         elif isinstance(error, commands.MissingAnyRole):
-            await ctx.send('You\'re missing one of the required roles to run this command!')
+            await ctx.send(f'Oops! {error}')
 
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
