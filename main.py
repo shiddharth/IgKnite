@@ -107,6 +107,38 @@ async def on_message(message):
 
 # Moderation category commands.
 class Moderation(commands.Cog):
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        if hasattr(ctx.command, 'on_error'):
+            return
+
+        cog = ctx.cog
+        if cog:
+            if cog._get_overridden_method(cog.cog_command_error) is not None:
+                return
+
+        ignored = (commands.CommandNotFound, )
+        error = getattr(error, 'original', error)
+
+        if isinstance(error, ignored):
+            return
+
+        if isinstance(error, commands.DisabledCommand):
+            await ctx.send(f'{ctx.command} has been disabled.')
+
+        elif isinstance(error, commands.NoPrivateMessage):
+            try:
+                await ctx.author.send(f'{ctx.command} can not be used in Private Messages.')
+            except discord.HTTPException:
+                pass
+
+        elif isinstance(error, commands.MissingAnyRole):
+            await ctx.send('You\'re missing a required role to run this command!')
+
+        else:
+            print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
     @commands.command(name='sayhi', help='Helps to greet channel members.', aliases=['greet', 'welcome'])
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def sayhi(self, ctx, member: discord.Member):
