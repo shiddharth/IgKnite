@@ -131,7 +131,10 @@ class Moderation(commands.Cog):
                 await ctx.author.send(f'{ctx.command} can not be used in Private Messages.')
             except discord.HTTPException:
                 pass
-                
+
+        elif isinstance(error, commands.MissingAnyRole):
+            await ctx.send('You\'re missing one of the required roles to run this command!')
+
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
