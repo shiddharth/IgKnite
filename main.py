@@ -4,7 +4,7 @@ A Discord Moderation Bot
 '''
 
 
-# Import modules.
+# Import default libraries.
 import os
 import sys
 import time
@@ -15,10 +15,11 @@ import traceback
 import functools
 import itertools
 
+# Import third-party libraries.
 import discord
 import youtube_dl
-from async_timeout import timeout
 from discord.ext import commands
+from async_timeout import timeout
 from keep_alive import keep_alive
 
 
@@ -49,14 +50,11 @@ global frozen
 frozen = list()
 
 
-# Main interface.
-os.system('clear')
-print("IgKnite | Bot Console (Read-only)\n")
-
-
 # Events.
 @bot.event
 async def on_ready():
+    os.system('clear')
+    print("IgKnite | Bot Console (Read-only)\n")
     print(f"\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~")
     await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'{prefix}help, call me anytime! | Injected in {len(bot.guilds)} servers.'))
 
