@@ -687,13 +687,8 @@ class Music(commands.Cog):
         if not ctx.voice_state.is_playing:
             return await ctx.send('Nothing being played at the moment.')
 
-        if ctx.voice_state.loop != True:
-            ctx.voice_state.loop = True
-            await ctx.send('Enabled Loop!')
-
-        else:
-            ctx.voice_state.loop = False
-            await ctx.send('Loop is now disabled.')
+        ctx.voice_state.loop = not ctx.voice_state.loop
+        await ctx.message.add_reaction('✅')
 
     @commands.command(name='play', help='Plays a song.')
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
