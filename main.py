@@ -171,8 +171,6 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def restore_msg(self, ctx):
         filtered_messages_guild = []
-
-        await ctx.send('Checking the wastes...')
         for filtered_message in filtered_messages:
             if filtered_message[1] == ctx.guild:
                 filtered_messages_guild.append(filtered_message)
@@ -220,7 +218,7 @@ class Moderation(commands.Cog):
             await ctx.send('No members are inside the jail!')
 
         else:
-            await ctx.send(f'**Prisoner!** | Name: {jail_member[0].mention}, Reason: {jail_member[2]}')
+            await ctx.send(f'**Prisoner!** | Name: {jail_member[0].mention} | Jailed By: {jail_member[3].mention} | Reason: {jail_member[2]}')
 
     @commands.command(name='unjail', help='Removes a member from jail.', aliases=['release'])
     @commands.has_any_role('BotMod', 'BotAdmin')
