@@ -209,16 +209,17 @@ class Moderation(commands.Cog):
     @commands.command(name='jailed', help='Views jailed members.', aliases=['view-jail'])
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def jailed(self, ctx):
-        jailed_member_guild = []
+        jailed_members_guild = []
         for jail_member in jail_members:
             if jail_member[1] == ctx.guild:
-                jailed_member_guild.append(jail_member)
+                jailed_members_guild.append(jail_member)
 
         if not jailed_member_guild:
             await ctx.send('No members are inside the jail!')
 
         else:
-            await ctx.send(f'**Prisoner!** | Name: {jail_member[0].mention} | Jailed By: {jail_member[3].mention} | Reason: {jail_member[2]}')
+            for jailed_member_guild in jailed_members_guild:
+                await ctx.send(f'**Prisoner!** | Name: {jail_member[0].mention} | Jailed By: {jail_member[3].mention} | Reason: {jail_member[2]}')
 
     @commands.command(name='unjail', help='Removes a member from jail.', aliases=['release'])
     @commands.has_any_role('BotMod', 'BotAdmin')
