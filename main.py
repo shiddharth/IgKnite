@@ -214,7 +214,7 @@ class Moderation(commands.Cog):
             if jail_member[1] == ctx.guild:
                 jailed_members_guild.append(jail_member)
 
-        if not jailed_member_guild:
+        if not jailed_members_guild:
             await ctx.send('No members are inside the jail!')
 
         else:
