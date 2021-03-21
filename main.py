@@ -219,7 +219,7 @@ class Moderation(commands.Cog):
 
         else:
             for jailed_member_guild in jailed_members_guild:
-                await ctx.send(f'**Prisoner!** | Name: {jail_member[0].mention} | Jailed By: {jail_member[3].mention} | Reason: {jail_member[2]}')
+                await ctx.send(f'**Prisoner!** | Name: {jailed_member_guild[0].mention} | Jailed By: {jailed_member_guild[3].mention} | Reason: {jailed_member_guild[2]}')
 
     @commands.command(name='unjail', help='Removes a member from jail.', aliases=['release'])
     @commands.has_any_role('BotMod', 'BotAdmin')
