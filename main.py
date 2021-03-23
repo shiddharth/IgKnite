@@ -180,7 +180,7 @@ class Moderation(commands.Cog):
             await ctx.send('No messages were removed by me in the recent timeline.')
 
         else:
-            await ctx.send(f'Yep! Found some messages in the trashcan. I\'m sending the details in our DM channel, {ctx.message.author.mention}')
+            await ctx.message.add_reaction('✅')
             for filtered_message_guild in filtered_messages_guild:
                 await ctx.message.author.send(f'Author: {filtered_message_guild[0]}, Message: ||{filtered_message_guild[2]}||, Date: {filtered_message_guild[3]}')
 
