@@ -63,10 +63,10 @@ body {
 /*Intro*/
 .intro {
 	height: 400px;
-	background: linear-gradient(to bottom right, #c0392b, #8e44ad);
+	background: linear-gradient(to bottom right, #1D262E, #A0A0A0);
 	margin-top: 70px;
 	text-align: center;
-	padding-top: 70px; 
+	padding-top: 70px;
 }
 
 .intro h1 {
@@ -96,7 +96,7 @@ body {
 	cursor: pointer;
 	outline: none;
 }
-  
+
 .btn a {
 	color: #fff;
 	text-decoration: none;
@@ -119,7 +119,7 @@ body {
 /*About*/
 .about {
 	background: #23272A;
-	
+
 }
 
 .about_title h2{
@@ -218,7 +218,7 @@ body {
 	background: #2C2F33;
 	margin-top: 0px;
 	text-align: center;
-	padding-top: 70px; 
+	padding-top: 70px;
 }
 
 .info_title h2 {
@@ -316,5 +316,3 @@ footer {
 	height: 60px;
 	background: red;
 }
-
-
