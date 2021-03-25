@@ -5,7 +5,7 @@ app = Flask('')
 
 @app.route('/')
 def home():
-  return "<h2>IgKnite Deployed</h2>"
+  return "<h2>Veron1CA is now live!</h2>"
 
 def run():
   app.run(host='0.0.0.0',port=8080)
