@@ -1,6 +1,6 @@
 '''
-IgKnite
-A Discord Moderation Bot
+Veronica
+An open source Discord Moderation Bot
 '''
 
 
@@ -25,7 +25,7 @@ from keep_alive import keep_alive
 
 # Define command prefix and description.
 prefix = os.getenv('COMMAND_PREFIX')
-bot = commands.Bot(command_prefix=prefix, description='Visit https://shiddharth.github.io/IgKnite for more information about me!')
+bot = commands.Bot(command_prefix=prefix, description='Visit https://shiddharth.github.io/Veronica for more information about me!')
 
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -54,7 +54,7 @@ frozen = list()
 @bot.event
 async def on_ready():
     os.system('clear')
-    print("IgKnite | Bot Console (Read-only)\n")
+    print("Veronica | Viewing Terminal\n")
     print(f"\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~")
     await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'{prefix}help, call me anytime! | Injected in {len(bot.guilds)} servers.'))
 
