@@ -54,7 +54,7 @@ frozen = list()
 @bot.event
 async def on_ready():
     os.system('clear')
-    print("Veronica | Viewing Terminal\n")
+    print("Veron1CA | Viewing Terminal\n")
     print(f"\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~")
     await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'{prefix}help, call me anytime! | Injected in {len(bot.guilds)} servers.'))
 
