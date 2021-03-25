@@ -1,5 +1,5 @@
 '''
-Veronica
+Veron1CA
 An open source Discord Moderation Bot
 '''
 
@@ -25,7 +25,7 @@ from keep_alive import keep_alive
 
 # Define command prefix and description.
 prefix = os.getenv('COMMAND_PREFIX')
-bot = commands.Bot(command_prefix=prefix, description='Visit https://shiddharth.github.io/Veronica for more information about me!')
+bot = commands.Bot(command_prefix=prefix, description='Visit https://shiddharth.github.io/Veron1CA for more information about me!')
 
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
