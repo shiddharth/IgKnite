@@ -25,7 +25,7 @@ from keep_alive import keep_alive
 
 # Define command prefix and description.
 prefix = os.getenv('COMMAND_PREFIX')
-bot = commands.Bot(command_prefix=prefix, description='Visit https://shiddharth.github.io/Veron1CA for more information about me!')
+bot = commands.Bot(commands.when_mentioned_or('//'), description='Visit https://shiddharth.github.io/Veron1CA for more information about me. You can also ping me to access the commands!')
 
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -70,37 +70,41 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    for frozen_guild in frozen:
-        if frozen_guild[1] == message.guild:
-            if frozen_guild[0] != message.author:
-                await message.delete()
-                skip_command = True
-                skip_swearcheck = True
-
-    if skip_swearcheck != True:
-        msg = message.content
-        symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/', '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
-
-        for msg_word in msg.split():
-            for symbol in symbols:
-                if symbol in msg_word:
-                    msg_word = msg_word.replace(symbol, '')
-
-            for filtered_word in filtered_wordlist:
-                if filtered_word.lower() in msg_word.lower():
-                    filtered_messages.append([message.author, message.guild, message.content, message.created_at])
+    if not message.author.bot:
+        for frozen_guild in frozen:
+            if frozen_guild[1] == message.guild:
+                if frozen_guild[0] != message.author:
                     await message.delete()
                     skip_command = True
+                    skip_swearcheck = True
 
-        for jail_member in jail_members:
-            if jail_member[1] == message.guild:
-                if jail_member[0] == message.author:
-                    if skip_command != True:
+        if skip_swearcheck != True:
+            msg = message.content
+            symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/', '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
+
+            for msg_word in msg.split():
+                for symbol in symbols:
+                    if symbol in msg_word:
+                        msg_word = msg_word.replace(symbol, '')
+
+                for filtered_word in filtered_wordlist:
+                    if filtered_word.lower() == msg_word.lower():
+                        filtered_messages.append([message.author, message.guild, message.content, message.created_at])
                         await message.delete()
                         skip_command = True
 
-    if skip_command != True:
-        await bot.process_commands(message)
+                    elif filtered_word.lower() in msg_word.lower():
+                        await message.add_reaction('😠')
+
+            for jail_member in jail_members:
+                if jail_member[1] == message.guild:
+                    if jail_member[0] == message.author:
+                        if skip_command != True:
+                            await message.delete()
+                            skip_command = True
+
+        if skip_command != True:
+            await bot.process_commands(message)
 
 
 # Moderation category commands.
@@ -140,8 +144,7 @@ class Moderation(commands.Cog):
     @commands.command(name='sayhi', help='Helps to greet channel members.', aliases=['greet', 'welcome'])
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def sayhi(self, ctx, member: discord.Member):
-        greeting_messages = [f"Hi {member.mention} Glad you're here.", f"Hello there! {member.mention}", f"Hey {member.mention}! Nice to meet you.", f"Hey, {member.mention} What's up?", f"Looks like someone just spoke my name. Anyway, how are you doing {member.mention}?", f"Happy to see you here, {member.mention}",f"Welcome! {member.mention} Have fun chatting!"]
-
+        greeting_messages = [f"Hi {member.mention} Glad you're here.", f"Hello there! {member.mention}", f"Hey {member.mention}! Nice to meet you.", f"Hey, {member.mention} What's up?", f"Looks like someone just spoke my name. Anyway, how are you doing {member.mention}?", f"Happy to see you here, {member.mention}", f"Welcome! {member.mention} Have fun chatting!", f"Nice to meet you, {member.mention}! The name's {bot.user.name} by the way."]
         await ctx.message.delete()
         response = random.choice(greeting_messages)
         await ctx.send(response)
@@ -150,7 +153,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def ping(self, ctx):
         await ctx.message.delete()
-        await ctx.send(f'Pong! {bot.latency}ms')
+        embed = (discord.Embed(title="Pong!", description="Showing current response time!", color=discord.Color.blurple()).add_field(value=f"{round(bot.latency * 1000)}ms", inline=False))
 
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
