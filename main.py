@@ -25,7 +25,7 @@ from keep_alive import keep_alive
 
 # Define command prefix and description.
 prefix = os.getenv('COMMAND_PREFIX')
-bot = commands.Bot(commands.when_mentioned_or('//'), description='Visit https://shiddharth.github.io/Veron1CA for more information about me. You can ping me for commands as well as use the default command prefix. Learn more from below!')
+bot = commands.Bot(commands.when_mentioned_or(prefix), description='Learn more about myself by pinging me in the chat!')
 
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -54,9 +54,9 @@ frozen = list()
 @bot.event
 async def on_ready():
     os.system('clear')
-    print("Veron1CA | Viewing Terminal\n")
-    print(f"\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~")
-    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'@Veron1CA and I\'m Injected in {len(bot.guilds)} servers!'))
+    print(f'{bot.user.name} | Viewing Terminal\n')
+    print(f'\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~')
+    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'@{bot.user.name} and I\'m Injected in {len(bot.guilds)} servers!'))
 
 @bot.event
 async def on_member_join(ctx, member):
@@ -105,7 +105,7 @@ async def on_message(message):
 
         if skip_command != True:
             if message.content == f'<@!{bot.user.id}>':
-                embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Hey! The name\'s Veron1CA.', value=f'My default command prefix is // and you can either ping me and type help (e.g. **@Veron1CA help**) or use //help to see what I can do. Psst! I work on moderation but I can also do stuff like playing music, shuffling and much more. Peace!', inline=False))
+                embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'Hey! The name\'s {bot.user.name}.', value=f'My default command prefix is // and you can either ping me and type help (e.g. **@Veron1CA help**) or use //help to see what I can do. Psst! I work on moderation but I can also do stuff like playing music, shuffling and much more. Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False))
                 await message.channel.send(embed=embed)
 
             else:
