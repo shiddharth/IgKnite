@@ -104,7 +104,11 @@ async def on_message(message):
                             skip_command = True
 
         if skip_command != True:
-            await bot.process_commands(message)
+            if message.content == f'<@!{bot.user.id}>':
+                embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Hey! The name\'s Veron1CA.', value=f'My default command prefix is // and you can either ping me and type help (e.g. **@Veron1CA help**) or use //help to see what I can do. Psst! I work on moderation but I can also do stuff like playing music, shuffling and much more. Peace!', inline=False))
+
+            else:
+                await bot.process_commands(message)
 
 
 # Moderation category commands.
