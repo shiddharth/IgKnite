@@ -105,7 +105,7 @@ async def on_message(message):
 
         if skip_command != True:
             if message.content == f'<@!{bot.user.id}>':
-                embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'Hey! The name\'s {bot.user.name}.', value=f'My default command prefix is // and you can either ping me and type help (e.g. **@Veron1CA help**) or use //help to see what I can do. Psst! I work on moderation but I can also do stuff like playing music, shuffling and much more. Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False))
+                embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'Hey! The name\'s {bot.user.name}.', value=f'My default command prefix is // and you can either ping me and type help (e.g. **@{bot.user.name} help**) or use //help to see what I can do. Psst! I work on moderation but I can also do stuff like playing music, shuffling and much more. Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False))
                 await message.channel.send(embed=embed)
 
             else:
