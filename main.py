@@ -153,7 +153,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def ping(self, ctx):
         await ctx.message.delete()
-        embed = (discord.Embed(title='Pong!', description='Showing current response time!', color=discord.Color.blurple()).add_field(name='Latency', value=f'{round(bot.latency * 1000)}ms', inline=False))
+        embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Latency', value=f'{round(bot.latency * 1000)}ms', inline=False))
         await ctx.send(embed=embed)
 
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
