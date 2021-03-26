@@ -25,7 +25,7 @@ from keep_alive import keep_alive
 
 # Define command prefix and description.
 prefix = os.getenv('COMMAND_PREFIX')
-bot = commands.Bot(commands.when_mentioned_or('//'), description='Visit https://shiddharth.github.io/Veron1CA for more information about me. You can also ping me to access the commands!')
+bot = commands.Bot(commands.when_mentioned_or('//'), description='Visit https://shiddharth.github.io/Veron1CA for more information about me. You can ping me for commands as well as use the default command prefix. Learn more from below!')
 
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -56,7 +56,7 @@ async def on_ready():
     os.system('clear')
     print("Veron1CA | Viewing Terminal\n")
     print(f"\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~")
-    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'{prefix}help, call me anytime! | Injected in {len(bot.guilds)} servers.'))
+    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'@Veron1CA </> Injected in {len(bot.guilds)} servers!'))
 
 @bot.event
 async def on_member_join(ctx, member):
