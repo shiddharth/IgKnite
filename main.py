@@ -56,7 +56,7 @@ async def on_ready():
     os.system('clear')
     print("Veron1CA | Viewing Terminal\n")
     print(f"\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~")
-    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'@Veron1CA </> Injected in {len(bot.guilds)} servers!'))
+    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'@Veron1CA and I\'m Injected in {len(bot.guilds)} servers!'))
 
 @bot.event
 async def on_member_join(ctx, member):
