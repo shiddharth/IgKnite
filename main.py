@@ -224,7 +224,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def jailed(self, ctx):
         jail_has_member = False
-        embed = discord.Embed(title='Prison!', color=discord.Color.blurple())
+        embed = discord.Embed(title='Now viewing the Prison!', color=discord.Color.blurple())
         for jail_member in jail_members:
             if jail_member[1] == ctx.guild:
                 embed.add_field(name=jail_member[0], value=('Jailed By ' + jail_member[3].mention + ' | Reason: ' + jail_member[2]), inline=False)
