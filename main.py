@@ -226,14 +226,14 @@ class Moderation(commands.Cog):
         embed = discord.Embed(title='Prison!', color=discord.Color.blurple())
         for jail_member in jail_members:
             if jail_member[1] == ctx.guild:
-                embed.add_field(name=jail_member[0].mention, value=f'Jailed By: {jail_member[3].mention]} | Reason: {jail_member[2]}')
+                embed.add_field(name=jail_member[0].mention, value=('Jailed By ' + jail_member[3].mention + ' | Reason: ' + jail_member[2]), inline=False)
 
         if not jailed_members_guild:
             await ctx.send('No members are inside the jail!')
 
         else:
             await ctx.send(embed=embed)
-            
+
     @commands.command(name='unjail', help='Removes a member from jail.', aliases=['release'])
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def unjail(self, ctx, member: discord.Member):
