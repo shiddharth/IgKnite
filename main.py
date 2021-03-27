@@ -2,6 +2,7 @@
 Veron1CA
 An open source Discord Moderation Bot
 '''
+# https://shiddharth.github.io/IgKnite to learn more!
 
 
 # Import default libraries.
@@ -72,13 +73,11 @@ async def on_message(message):
         return
 
     for frozen_guild in frozen:
-        if frozen_guild[1] == message.guild:
-            if frozen_guild[2] == message.channel:
-                if frozen_guild[0] != message.author:
-                    await message.delete()
-                    skip_command = True
-                    skip_swearcheck = True
-                    skip_jail = True
+        if frozen_guild[1] == message.guild and frozen_guild[2] == message.channel and frozen_guild[0] != message.author:
+            await message.delete()
+            skip_command = True
+            skip_swearcheck = True
+            skip_jail = True
 
     if skip_swearcheck != True:
         if not message.author.bot:
@@ -102,11 +101,9 @@ async def on_message(message):
     if skip_jail != True:
         if not message.author.bot:
             for jail_member in jail_members:
-                if jail_member[1] == message.guild:
-                    if jail_member[0] == message.author:
-                        if skip_command != True:
-                            await message.delete()
-                            skip_command = True
+                if jail_member[1] == message.guild and jail_member[0] == message.author and skip_command != True:
+                    await message.delete()
+                    skip_command = True
 
     if skip_command != True:
         if message.content == f'<@!{bot.user.id}>':
