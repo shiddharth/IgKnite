@@ -66,19 +66,22 @@ async def on_member_join(ctx, member):
 async def on_message(message):
     skip_command = False
     skip_swearcheck = False
+    skip_jail = False
 
     if message.author == bot.user:
         return
 
-    if not message.author.bot:
-        for frozen_guild in frozen:
-            if frozen_guild[1] == message.guild:
+    for frozen_guild in frozen:
+        if frozen_guild[1] == message.guild:
+            if frozen_guild[2] == message.channel:
                 if frozen_guild[0] != message.author:
                     await message.delete()
                     skip_command = True
                     skip_swearcheck = True
+                    skip_jail = True
 
-        if skip_swearcheck != True:
+    if skip_swearcheck != True:
+        if not message.author.bot:
             msg = message.content
             symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/', '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
 
@@ -96,6 +99,8 @@ async def on_message(message):
                     elif filtered_word.lower() in msg_word.lower():
                         await message.add_reaction('😠')
 
+    if skip_jail != True:
+        if not message.author.bot:
             for jail_member in jail_members:
                 if jail_member[1] == message.guild:
                     if jail_member[0] == message.author:
@@ -103,13 +108,13 @@ async def on_message(message):
                             await message.delete()
                             skip_command = True
 
-        if skip_command != True:
-            if message.content == f'<@!{bot.user.id}>':
-                embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'It\'s {bot.user.name} onboard!', value=f'My default command prefix is {prefix} and you can either ping me and type help (e.g. @{bot.user.name} help) or use {prefix}help to see what I can do. Psst! I work on moderation but I can also do stuff like playing music, shuffling and much more. Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False))
-                await message.channel.send(embed=embed)
+    if skip_command != True:
+        if message.content == f'<@!{bot.user.id}>':
+            embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'It\'s {bot.user.name} onboard!', value=f'My default command prefix is {prefix} and you can either ping me and type help (e.g. @{bot.user.name} help) or use {prefix}help to see what I can do. Psst! I work on moderation but I can also do stuff like playing music, shuffling and much more. Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False))
+            await message.channel.send(embed=embed)
 
-            else:
-                await bot.process_commands(message)
+        else:
+            await bot.process_commands(message)
 
 
 # Moderation category commands.
@@ -284,7 +289,7 @@ class Moderation(commands.Cog):
     @commands.command(name='freeze-chat', help="Calms down chat / freezes it.", aliases=['kill-chat'])
     @commands.has_role('BotAdmin')
     async def freeze(self, ctx):
-        frozen.append([ctx.message.author, ctx.guild])
+        frozen.append([ctx.message.author, ctx.guild, ctx.message.channel])
         await ctx.message.delete()
         await ctx.send(f'**Chat was frozen by {ctx.message.author.mention}!**')
 
