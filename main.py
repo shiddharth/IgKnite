@@ -99,11 +99,10 @@ async def on_message(message):
                         await message.add_reaction('😠')
 
     if skip_jail != True:
-        if not message.author.bot:
-            for jail_member in jail_members:
-                if jail_member[1] == message.guild and jail_member[0] == message.author and skip_command != True:
-                    await message.delete()
-                    skip_command = True
+        for jail_member in jail_members:
+            if jail_member[1] == message.guild and jail_member[0] == message.author and skip_command != True:
+                await message.delete()
+                skip_command = True
 
     if skip_command != True:
         if message.content == f'<@!{bot.user.id}>':
