@@ -119,7 +119,7 @@ class Chill(commands.Cog):
     async def avatar(ctx):
         embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Here\'s what I found!', value=f'{ctx.message.author.avatar_url}'))
         await ctx.send(embed=embed)
-        
+
 
 # Moderation category commands.
 class Moderation(commands.Cog):
@@ -738,6 +738,7 @@ class Music(commands.Cog):
 
 
 # Add cogs.
+bot.add_cog(Chill(bot))
 bot.add_cog(Moderation(bot))
 bot.add_cog(Music(bot))
 
