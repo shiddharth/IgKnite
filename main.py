@@ -113,6 +113,14 @@ async def on_message(message):
             await bot.process_commands(message)
 
 
+# Chill category commands.
+class Chill(commands.Cog):
+    @commands.command(name='avatar', help='Views the sender\'s Discord avatar.', aliases=['pfp', 'dp'])
+    async def avatar(ctx):
+        embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Here\'s what I found!', value=f'{ctx.message.author.avatar_url}'))
+        await ctx.send(embed=embed)
+        
+
 # Moderation category commands.
 class Moderation(commands.Cog):
     @commands.Cog.listener()
@@ -297,6 +305,7 @@ class Moderation(commands.Cog):
             if frozen_guild[1] == ctx.guild:
                 frozen.remove(frozen_guild)
                 await ctx.message.add_reaction('✅')
+
 
 # Music category commands.
 class YTDLSource(discord.PCMVolumeTransformer):
