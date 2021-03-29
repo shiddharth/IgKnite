@@ -117,7 +117,7 @@ async def on_message(message):
 # Chill category commands.
 class Chill(commands.Cog):
     @commands.command(name='avatar', help='Shows your Discord avatar!', aliases=['pfp', 'dp'])
-    async def avatar(ctx, member: discord.Member):
+    async def avatar(self, ctx, member: discord.Member):
         avatar_var = member.avatar_url
         embed = (discord.Embed(title='Here\'s your avatar!', color=discord.Color.blurple()).set_image(url=avatar_var))
         await ctx.send(embed=embed)
