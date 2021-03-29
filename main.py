@@ -114,6 +114,14 @@ async def on_message(message):
             await bot.process_commands(message)
 
 
+# Chill category commands.
+class Chill(commands.Cog):
+    @commands.command(name='avatar', help='Shows your Discord avatar!', aliases=['pfp', 'dp'])
+    async def avatar(ctx):
+        embed = (discord.Embed(title='Here\'s your avatar!', color=discord.Color.blurple()).set_image(url=ctx.message.author.avatar_url))
+        await ctx.send(embed=embed)
+
+
 # Moderation category commands.
 class Moderation(commands.Cog):
     @commands.Cog.listener()
@@ -731,6 +739,7 @@ class Music(commands.Cog):
 
 
 # Add cogs.
+bot.add_cog(Chill(bot))
 bot.add_cog(Moderation(bot))
 bot.add_cog(Music(bot))
 
