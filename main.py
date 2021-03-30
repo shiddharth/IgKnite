@@ -109,7 +109,7 @@ async def on_message(message):
 
     if skip_command is not True:
         if message.content == f'<@!{bot.user.id}>':
-            embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'It\'s {bot.user.name} onboard!', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False).add_field(name='How to access me?', value=f'My default command prefix is {prefix} and you can either ping me and type help (e.g. @{bot.user.name} help) or use {prefix}help to see what I can do.', inline=False).add_field(name='Inject me in your server!', value='To add me as a bot, please [click here](https://discord.com/api/oauth2/authorize?client_id=792331319443062795&permissions=8&scope=bot) and authorize me to your server of choice.'))
+            embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'It\'s {bot.user.name} onboard!', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False).add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can either ping me and type help (e.g. @{bot.user.name} help) or use `{prefix}help` to see what I can do.', inline=False).add_field(name='Inject me in your server!', value='To add me as a bot, please [click here](https://discord.com/api/oauth2/authorize?client_id=792331319443062795&permissions=8&scope=bot) and authorize me to your server of choice.'))
             await message.channel.send(embed=embed)
 
         else:
@@ -207,7 +207,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
     @commands.has_any_role('BotMod', 'BotAdmin')
-    async def jail(self, ctx, member: discord.Member, *, reason='none'):
+    async def jail(self, ctx, member: discord.Member, *, reason='None'):
         do_jail = False
 
         if member != ctx.message.author:
@@ -234,7 +234,7 @@ class Moderation(commands.Cog):
         embed = discord.Embed(title='Now viewing the Prison!', color=discord.Color.blurple())
         for jail_member in jail_members:
             if jail_member[1] == ctx.guild:
-                embed.add_field(name=jail_member[0], value=('Jailed By ' + jail_member[3].mention + ' | Reason: ' + jail_member[2]), inline=False)
+                embed.add_field(name=jail_member[0], value=('Jailed by ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
                 jail_has_member = True
 
         if jail_has_member is False:
