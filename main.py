@@ -2,7 +2,6 @@
 Veron1CA
 An open source Discord Moderation Bot
 '''
-# https://shiddharth.github.io/IgKnite to learn more!
 
 
 # Import default libraries.
