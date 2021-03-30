@@ -23,7 +23,6 @@ from discord.ext import commands
 from async_timeout import timeout
 from keep_alive import keep_alive
 
-
 # Define command prefix and description.
 prefix = os.getenv('COMMAND_PREFIX')
 bot = commands.Bot(commands.when_mentioned_or(prefix), description='Learn more about me and my working process by pinging me in the chat!')
@@ -31,11 +30,14 @@ bot = commands.Bot(commands.when_mentioned_or(prefix), description='Learn more a
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
 
+
 class VoiceError(Exception):
     pass
 
+
 class YTDLError(Exception):
     pass
+
 
 # Opening wordlist file for word filter feature.
 with open('filtered.txt', 'r') as filtered_wordfile:
@@ -57,11 +59,13 @@ async def on_ready():
     os.system('clear')
     print(f'{bot.user.name} | Viewing Terminal\n')
     print(f'\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~')
-    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'@{bot.user.name} and I\'m Injected in {len(bot.guilds)} servers!'))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'@{bot.user.name} and I\'m Injected in {len(bot.guilds)} servers!'))
+
 
 @bot.event
 async def on_member_join(ctx, member):
     await member.send(f'Hi there, {member.mention}! Hope you enjoy your stay at {member.guild.name}!')
+
 
 @bot.event
 async def on_message(message):
@@ -79,7 +83,7 @@ async def on_message(message):
             skip_swearcheck = True
             skip_jail = True
 
-    if skip_swearcheck != True:
+    if skip_swearcheck is not True:
         if not message.author.bot:
             msg = message.content
             symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/', '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
@@ -98,19 +102,27 @@ async def on_message(message):
                     elif filtered_word.lower() in msg_word.lower():
                         await message.add_reaction('😠')
 
-    if skip_jail != True:
+    if skip_jail is not True:
         for jail_member in jail_members:
-            if jail_member[1] == message.guild and jail_member[0] == message.author and skip_command != True:
+            if jail_member[1] == message.guild and jail_member[0] == message.author and skip_command is not True:
                 await message.delete()
                 skip_command = True
 
-    if skip_command != True:
+    if skip_command is not True:
         if message.content == f'<@!{bot.user.id}>':
-            embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'It\'s {bot.user.name} onboard!', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False).add_field(name='How to access me?', value=f'My default command prefix is {prefix} and you can either ping me and type help (e.g. @{bot.user.name} help) or use {prefix}help to see what I can do.', inline=False).add_field(name='Inject me in your server!', value='To add me as a bot, please [click here](https://discord.com/api/oauth2/authorize?client_id=792331319443062795&permissions=8&scope=bot) and authorize me to your server of choice.').add_field(name='I\'m open coded indeed!', value='GitHub: [Redirect](https://github.com/shiddharth/Veron1CA)'))
+            embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'It\'s {bot.user.name} onboard!', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False).add_field(name='How to access me?', value=f'My default command prefix is {prefix} and you can either ping me and type help (e.g. @{bot.user.name} help) or use {prefix}help to see what I can do.', inline=False).add_field(name='Inject me in your server!', value='To add me as a bot, please [click here](https://discord.com/api/oauth2/authorize?client_id=792331319443062795&permissions=8&scope=bot) and authorize me to your server of choice.'))
             await message.channel.send(embed=embed)
 
         else:
             await bot.process_commands(message)
+
+
+# Chill category commands.
+class Chill(commands.Cog):
+    @commands.command(name='avatar', help='Shows a member\'s Discord avatar.')
+    async def avatar(self, ctx, member: discord.Member):
+        embed = (discord.Embed(title='Here\'s what I found!', color=discord.Color.blurple()).set_image(url=member.avatar_url))
+        await ctx.send(embed=embed)
 
 
 # Moderation category commands.
@@ -211,7 +223,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('You can\'t jail yourself :/')
 
-        if do_jail == True:
+        if do_jail is True:
             jail_members.append([member, ctx.guild, reason, ctx.message.author])
             await ctx.message.delete()
             await ctx.send(f'You\'ve been captured! {member.mention} | Reason: {reason}')
@@ -226,7 +238,7 @@ class Moderation(commands.Cog):
                 embed.add_field(name=jail_member[0], value=('Jailed By ' + jail_member[3].mention + ' | Reason: ' + jail_member[2]), inline=False)
                 jail_has_member = True
 
-        if jail_has_member == False:
+        if jail_has_member is False:
             await ctx.send('No members are inside the jail!')
 
         else:
@@ -236,20 +248,17 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def unjail(self, ctx, member: discord.Member):
         for jail_member in jail_members:
-            if jail_member[1] == ctx.guild:
-                if member != ctx.message.author:
-                    if jail_member[0] == member:
-                        jail_members.remove(jail_member)
-                        await ctx.message.add_reaction('✅')
+            if jail_member[1] == ctx.guild and member != ctx.message.author and jail_member[0] == member:
+                jail_members.remove(jail_member)
+                await ctx.message.add_reaction('✅')
 
-                else:
-                    await ctx.send('You can\'t free yourself :/')
+            else:
+                await ctx.send('You can\'t free yourself :/')
 
     @commands.command(name='mk-role', help='Creates a role.')
     @commands.has_role('BotAdmin')
     async def create_new_role(self, ctx, *, role):
-        guild = ctx.guild
-        await guild.create_role(name = role)
+        await ctx.guild.create_role(name=role)
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='rm-role', help='Removes an existing role.')
@@ -729,7 +738,8 @@ class Music(commands.Cog):
                 raise commands.CommandError('I\'m already in a voice channel :/')
 
 
-# Add cogs.
+# Add available cogs.
+bot.add_cog(Chill(bot))
 bot.add_cog(Moderation(bot))
 bot.add_cog(Music(bot))
 
