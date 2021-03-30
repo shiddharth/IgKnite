@@ -31,23 +31,24 @@ bot = commands.Bot(commands.when_mentioned_or(prefix), description='Learn more a
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
 
-
 class VoiceError(Exception):
     pass
-
 
 class YTDLError(Exception):
     pass
 
-
 # Opening wordlist file for word filter feature.
 with open('filtered.txt', 'r') as filtered_wordfile:
+    global filtered_wordlist
+    global filtered_messages
     filtered_wordlist = filtered_wordfile.read().split()
-    filtered_messages = []
+    filtered_messages = list()
 
 # Opening members list for jail command and guild list for freeze command.
-jail_members = []
-frozen = []
+global jail_members
+jail_members = list()
+global frozen
+frozen = list()
 
 
 # Events.
@@ -55,14 +56,12 @@ frozen = []
 async def on_ready():
     os.system('clear')
     print(f'{bot.user.name} | Viewing Terminal\n')
-    print(f'\nLog: {bot.user.name} has been deployed in {len(bot.guilds)} servers.\n~~~')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'@{bot.user.name} and I\'m Injected in {len(bot.guilds)} servers!'))
-
+    print(f'\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~')
+    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = f'@{bot.user.name} and I\'m Injected in {len(bot.guilds)} servers!'))
 
 @bot.event
-async def on_member_join(member):
+async def on_member_join(ctx, member):
     await member.send(f'Hi there, {member.mention}! Hope you enjoy your stay at {member.guild.name}!')
-
 
 @bot.event
 async def on_message(message):
@@ -80,7 +79,7 @@ async def on_message(message):
             skip_swearcheck = True
             skip_jail = True
 
-    if not skip_swearcheck:
+    if skip_swearcheck != True:
         if not message.author.bot:
             msg = message.content
             symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/', '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
@@ -99,27 +98,19 @@ async def on_message(message):
                     elif filtered_word.lower() in msg_word.lower():
                         await message.add_reaction('😠')
 
-    if not skip_jail:
+    if skip_jail != True:
         for jail_member in jail_members:
-            if jail_member[1] == message.guild and jail_member[0] == message.author and skip_command is not True:
+            if jail_member[1] == message.guild and jail_member[0] == message.author and skip_command != True:
                 await message.delete()
                 skip_command = True
 
-    if not skip_command:
+    if skip_command != True:
         if message.content == f'<@!{bot.user.id}>':
-            embed = (discord.Embed(title=f'It\'s {bot.user.name} onboard!', color=discord.Color.blurple()).add_field(name='About me!', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False).add_field(name='How to access me?', value=f'My default command prefix is {prefix} and you can either ping me and type help (e.g. @{bot.user.name} help) or use {prefix}help to see what I can do.', inline=False).add_field(name='Inject me in your server!', value='To add me as a bot, please [click here](https://discord.com/api/oauth2/authorize?client_id=792331319443062795&permissions=8&scope=bot) and authorize me to your server of choice.').add_field(name='I\'m open coded indeed!', value='GitHub: [Redirect](https://github.com/shiddharth/Veron1CA)'))
+            embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'It\'s {bot.user.name} onboard!', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False).add_field(name='How to access me?', value=f'My default command prefix is {prefix} and you can either ping me and type help (e.g. @{bot.user.name} help) or use {prefix}help to see what I can do.', inline=False).add_field(name='Inject me in your server!', value='To add me as a bot, please [click here](https://discord.com/api/oauth2/authorize?client_id=792331319443062795&permissions=8&scope=bot) and authorize me to your server of choice.').add_field(name='I\'m open coded indeed!', value='GitHub: [Redirect](https://github.com/shiddharth/Veron1CA)'))
             await message.channel.send(embed=embed)
 
         else:
             await bot.process_commands(message)
-
-
-# Chill category commands.
-class Chill(commands.Cog):
-    @commands.command(name='avatar', help='Shows your Discord avatar!', aliases=['pfp', 'dp'])
-    async def avatar(self, ctx):
-        embed = (discord.Embed(title='Here\'s your avatar!', color=discord.Color.blurple()).set_image(url=ctx.message.author.avatar_url))
-        await ctx.send(embed=embed)
 
 
 # Moderation category commands.
@@ -220,7 +211,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('You can\'t jail yourself :/')
 
-        if do_jail is True:
+        if do_jail == True:
             jail_members.append([member, ctx.guild, reason, ctx.message.author])
             await ctx.message.delete()
             await ctx.send(f'You\'ve been captured! {member.mention} | Reason: {reason}')
@@ -235,7 +226,7 @@ class Moderation(commands.Cog):
                 embed.add_field(name=jail_member[0], value=('Jailed By ' + jail_member[3].mention + ' | Reason: ' + jail_member[2]), inline=False)
                 jail_has_member = True
 
-        if jail_has_member is False:
+        if jail_has_member == False:
             await ctx.send('No members are inside the jail!')
 
         else:
@@ -258,7 +249,7 @@ class Moderation(commands.Cog):
     @commands.has_role('BotAdmin')
     async def create_new_role(self, ctx, *, role):
         guild = ctx.guild
-        await guild.create_role(name=role)
+        await guild.create_role(name = role)
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='rm-role', help='Removes an existing role.')
@@ -739,7 +730,6 @@ class Music(commands.Cog):
 
 
 # Add cogs.
-bot.add_cog(Chill(bot))
 bot.add_cog(Moderation(bot))
 bot.add_cog(Music(bot))
 
