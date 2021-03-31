@@ -23,7 +23,7 @@ from keep_alive import keep_alive
 
 # Define command prefix and description.
 prefix = os.getenv('COMMAND_PREFIX')
-bot = commands.Bot(commands.when_mentioned_or(prefix), description='Learn more about me and my working process by pinging me in the chat!')
+bot = commands.Bot(commands.when_mentioned_or(prefix), description='Learn basic stuff about me by typing Veron1CA in the chat!')
 
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -107,7 +107,7 @@ async def on_message(message):
                 skip_command = True
 
     if skip_command is not True:
-        if message.content == bot.user.mention:
+        if message.content == bot.user.name:
             intro_embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'It\'s {bot.user.name} onboard!', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False).add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can either ping me and type help (e.g. @{bot.user.name} help) or use `{prefix}help` to see what I can do.', inline=False).add_field(name='Inject me in your server!', value='To add me as a bot, please [click here](https://discord.com/api/oauth2/authorize?client_id=792331319443062795&permissions=8&scope=bot) and authorize me to your server of choice.'))
             await message.channel.send(embed=intro_embed)
             await message.add_reaction('✅')
