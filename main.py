@@ -18,7 +18,6 @@ import itertools
 # Import third-party libraries.
 import discord
 import youtube_dl
-from discord.utils import get
 from discord.ext import commands
 from async_timeout import timeout
 from keep_alive import keep_alive
@@ -95,7 +94,7 @@ async def on_message(message):
 
                 for filtered_word in filtered_wordlist:
                     if filtered_word.lower() == msg_word.lower():
-                        filtered_messages.append([message.author, message.guild, message.content, message.created_at])
+                        filtered_messages.append([message.author, message.guild, message.content])
                         await message.delete()
                         skip_command = True
 
@@ -204,13 +203,11 @@ class Moderation(commands.Cog):
         else:
             await ctx.message.add_reaction('✅')
             for filtered_message_guild in filtered_messages_guild:
-                fchannel = filtered_message_guild[3]
-                tchannel = ctx.message.channel
-                webhook_id = 12345
-                hooks = await tchannel.webhooks()
-                hook = get(hooks, id=webhook_id)
-                if ctx.message.channel == fchannel:
-                    await hook.send(content=filtered_message_guild[2], username=filtered_message_guild[0].display_name, avatar_url=filtered_message_guild[0].avatar_url)
+                webhook = await message.create_webhook(name=filtered_message_guild[0].name)
+
+            for webhook in message.channel.webhooks:
+                await webhook.send(filtered_message_guild[2], username=filtered_message_guild[0].name, avatar_url=filtered_message_guild[0].avatar_url)
+                await webhook.delete()
 
     @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
     @commands.has_any_role('BotMod', 'BotAdmin')
