@@ -150,6 +150,9 @@ class Moderation(commands.Cog):
             except discord.HTTPException:
                 pass
 
+        elif isinstance(error, commands.Forbidden):
+            await ctx.send('I don\'t know why but this command is forbidden. Try changing your arguments and stuff!')
+
         elif isinstance(error, commands.MissingRole) or isinstance(error, commands.MissingAnyRole):
             await ctx.send(f'Oops! {error}')
 
