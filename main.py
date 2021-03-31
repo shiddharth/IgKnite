@@ -7,7 +7,6 @@ An open source Discord Moderation Bot
 # Import default libraries.
 import os
 import sys
-import time
 import math
 import random
 import asyncio
