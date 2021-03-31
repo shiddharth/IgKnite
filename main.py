@@ -177,7 +177,7 @@ class Moderation(commands.Cog):
         embed = (discord.Embed(title=f'{ctx.author.display_name} has something up for you!', color=discord.Color.blurple()).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
         await user.send(embed=embed)
         await ctx.send('Your message has been sent!')
-        await message.delete()
+        await ctx.message.delete()
 
     @commands.command(name='clear', help='Clears messages inside the given index.', aliases=['cls'])
     @commands.has_any_role('BotMod', 'BotAdmin')
