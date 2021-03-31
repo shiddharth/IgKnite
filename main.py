@@ -119,8 +119,8 @@ async def on_message(message):
 # Chill category commands.
 class Chill(commands.Cog):
     @commands.command(name='avatar', help='Shows a member\'s Discord avatar.')
-    async def avatar(self, ctx, member: discord.Member):
-        embed = (discord.Embed(title='Here\'s what I found!', color=discord.Color.blurple()).set_image(url=member.avatar_url))
+    async def avatar(self, ctx):
+        embed = (discord.Embed(title='Here\'s what I found!', color=discord.Color.blurple()).set_image(url=ctx.author.avatar_url))
         await ctx.send(embed=embed)
 
 
@@ -169,18 +169,16 @@ class Moderation(commands.Cog):
     @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def ping(self, ctx):
-        await ctx.message.delete()
         embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Pong!', value=f'Running at {round(bot.latency * 1000)}ms', inline=False))
         await ctx.send(embed=embed)
 
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def send_dm(self, ctx, user: discord.User, *, message):
-        await user.send(f"**{message}**")
-        await user.send(f"Sent by {ctx.author.display_name} using IgKnite :)")
-        await ctx.send('DM Sent! :slight_smile:')
-        time.sleep(1)
-        await ctx.channel.purge(limit=2)
+        embed = (discord.embed(title=f'{ctx.author.display_name} has something up for you!', color=discord.Color.blurple()).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
+        await user.send(embed=embed)
+        await ctx.send('Your message has been sent!')
+        await message.delete()
 
     @commands.command(name='clear', help='Clears messages inside the given index.', aliases=['cls'])
     @commands.has_any_role('BotMod', 'BotAdmin')
@@ -215,20 +213,20 @@ class Moderation(commands.Cog):
     async def jail(self, ctx, member: discord.Member, *, reason='None'):
         do_jail = False
 
-        if member != ctx.message.author:
+        if member != ctx.author:
             if member.guild_permissions.administrator:
-                if ctx.message.author.guild_permissions.administrator:
+                if ctx.author.guild_permissions.administrator:
                     do_jail = True
                 else:
-                    await ctx.send('You can\'t jail an admin :/')
+                    await ctx.send('You can\'t jail an admin!')
             else:
                 do_jail = True
 
         else:
-            await ctx.send('You can\'t jail yourself :/')
+            await ctx.send('You can\'t jail yourself!')
 
         if do_jail is True:
-            jail_members.append([member, ctx.guild, reason, ctx.message.author])
+            jail_members.append([member, ctx.guild, reason, ctx.author])
             await ctx.message.delete()
             await ctx.send(f'You\'ve been captured! {member.mention} | Reason: {reason}')
 
@@ -243,7 +241,7 @@ class Moderation(commands.Cog):
                 jail_has_member = True
 
         if jail_has_member is False:
-            await ctx.send('No members are inside the jail!')
+            await ctx.send('No members are inside the jail.')
 
         else:
             await ctx.send(embed=embed)
@@ -252,12 +250,12 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def unjail(self, ctx, member: discord.Member):
         for jail_member in jail_members:
-            if jail_member[1] == ctx.guild and member != ctx.message.author and jail_member[0] == member:
+            if jail_member[1] == ctx.guild and member != ctx.author and jail_member[0] == member:
                 jail_members.remove(jail_member)
                 await ctx.message.add_reaction('✅')
 
             else:
-                await ctx.send('You can\'t free yourself :/')
+                await ctx.send('You can\'t free yourself!')
 
     @commands.command(name='mk-role', help='Creates a role.')
     @commands.has_role('BotAdmin')
@@ -269,7 +267,7 @@ class Moderation(commands.Cog):
     @commands.has_role('BotAdmin')
     async def remove_role(self, ctx, *, role: discord.Role):
         if role is None:
-            await ctx.send('That\'s not a role, I guess? :/')
+            await ctx.send('That\'s not a role, I guess?')
 
         else:
             await role.delete()
@@ -296,12 +294,12 @@ class Moderation(commands.Cog):
         await channel_name.delete()
         await ctx.message.add_reaction('✅')
 
-    @commands.command(name='freeze-chat', help="Calms down chat / freezes it.", aliases=['kill-chat'])
+    @commands.command(name='freeze-chat', help="Calms down chat.", aliases=['kill-chat'])
     @commands.has_role('BotAdmin')
     async def freeze(self, ctx):
-        frozen.append([ctx.message.author, ctx.guild, ctx.message.channel])
+        frozen.append([ctx.author, ctx.guild, ctx.message.channel])
         await ctx.message.delete()
-        await ctx.send(f'**Chat was frozen by {ctx.message.author.mention}!**')
+        await ctx.send(f'**Chat was frozen by {ctx.author.mention}!**')
 
     @commands.command(name='thaw-chat', help="Removes frozen state from chat.", aliases=['open-chat'])
     @commands.has_role('BotAdmin')
@@ -370,7 +368,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         data = await loop.run_in_executor(None, partial)
 
         if data is None:
-            raise YTDLError('Couldn\'t find anything that matches **{}** :('.format(search))
+            raise YTDLError('Couldn\'t find anything that matches **{}**'.format(search))
 
         if 'entries' not in data:
             process_info = data
@@ -382,14 +380,14 @@ class YTDLSource(discord.PCMVolumeTransformer):
                     break
 
             if process_info is None:
-                raise YTDLError('Couldn\'t find anything that matches **{}** :('.format(search))
+                raise YTDLError('Couldn\'t find anything that matches **{}**'.format(search))
 
         webpage_url = process_info['webpage_url']
         partial = functools.partial(cls.ytdl.extract_info, webpage_url, download=False)
         processed_info = await loop.run_in_executor(None, partial)
 
         if processed_info is None:
-            raise YTDLError('Couldn\'t fetch **{}** :('.format(webpage_url))
+            raise YTDLError('Couldn\'t fetch **{}**'.format(webpage_url))
 
         if 'entries' not in processed_info:
             info = processed_info
@@ -561,7 +559,7 @@ class Music(commands.Cog):
 
     def cog_check(self, ctx: commands.Context):
         if not ctx.guild:
-            raise commands.NoPrivateMessage('Sorry, this command can\'t be used in DM channels :/')
+            raise commands.NoPrivateMessage('Sorry, this command can\'t be used in DM channels.')
 
         return True
 
@@ -585,7 +583,7 @@ class Music(commands.Cog):
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def _summon(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
         if not channel and not ctx.author.voice:
-            raise VoiceError('You are neither connected to a voice channel nor specified a channel to join :/')
+            raise VoiceError('You are neither connected to a voice channel nor specified a channel to join.')
 
         destination = channel or ctx.author.voice.channel
         if ctx.voice_state.voice:
@@ -607,10 +605,10 @@ class Music(commands.Cog):
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def _volume(self, ctx: commands.Context, *, volume: int):
         if not ctx.voice_state.is_playing:
-            return await ctx.send('There\'s nothing being played at the moment :/')
+            return await ctx.send('There\'s nothing being played at the moment.')
 
         if 0 > volume > 100:
-            return await ctx.send('Volume must be between 0 and 100 :/')
+            return await ctx.send('Volume must be between 0 and 100 to execute the command.')
 
         ctx.voice_state.volume = volume / 100
         await ctx.send('Volume of the player is now set to **{}%**'.format(volume))
@@ -647,9 +645,9 @@ class Music(commands.Cog):
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def _skip(self, ctx: commands.Context):
         if not ctx.voice_state.is_playing:
-            return await ctx.send('Not playing any music right now, so no skipping :/')
+            return await ctx.send('Not playing any music right now, so no skipping for you.')
 
-        voter = ctx.message.author
+        voter = ctx.author
         if voter == ctx.voice_state.current.requester:
             await ctx.message.add_reaction('⏭')
             ctx.voice_state.skip()
@@ -665,7 +663,7 @@ class Music(commands.Cog):
                 await ctx.send('Skip vote added, currently at **{}/3** votes.'.format(total_votes))
 
         else:
-            await ctx.send('You have already voted to skip this song :/')
+            await ctx.send('You have already voted to skip this song.')
 
     @commands.command(name='queue', help='Shows the player\'s queue.')
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
@@ -700,7 +698,7 @@ class Music(commands.Cog):
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def _remove(self, ctx: commands.Context, index: int):
         if len(ctx.voice_state.songs) == 0:
-            return await ctx.send('The queue is empty, can\'t remove anything :/')
+            return await ctx.send('The queue is empty, so nothing to be removed.')
 
         ctx.voice_state.songs.remove(index - 1)
         await ctx.message.add_reaction('✅')
@@ -735,11 +733,11 @@ class Music(commands.Cog):
     @_play.before_invoke
     async def ensure_voice_state(self, ctx: commands.Context):
         if not ctx.author.voice or not ctx.author.voice.channel:
-            raise commands.CommandError('You are not connected to any voice channel :/')
+            raise commands.CommandError('You are not connected to any voice channel.')
 
         if ctx.voice_client:
             if ctx.voice_client.channel != ctx.author.voice.channel:
-                raise commands.CommandError('I\'m already in a voice channel :/')
+                raise commands.CommandError('I\'m already in a voice channel.')
 
 
 # Add available cogs.
