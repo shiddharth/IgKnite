@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "igknite-discord-bot"
+name = "veronica"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["shiddharth <hitblastofficial@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"

@@ -23,7 +23,7 @@ from keep_alive import keep_alive
 
 # Define command prefix and description.
 prefix = os.getenv('COMMAND_PREFIX')
-bot = commands.Bot(command_prefix=prefix, description='Learn more about me and my working process by pinging me in the chat!')
+bot = commands.Bot(commands.when_mentioned_or(prefix), description='Learn more about me and my working process by pinging me in the chat!')
 
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -581,7 +581,7 @@ class Music(commands.Cog):
 
         ctx.voice_state.voice = await destination.connect()
 
-    @commands.command(name='summon', help='Summons IgKnite to a particular voice channel.')
+    @commands.command(name='summon', help='Summons Veron1CA to a particular voice channel.')
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def _summon(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
         if not channel and not ctx.author.voice:
