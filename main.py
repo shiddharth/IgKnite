@@ -18,6 +18,7 @@ import itertools
 # Import third-party libraries.
 import discord
 import youtube_dl
+from discord.utils import get
 from discord.ext import commands
 from async_timeout import timeout
 from keep_alive import keep_alive
@@ -203,8 +204,8 @@ class Moderation(commands.Cog):
         else:
             await ctx.message.add_reaction('✅')
             for filtered_message_guild in filtered_messages_guild:
-                fchannel = client.get_channel(filtered_message_guild[3])
-                tchannel = client.get_channel(ctx.message.channel)
+                fchannel = bot.get_channel(filtered_message_guild[3])
+                tchannel = bot.get_channel(ctx.message.channel)
                 webhook_id = 12345
                 hooks = await tchannel.webhooks()
                 hook = get(hooks, id=webhook_id)
