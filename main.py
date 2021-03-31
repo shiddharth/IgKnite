@@ -57,7 +57,7 @@ async def on_ready():
     os.system('clear')
     print(f'{bot.user.name} | Viewing Terminal\n')
     print(f'\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'@{bot.user.name} and I\'m Injected in {len(bot.guilds)} servers!'))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{bot.user.name} and I\'m Injected in {len(bot.guilds)} servers!'))
 
 
 @bot.event
