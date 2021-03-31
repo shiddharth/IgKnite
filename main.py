@@ -204,8 +204,8 @@ class Moderation(commands.Cog):
         else:
             await ctx.message.add_reaction('✅')
             for filtered_message_guild in filtered_messages_guild:
-                fchannel = bot.get_channel(filtered_message_guild[3])
-                tchannel = bot.get_channel(ctx.message.channel)
+                fchannel = filtered_message_guild[3]
+                tchannel = ctx.message.channel
                 webhook_id = 12345
                 hooks = await tchannel.webhooks()
                 hook = get(hooks, id=webhook_id)
