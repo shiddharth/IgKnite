@@ -23,7 +23,7 @@ from keep_alive import keep_alive
 
 # Define command prefix and description.
 prefix = os.getenv('COMMAND_PREFIX')
-bot = commands.Bot(commands.when_mentioned_or(prefix), description='Learn more about me and my working process by pinging me in the chat!')
+bot = commands.Bot(command_prefix=prefix, description='Learn more about me and my working process by pinging me in the chat!')
 
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
