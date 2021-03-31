@@ -176,7 +176,7 @@ class Moderation(commands.Cog):
     async def send_dm(self, ctx, user: discord.User, *, message):
         embed = (discord.Embed(title=f'{ctx.author.display_name} has something up for you!', color=discord.Color.blurple()).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
         await user.send(embed=embed)
-        await ctx.send('Your message has been sent!')
+        await ctx.send(f'{ctx.author.mention} your message has been sent!')
         await ctx.message.delete()
 
     @commands.command(name='clear', help='Clears messages inside the given index.', aliases=['cls'])
