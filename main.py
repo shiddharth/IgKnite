@@ -203,7 +203,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.message.add_reaction('✅')
             for filtered_message_guild in filtered_messages_guild:
-                webhook = await message.create_webhook(name=filtered_message_guild[0].name)
+                webhook = await ctx.message.channel.create_webhook(name=filtered_message_guild[0].name)
 
             for webhook in message.channel.webhooks:
                 await webhook.send(filtered_message_guild[2], username=filtered_message_guild[0].name, avatar_url=filtered_message_guild[0].avatar_url)
