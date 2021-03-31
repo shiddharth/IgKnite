@@ -203,7 +203,13 @@ class Moderation(commands.Cog):
         else:
             await ctx.message.add_reaction('✅')
             for filtered_message_guild in filtered_messages_guild:
-                await ctx.message.author.send(f'Author: {filtered_message_guild[0]}, Message: ||{filtered_message_guild[2]}||, Date: {filtered_message_guild[3]}')
+                fchannel = client.get_channel(filtered_message_guild[3])
+                tchannel = client.get_channel(ctx.message.channel)
+                webhook_id = 12345
+                hooks = await tchannel.webhooks()
+                hook = get(hooks, id=webhook_id)
+                if ctx.message.channel == fchannel:
+                    await hook.send(content=filtered_message_guild[2], username=filtered_message_guild[0].display_name, avatar_url=filtered_message_guild[0].avatar_url)
 
     @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
     @commands.has_any_role('BotMod', 'BotAdmin')
