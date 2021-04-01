@@ -178,10 +178,11 @@ class Moderation(commands.Cog):
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def send_dm(self, ctx, user: discord.User, *, message):
-        embed = (discord.Embed(title=f'{ctx.author.display_name} has something up for you!', color=discord.Color.blurple()).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
-        await user.send(embed=embed)
-        await ctx.send(f'{ctx.author.mention} your message has been sent!')
-        await ctx.message.delete()
+        async with ctx.typing():
+            embed = (discord.Embed(title=f'{ctx.author.display_name} has something up for you!', color=discord.Color.blurple()).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
+            await user.send(embed=embed)
+            await ctx.send(f'{ctx.author.mention} your message has been sent!')
+            await ctx.message.delete()
 
     @commands.command(name='clear', help='Clears messages inside the given index.', aliases=['cls'])
     @commands.has_any_role('BotMod', 'BotAdmin')
@@ -205,9 +206,6 @@ class Moderation(commands.Cog):
             await ctx.message.add_reaction('✅')
             for filtered_message_guild in filtered_messages_guild:
                 webhook = await ctx.message.channel.create_webhook(name=filtered_message_guild[0].name)
-
-            webhooks = await ctx.message.channel.webhooks()
-            for webhook in webhooks:
                 await webhook.send(filtered_message_guild[2], username=filtered_message_guild[0].name, avatar_url=filtered_message_guild[0].avatar_url)
                 await webhook.delete()
 
