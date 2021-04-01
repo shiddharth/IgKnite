@@ -1,6 +1,6 @@
 '''
 Veron1CA
-An open source Discord Moderation Bot
+An open source Discord moderation bot.
 '''
 
 
@@ -23,7 +23,7 @@ from keep_alive import keep_alive
 
 # Define command prefix and description.
 prefix = os.getenv('COMMAND_PREFIX')
-bot = commands.Bot(commands.when_mentioned_or(prefix), description='Learn basic stuff about me by typing Veron1CA in the chat!')
+bot = commands.Bot(commands.when_mentioned_or(prefix), help_command=None)
 
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -57,7 +57,7 @@ async def on_ready():
     os.system('clear')
     print(f'{bot.user.name} | Viewing Terminal\n')
     print(f'\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{bot.user.name} and I\'m Injected in {len(bot.guilds)} servers!'))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help and I\'m Injected in {len(bot.guilds)} servers!'))
 
 
 @bot.event
@@ -107,15 +107,45 @@ async def on_message(message):
                 skip_command = True
 
     if skip_command is not True:
-        if message.content == bot.user.name:
-            intro_embed = (discord.Embed(color=discord.Color.blurple()).add_field(name=f'It\'s {bot.user.name} onboard!', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me. Peace!', inline=False).add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can either ping me and type help (e.g. @{bot.user.name} help) or use `{prefix}help` to see what I can do.', inline=False).add_field(name='Inject me in your server!', value='To add me as a bot, please [click here](https://discord.com/api/oauth2/authorize?client_id=792331319443062795&permissions=8&scope=bot) and authorize me to your server of choice.'))
-            await message.channel.send(embed=intro_embed)
-            await message.add_reaction('✅')
-
-        else:
-            await bot.process_commands(message)
+        await bot.process_commands(message)
 
 
+# Help command.
+@bot.group(invoke_without_command=True)
+async def help(ctx, cmd=None):
+    if not cmd:
+        embed = (discord.Embed(title=f'🥳 It\'s {bot.user.name} onboard!', color=discord.Color.blurple()))
+
+        embed.add_field(name='Some quick, basic stuff...', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
+
+        embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help command` to get information on a particular command. Below is a list of available commands!', inline=False)
+
+        all_commands = str()
+        for command in bot.commands:
+            all_commands += f'`{command}` '
+        embed.add_field(name='What I can do you ask?', value=all_commands)
+
+        embed.set_thumbnail(url=bot.user.avatar_url)
+        embed.set_footer(text=f'Help requested by {ctx.author.display_name}')
+
+        await ctx.send(embed=embed)
+
+    else:
+        for command in bot.commands:
+            if str(command.name) == str(cmd.lower()):
+                embed = (discord.Embed(title=f'Showing help for command: {command.name}', color=discord.Color.blurple()).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(name='Usage', value=f'{prefix}{command.name} {command.signature}', inline=False).set_footer(text=f'Command help requested by {ctx.author.display_name}'))
+                
+                aliases = str()
+                if command.aliases == []:
+                    aliases = "No aliases for this command."
+                else:
+                    aliases = str(command.aliases)
+
+                embed.add_field(name='Aliases', value=aliases, inline=False)
+                
+                await ctx.send(embed=embed)
+                
+        
 # Chill category commands.
 class Chill(commands.Cog):
     @commands.command(name='avatar', help='Shows a member\'s Discord avatar.')
@@ -151,10 +181,10 @@ class Moderation(commands.Cog):
             except discord.HTTPException:
                 pass
 
-        elif isinstance(error, commands.Forbidden):
-            await ctx.send('I don\'t know why but this command is forbidden. Try changing your arguments and stuff!')
+        elif isinstance(error, commands.MissingRole):
+            await ctx.send(f'Oops! {error}')
 
-        elif isinstance(error, commands.MissingRole) or isinstance(error, commands.MissingAnyRole):
+        elif isinstance(error, commands.MissingAnyRole):
             await ctx.send(f'Oops! {error}')
 
         else:
@@ -178,11 +208,10 @@ class Moderation(commands.Cog):
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def send_dm(self, ctx, user: discord.User, *, message):
-        async with ctx.typing():
-            embed = (discord.Embed(title=f'{ctx.author.display_name} has something up for you!', color=discord.Color.blurple()).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
-            await user.send(embed=embed)
-            await ctx.send(f'{ctx.author.mention} your message has been sent!')
-            await ctx.message.delete()
+        embed = (discord.Embed(title=f'{ctx.author.display_name} has something up for you!', color=discord.Color.blurple()).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
+        await user.send(embed=embed)
+        await ctx.send(f'{ctx.author.mention} your message has been sent!')
+        await ctx.message.delete()
 
     @commands.command(name='clear', help='Clears messages inside the given index.', aliases=['cls'])
     @commands.has_any_role('BotMod', 'BotAdmin')
@@ -206,6 +235,9 @@ class Moderation(commands.Cog):
             await ctx.message.add_reaction('✅')
             for filtered_message_guild in filtered_messages_guild:
                 webhook = await ctx.message.channel.create_webhook(name=filtered_message_guild[0].name)
+
+            webhooks = await ctx.message.channel.webhooks()
+            for webhook in webhooks:
                 await webhook.send(filtered_message_guild[2], username=filtered_message_guild[0].name, avatar_url=filtered_message_guild[0].avatar_url)
                 await webhook.delete()
 
@@ -580,7 +612,7 @@ class Music(commands.Cog):
 
         ctx.voice_state.voice = await destination.connect()
 
-    @commands.command(name='summon', help='Summons Veron1CA to a particular voice channel.')
+    @commands.command(name='summon', help='Summons bot to a particular voice channel.')
     @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def _summon(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
         if not channel and not ctx.author.voice:
