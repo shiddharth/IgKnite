@@ -116,7 +116,7 @@ async def help(ctx, cmd=None):
     if not cmd:
         embed = (discord.Embed(title=f'🥳 It\'s {bot.user.name} onboard!', color=discord.Color.blurple()))
 
-        embed.add_field(name='Some quick, basic stuff...', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
+        embed.add_field(name='Some quick, basic stuff...', value='I\'m an open source Discord music & moderation bot, and I can help you manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
 
         embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help command` to get information on a particular command. Below is a list of available commands!', inline=False)
 
