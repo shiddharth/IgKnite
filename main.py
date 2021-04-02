@@ -161,9 +161,32 @@ async def help(ctx, cmd=None):
 # Chill category commands.
 class Chill(commands.Cog):
     @commands.command(name='avatar', help='Shows a member\'s Discord avatar.')
+    @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
     async def avatar(self, ctx):
         embed = (discord.Embed(title='Here\'s what I found!', color=discord.Color.blurple()).set_image(url=ctx.author.avatar_url))
         await ctx.send(embed=embed)
+
+    @commands.command(name='sayhi', help='Helps to greet channel members.', aliases=['greet', 'welcome'])
+    @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
+    async def sayhi(self, ctx, member: discord.Member):
+        greeting_messages = [f"Hi {member.mention} Glad you're here.", f"Hello there! {member.mention}", f"Hey {member.mention}! Nice to meet you.", f"Hey, {member.mention} What's up?", f"Looks like someone just spoke my name. Anyway, how are you doing {member.mention}?", f"Happy to see you here, {member.mention}", f"Welcome! {member.mention} Have fun chatting!", f"Nice to meet you, {member.mention}! The name's {bot.user.name} by the way."]
+        await ctx.message.delete()
+        response = random.choice(greeting_messages)
+        await ctx.send(response)
+
+    @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
+    @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
+    async def ping(self, ctx):
+        embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Pong!', value=f'Running at {round(bot.latency * 1000)}ms', inline=False))
+        await ctx.send(embed=embed)
+
+    @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
+    @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
+    async def send_dm(self, ctx, user: discord.User, *, message):
+        embed = (discord.Embed(title=f'{ctx.author.display_name} has something up for you!', color=discord.Color.blurple()).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
+        await user.send(embed=embed)
+        await ctx.send(f'{ctx.author.mention} your message has been sent!')
+        await ctx.message.delete()
 
 
 # Moderation category commands.
@@ -202,28 +225,6 @@ class Moderation(commands.Cog):
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-
-    @commands.command(name='sayhi', help='Helps to greet channel members.', aliases=['greet', 'welcome'])
-    @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
-    async def sayhi(self, ctx, member: discord.Member):
-        greeting_messages = [f"Hi {member.mention} Glad you're here.", f"Hello there! {member.mention}", f"Hey {member.mention}! Nice to meet you.", f"Hey, {member.mention} What's up?", f"Looks like someone just spoke my name. Anyway, how are you doing {member.mention}?", f"Happy to see you here, {member.mention}", f"Welcome! {member.mention} Have fun chatting!", f"Nice to meet you, {member.mention}! The name's {bot.user.name} by the way."]
-        await ctx.message.delete()
-        response = random.choice(greeting_messages)
-        await ctx.send(response)
-
-    @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
-    @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
-    async def ping(self, ctx):
-        embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Pong!', value=f'Running at {round(bot.latency * 1000)}ms', inline=False))
-        await ctx.send(embed=embed)
-
-    @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
-    @commands.has_any_role('BotPilot', 'BotMod', 'BotAdmin')
-    async def send_dm(self, ctx, user: discord.User, *, message):
-        embed = (discord.Embed(title=f'{ctx.author.display_name} has something up for you!', color=discord.Color.blurple()).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
-        await user.send(embed=embed)
-        await ctx.send(f'{ctx.author.mention} your message has been sent!')
-        await ctx.message.delete()
 
     @commands.command(name='clear', help='Clears messages inside the given index.', aliases=['cls'])
     @commands.has_any_role('BotMod', 'BotAdmin')
