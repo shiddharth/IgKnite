@@ -117,28 +117,35 @@ async def help(ctx, cmd=None):
         embed = (discord.Embed(title=f'🥳 It\'s {bot.user.name} onboard!', color=discord.Color.blurple()))
 
         embed.add_field(name='Some quick, basic stuff...', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
-
-        embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands. You can also type `{prefix}help command` to get information on a particular command.', inline=False)
-
+        embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands or `{prefix}help command` to get information on a particular command.', inline=False)
         embed.add_field(name='Clickables', value='[Invite Me](https://discord.com/api/oauth2/authorize?client_id=792331319443062795&permissions=808840566&scope=bot) / [View My Website](https://shiddharth.github.io/Veron1CA)', inline=False)
-
         embed.set_thumbnail(url=bot.user.avatar_url)
         embed.set_footer(text=f'Help requested by {ctx.author.display_name}')
 
         await ctx.send(embed=embed)
 
     elif cmd.lower() == 'all':
-        embed = (discord.Embed(title='What I can do you ask?', color=discord.Color.blurple()))
-        all_commands = str()
-        for command in bot.commands:
-            all_commands += f'`{command}` '
-        embed.add_field(name='Here\'s an entire list of commands!', value=all_commands)
+        embed = (discord.Embed(title='Here\'s an entire list of commands!', color=discord.Color.blurple()))
+
+        def get_cog_commands(cog_name):
+            all_commands = str()
+            cog = bot.get_cog(cog_name)
+            for command in cog.get_commands():
+                all_commands += f'`{command}`\n' 
+            return all_commands
+
+
+        embed.add_field(name='Chill', value=get_cog_commands('Chill'))
+        embed.add_field(name='Moderation', value=get_cog_commands('Moderation'))
+        embed.add_field(name='Music', value=get_cog_commands('Music'))
+
+        embed.set_footer(text=f'Command list requested by {ctx.author.display_name}')
         await ctx.send(embed=embed)
 
     else:
         for command in bot.commands:
             if str(command.name) == str(cmd.lower()):
-                embed = (discord.Embed(title=f'Showing help for command: {command.name}', color=discord.Color.blurple()).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(name='Usage', value=f'{prefix}{command.name} {command.signature}', inline=False).set_footer(text=f'Command help requested by {ctx.author.display_name}'))
+                embed = (discord.Embed(title=f'Showing help for command: {command.name}', color=discord.Color.blurple()).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(text=f'Command help requested by {ctx.author.display_name}'))
                 
                 aliases = str()
                 if command.aliases == []:
@@ -149,7 +156,7 @@ async def help(ctx, cmd=None):
                 embed.add_field(name='Aliases', value=aliases, inline=False)
                 
                 await ctx.send(embed=embed)
-                
+
         
 # Chill category commands.
 class Chill(commands.Cog):
@@ -294,6 +301,27 @@ class Moderation(commands.Cog):
 
             else:
                 await ctx.send('You can\'t free yourself!')
+
+    @commands.command(name='kick', help='Kicks a member from server.')
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def kick(self, ctx, member: discord.User, *, reason=None):
+        await ctx.guild.kick(member, reason=reason)
+        await ctx.send(f'Member **{member}** has been kicked!')
+        await ctx.message.add_reaction('✅')
+
+    @commands.command(name='ban', help='Bans a member from server.')
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def ban(self, ctx, member: discord.User, *, reason=None):
+        await ctx.guild.ban(member, reason=reason)
+        await ctx.send(f'Member **{member}** has been banned!')
+        await ctx.message.add_reaction('✅')
+
+    @commands.command(name='unban', help='Unbans a member in server.')
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def unban(self, ctx, member: discord.User):
+        await ctx.guild.unban(member)
+        await ctx.send(f'Member **{member}** has been unbanned!')
+        await ctx.message.add_reaction('✅')
 
     @commands.command(name='mk-role', help='Creates a role.')
     @commands.has_role('BotAdmin')
