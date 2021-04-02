@@ -116,18 +116,23 @@ async def help(ctx, cmd=None):
     if not cmd:
         embed = (discord.Embed(title=f'🥳 It\'s {bot.user.name} onboard!', color=discord.Color.blurple()))
 
-        embed.add_field(name='Some quick, basic stuff...', value='I\'m an open source Discord music & moderation bot, and I can help you manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
+        embed.add_field(name='Some quick, basic stuff...', value='I\'m an open source Discord music & moderation bot, and I can help you and your server to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
 
-        embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help command` to get information on a particular command. Below is a list of available commands!', inline=False)
+        embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands. You can also type `{prefix}help command` to get information on a particular command.', inline=False)
 
-        all_commands = str()
-        for command in bot.commands:
-            all_commands += f'`{command}` '
-        embed.add_field(name='What I can do you ask?', value=all_commands)
+        embed.add_field(name='Clickables', value='[Invite Me](https://discord.com/api/oauth2/authorize?client_id=792331319443062795&permissions=808840566&scope=bot) / [View My Website](https://shiddharth.github.io/Veron1CA)', inline=False)
 
         embed.set_thumbnail(url=bot.user.avatar_url)
         embed.set_footer(text=f'Help requested by {ctx.author.display_name}')
 
+        await ctx.send(embed=embed)
+
+    elif cmd.lower() == 'all':
+        embed = (discord.Embed(title='What I can do you ask?', color=discord.Color.blurple()))
+        all_commands = str()
+        for command in bot.commands:
+            all_commands += f'`{command}` '
+        embed.add_field(name='Here\'s an entire list of commands!', value=all_commands)
         await ctx.send(embed=embed)
 
     else:
