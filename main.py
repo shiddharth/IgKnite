@@ -131,7 +131,7 @@ async def help(ctx, cmd=None):
             all_commands = str()
             cog = bot.get_cog(cog_name)
             for command in cog.get_commands():
-                all_commands += f'`{command}`\n' 
+                all_commands += f'`{command}`\n'
             return all_commands
 
 
@@ -146,7 +146,7 @@ async def help(ctx, cmd=None):
         for command in bot.commands:
             if str(command.name) == str(cmd.lower()):
                 embed = (discord.Embed(title=f'Showing help for command: {command.name}', color=discord.Color.blurple()).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(text=f'Command help requested by {ctx.author.display_name}'))
-                
+
                 aliases = str()
                 if command.aliases == []:
                     aliases = "No aliases for this command."
@@ -154,10 +154,10 @@ async def help(ctx, cmd=None):
                     aliases = str(command.aliases)
 
                 embed.add_field(name='Aliases', value=aliases, inline=False)
-                
+
                 await ctx.send(embed=embed)
 
-        
+
 # Chill category commands.
 class Chill(commands.Cog):
     @commands.command(name='avatar', help='Shows a member\'s Discord avatar.')
@@ -296,12 +296,13 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def unjail(self, ctx, member: discord.Member):
         for jail_member in jail_members:
-            if jail_member[1] == ctx.guild and member != ctx.author and jail_member[0] == member:
-                jail_members.remove(jail_member)
-                await ctx.message.add_reaction('✅')
+            if jail_member[1] == ctx.guild and jail_member[0] == member:
+                if member != ctx.author:
+                    jail_members.remove(jail_member)
+                    await ctx.message.add_reaction('✅')
 
-            else:
-                await ctx.send('You can\'t free yourself!')
+                else:
+                    await ctx.send('You can\'t free yourself!')
 
     @commands.command(name='kick', help='Kicks a member from server.')
     @commands.has_any_role('BotMod', 'BotAdmin')
