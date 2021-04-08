@@ -119,9 +119,10 @@ async def help(ctx, cmd=None):
         embed.add_field(name='Some quick, basic stuff...', value='I\'m an open source Discord music & moderation bot, and I can help you to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
         embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands or `{prefix}help command` to get information on a particular command.', inline=False)
         embed.add_field(name='Clickables', value='[Invite Me](https://discord.com/api/oauth2/authorize?client_id=828196184845713469&permissions=808971638&scope=bot) / [View My Website](https://shiddharth.github.io/Veron1CA)', inline=False)
+
         embed.set_thumbnail(url=bot.user.avatar_url)
         embed.set_footer(text=f'Help requested by {ctx.author.display_name}')
-
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
     elif cmd.lower() == 'all':
@@ -139,6 +140,7 @@ async def help(ctx, cmd=None):
         embed.add_field(name='Moderation', value=get_cog_commands('Moderation'))
         embed.add_field(name='Music', value=get_cog_commands('Music'))
 
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_footer(text=f'Command list requested by {ctx.author.display_name}')
         await ctx.send(embed=embed)
 
@@ -154,7 +156,7 @@ async def help(ctx, cmd=None):
                     aliases = str(command.aliases)
 
                 embed.add_field(name='Aliases', value=aliases, inline=False)
-
+                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
                 await ctx.send(embed=embed)
 
 
@@ -247,11 +249,11 @@ class Moderation(commands.Cog):
         else:
             await ctx.message.add_reaction('✅')
             for filtered_message_guild in filtered_messages_guild:
-                webhook = await ctx.message.channel.create_webhook(name=filtered_message_guild[0].name)
+                webhook = await ctx.message.channel.create_webhook(name=filtered_message_guild[0].display_name)
 
             webhooks = await ctx.message.channel.webhooks()
             for webhook in webhooks:
-                await webhook.send(filtered_message_guild[2], username=filtered_message_guild[0].name, avatar_url=filtered_message_guild[0].avatar_url)
+                await webhook.send(filtered_message_guild[2], username=filtered_message_guild[0].display_name, avatar_url=filtered_message_guild[0].avatar_url)
                 await webhook.delete()
 
     @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
@@ -280,10 +282,10 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def jailed(self, ctx):
         jail_has_member = False
-        embed = discord.Embed(title='Now viewing the Prison!', color=discord.Color.blurple())
+        embed = (discord.Embed(title='Now viewing the Prison!', color=discord.Color.blurple()).set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url))
         for jail_member in jail_members:
             if jail_member[1] == ctx.guild:
-                embed.add_field(name=jail_member[0], value=('Jailed by ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
+                embed.add_field(name=jail_member[0].display_name, value=('Jailed by ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
                 jail_has_member = True
 
         if jail_has_member is False:
@@ -308,21 +310,21 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def kick(self, ctx, member: discord.User, *, reason=None):
         await ctx.guild.kick(member, reason=reason)
-        await ctx.send(f'Member **{member}** has been kicked!')
+        await ctx.send(f'Member **{member.display_name}** has been kicked!')
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='ban', help='Bans a member from server.')
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def ban(self, ctx, member: discord.User, *, reason=None):
         await ctx.guild.ban(member, reason=reason)
-        await ctx.send(f'Member **{member}** has been banned!')
+        await ctx.send(f'Member **{member.display_name}** has been banned!')
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='unban', help='Unbans a member in server.')
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def unban(self, ctx, member: discord.User):
         await ctx.guild.unban(member)
-        await ctx.send(f'Member **{member}** has been unbanned!')
+        await ctx.send(f'Member **{member.display_name}** has been unbanned!')
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='mk-role', help='Creates a role.')
@@ -349,7 +351,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='mk-ch', help='Creates a server channel.')
     @commands.has_role('BotAdmin')
-    async def create_channel(self, ctx, channel_name):
+    async def create_channel(self, ctx, *, channel_name):
         guild = ctx.guild
         existing_channel = discord.utils.get(guild.channels, name=channel_name)
         if not existing_channel:
