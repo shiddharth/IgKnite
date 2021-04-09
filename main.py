@@ -139,7 +139,7 @@ async def help(ctx, cmd=None):
         embed.add_field(name='Moderation', value=get_cog_commands('Moderation'))
         embed.add_field(name='Music', value=get_cog_commands('Music'))
 
-        embed.set_author(icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_footer(text=f'Command list requested by {ctx.author.display_name}')
         await ctx.send(embed=embed)
 
@@ -155,7 +155,7 @@ async def help(ctx, cmd=None):
                     aliases = str(command.aliases).replace('[', '').replace(']', '').replace('\'', '')
 
                 embed.add_field(name='Aliases', value=aliases, inline=False)
-                embed.set_author(icon_url=ctx.author.avatar_url)
+                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
                 await ctx.send(embed=embed)
 
 
