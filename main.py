@@ -150,9 +150,9 @@ async def help(ctx, cmd=None):
 
                 aliases = str()
                 if command.aliases == []:
-                    aliases = "No aliases for this command."
+                    aliases = "No aliases available!"
                 else:
-                    aliases = str(command.aliases)
+                    aliases = str(command.aliases).replace('[', '').replace(']', '').replace('\'', '')
 
                 embed.add_field(name='Aliases', value=aliases, inline=False)
                 embed.set_author(icon_url=ctx.author.avatar_url)
