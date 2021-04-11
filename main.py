@@ -65,6 +65,11 @@ async def on_member_join(ctx, member):
     await member.send(f'Hi there, {member.mention}! Hope you enjoy your stay at {member.guild.name}!')
 
 
+@bot.Event
+async def on_guild_join(ctx):
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help and I\'m Injected in {len(bot.guilds)} servers!'))
+
+
 @bot.event
 async def on_message(message):
     skip_command = False
