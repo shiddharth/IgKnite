@@ -51,28 +51,18 @@ global frozen
 frozen = list()
 
 
-# Functions.
-async def update_presence():
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help and I\'m Injected in {len(bot.guilds)} servers!'))
-
-
 # Events.
 @bot.event
 async def on_ready():
     os.system('clear')
     print(f'{bot.user.name} | Viewing Terminal\n')
     print(f'\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~')
-    await update_presence()
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help and I\'m Injected in {len(bot.guilds)} servers!'))
 
 
 @bot.event
 async def on_member_join(ctx, member):
     await member.send(f'Hi there, {member.mention}! Hope you enjoy your stay at {member.guild.name}!')
-
-
-@bot.event
-async def on_guild_join(ctx):
-    await update_presence()
 
 
 @bot.event
@@ -232,6 +222,12 @@ class Moderation(commands.Cog):
 
         elif isinstance(error, commands.MissingAnyRole):
             await ctx.send(f'Oops! {error}')
+
+        elif isinstance(error, commands.errors.UserNotFound):
+            await ctx.send(f'Oops! {error} Try mentioning or pinging them!')
+
+        elif isinstance(error, commands.errors.MissingRequiredArgument):
+            await ctx.send(f'Oops, {error}')
 
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
