@@ -339,16 +339,16 @@ class Moderation(commands.Cog):
         if user is None:
             user = ctx.author
 
-        else:
-            embed = (discord.Embed(title='User Information', color=discord.Color.blurple()))
-            embed.add_field(name='Name', value=user.name).add_field(name='Nick', value=user.display_name, inline=False)
-            embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator, inline=False)
-            embed.add_field(name='Is a bot?', value='Yes, execute it.' if user.bot else 'Nah, a human. Chill!', inline=False)
-            embed.add_field(name='Role Count', value=len(user.roles))
-            embed.set_thumbnail(url=user.avatar_url)
-            embed.set_footer(text=f'Imagine {user.display_name} being a hacker!')
+        embed = (discord.Embed(title='User Information', color=discord.Color.blurple()))
 
-            await ctx.send(embed=embed)
+        embed.add_field(name='Name', value=user.name).add_field(name='Nick', value=user.display_name, inline=False)
+        embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator, inline=False)
+        embed.add_field(name='Is a bot?', value='Yes, execute it.' if user.bot else 'Nah, a human. Chill!', inline=False)
+        embed.add_field(name='Role Count', value=len(user.roles))
+        embed.set_thumbnail(url=user.avatar_url)
+        embed.set_footer(text=f'Imagine {user.display_name} being a hacker!')
+
+        await ctx.send(embed=embed)
 
     @commands.command(name='mk-role', help='Creates a role.')
     @commands.has_role('BotAdmin')
