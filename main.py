@@ -334,7 +334,7 @@ class Moderation(commands.Cog):
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='userinfo', help='Shows all important information on a user.', aliases=['userdetails'])
-    @commands.has_role('BotMod', 'BotAdmin')
+    @commands.has_any_role('BotMod', 'BotAdmin')
     async def userinfo(self, ctx, user: discord.User):
         if user is None:
             user = ctx.author
