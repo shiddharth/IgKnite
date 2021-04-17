@@ -46,7 +46,7 @@ with open('filtered.txt', 'r') as filtered_wordfile:
     filtered_messages = list()
 
 # Creating variables for command uses.
-last_restarted = int()
+last_restarted = str()
 global jail_members
 jail_members = list()
 global frozen
