@@ -46,7 +46,7 @@ with open('filtered.txt', 'r') as filtered_wordfile:
     filtered_messages = list()
 
 # Creating variables for command uses.
-global last_restarted
+last_restarted = str()
 global jail_members
 jail_members = list()
 global frozen
@@ -57,7 +57,7 @@ frozen = list()
 @bot.event
 async def on_ready():
     os.system('clear')
-    last_restarted = datetime.now()
+    last_restarted = str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     print(f'{bot.user.name} | Viewing Terminal\n')
     print(f'\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help and I\'m Injected in {len(bot.guilds)} servers!'))
@@ -179,7 +179,7 @@ class Chill(commands.Cog):
 
     @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
     async def ping(self, ctx):
-        embed = (discord.Embed(title='Pong!', color=discord.Color.blurple()).add_field(name='Latency:', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Last restarted on:', value=f'{last_restarted.strftime("%d/%m/%Y %H:%M:%S")}', inline=False))
+        embed = (discord.Embed(title='Pong!', color=discord.Color.blurple()).add_field(name='Latency:', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Last restarted on:', value=f'{last_restarted}', inline=False))
         await ctx.send(embed=embed)
 
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
