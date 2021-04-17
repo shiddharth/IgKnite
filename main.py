@@ -178,7 +178,7 @@ class Chill(commands.Cog):
 
     @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
     async def ping(self, ctx):
-        embed = (discord.Embed(title='Pong!', color=discord.Color.blurple()).add_field(name='Latency:', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Last restarted on:', value=f'On {last_restarted}', inline=False))
+        embed = (discord.Embed(title='Pong!', color=discord.Color.blurple()).add_field(name='My Latency:', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Last Restarted:', value=f'On {last_restarted}', inline=False))
         await ctx.send(embed=embed)
 
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
@@ -340,9 +340,9 @@ class Moderation(commands.Cog):
 
         embed = (discord.Embed(title='User Information', color=discord.Color.blurple()))
 
-        embed.add_field(name='Name', value=user.name).add_field(name='Nick', value=user.display_name, inline=False)
-        embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator, inline=False)
-        embed.add_field(name='Is a bot?', value='Yes, execute it.' if user.bot else 'Nah, a human. Chill!', inline=False)
+        embed.add_field(name='Name', value=user.name).add_field(name='Nick', value=user.display_name)
+        embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator)
+        embed.add_field(name='Is a bot?', value='Yes, execute it.' if user.bot else 'Nah, a human. Chill!')
         embed.add_field(name='Role Count', value=len(user.roles))
         embed.set_thumbnail(url=user.avatar_url)
         embed.set_footer(text=f'Imagine {user.display_name} being a hacker!')
