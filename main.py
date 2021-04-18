@@ -287,7 +287,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def jailed(self, ctx):
         jail_has_member = False
-        embed = discord.Embed(title='Now viewing the Prison!', color=discord.Color.blurple()).set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        embed = discord.Embed(color=discord.Color.blurple()).set_author(name='Now viewing the prison!'.title(), icon_url=ctx.author.avatar_url)
         for jail_member in jail_members:
             if jail_member[1] == ctx.guild:
                 embed.add_field(name=jail_member[0].display_name, value=('Jailed by ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
@@ -334,8 +334,8 @@ class Moderation(commands.Cog):
 
     @commands.command(name='userinfo', help='Shows all important information on a user.', aliases=['userdetails'])
     @commands.has_any_role('BotMod', 'BotAdmin')
-    async def userinfo(self, ctx, user: discord.User):
-        if user is None:
+    async def userinfo(self, ctx, user: discord.User=None):
+        if not user:
             user = ctx.author
 
         embed = (discord.Embed(title='User Information', color=discord.Color.blurple()))
@@ -344,6 +344,7 @@ class Moderation(commands.Cog):
         embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator)
         embed.add_field(name='Is a bot?', value='Yes, execute it.' if user.bot else 'Nah, a human. Chill!')
         embed.add_field(name='Role Count', value=len(user.roles))
+        embed.add_field(name='Status', value=user.status, inline=False)
         embed.set_thumbnail(url=user.avatar_url)
         embed.set_footer(text=f'Imagine {user.display_name} being a hacker!')
 
