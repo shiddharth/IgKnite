@@ -127,7 +127,7 @@ async def help(ctx, cmd=None):
         await ctx.send(embed=embed)
 
     elif cmd.lower() == 'all':
-        embed = discord.Embed(title='Here\'s an entire list of commands!', color=discord.Color.blurple())
+        embed = discord.Embed(color=discord.Color.blurple())
 
         def get_cog_commands(cog_name):
             all_commands = str()
@@ -141,14 +141,14 @@ async def help(ctx, cmd=None):
         embed.add_field(name='Moderation', value=get_cog_commands('Moderation'))
         embed.add_field(name='Music', value=get_cog_commands('Music'))
 
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        embed.set_author(name='Here\'s an entire list of commands!', icon_url=ctx.author.avatar_url)
         embed.set_footer(text=f'Command list requested by {ctx.author.display_name}')
         await ctx.send(embed=embed)
 
     else:
         for command in bot.commands:
             if str(command.name) == str(cmd.lower()):
-                embed = (discord.Embed(title=f'Showing help for command: {command.name}', color=discord.Color.blurple()).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(text=f'Command help requested by {ctx.author.display_name}'))
+                embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(text=f'Command help requested by {ctx.author.display_name}'))
 
                 aliases = str()
                 if command.aliases == []:
@@ -157,7 +157,7 @@ async def help(ctx, cmd=None):
                     aliases = str(command.aliases).replace('[', '').replace(']', '').replace('\'', '')
 
                 embed.add_field(name='Aliases', value=aliases, inline=False)
-                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                embed.set_author(name=f'Showing help for command: {command.name}', icon_url=ctx.author.avatar_url)
                 await ctx.send(embed=embed)
 
 
@@ -178,7 +178,7 @@ class Chill(commands.Cog):
 
     @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
     async def ping(self, ctx):
-        embed = (discord.Embed(title='Pong!', color=discord.Color.blurple()).add_field(name='My Latency:', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Last Restarted:', value=f'On {last_restarted}', inline=False))
+        embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='My Latency:', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Last Restarted:', value=f'On {last_restarted}', inline=False).set_author(name='Pong!', icon_url=ctx.author.avatar_url))
         await ctx.send(embed=embed)
 
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
@@ -338,7 +338,7 @@ class Moderation(commands.Cog):
         if not user:
             user = ctx.author
 
-        embed = (discord.Embed(title='User Information', color=discord.Color.blurple()))
+        embed = (discord.Embed(title=f'{user.display_name}\'s Bio', color=discord.Color.blurple()))
 
         embed.add_field(name='Name', value=user.name).add_field(name='Nick', value=user.display_name)
         embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator)
