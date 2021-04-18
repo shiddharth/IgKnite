@@ -119,7 +119,7 @@ async def help(ctx, cmd=None):
         embed = discord.Embed(color=discord.Color.blurple())
 
         embed.add_field(name='Some quick, basic stuff...', value='I\'m an open source Discord music & moderation bot, and I can help you to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
-        embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands or `{prefix}help command` to get information on a particular command.', inline=False)
+        embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands or `{prefix}help commandname` to get information on a particular command.', inline=False)
         embed.add_field(name='A handful of clickables!', value='[Invite Me](https://discord.com/api/oauth2/authorize?client_id=828196184845713469&permissions=808971638&scope=bot) / [View My Website](https://shiddharth.github.io/Veron1CA) / [Join My Discord Server](https://discord.gg/rxd5v4n6KV)', inline=False)
 
         embed.set_author(name=f'It\'s {bot.user.name} onboard!', icon_url=bot.user.avatar_url)
@@ -227,7 +227,7 @@ class Moderation(commands.Cog):
             await ctx.send(f'Oops! {error} Try mentioning or pinging them!')
 
         elif isinstance(error, commands.errors.MissingRequiredArgument):
-            await ctx.send(f'Oops, {error}')
+            await ctx.send(f'Oops, {error} Try typing `//help commandname` if you don\'t know how to use the command.')
 
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
