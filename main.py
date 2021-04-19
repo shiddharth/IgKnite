@@ -164,8 +164,11 @@ async def help(ctx, cmd=None):
 # Chill category commands.
 class Chill(commands.Cog):
     @commands.command(name='avatar', help='Shows a member\'s Discord avatar.')
-    async def avatar(self, ctx):
-        embed = (discord.Embed(title='Here\'s what I found!', color=discord.Color.blurple()).set_image(url=ctx.author.avatar_url))
+    async def avatar(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.message.author
+
+        embed = (discord.Embed(color=discord.Color.blurple()).set_image(url=member.avatar_url).set_author(name='Here\'s what I found!', icon_url=ctx.message.author.avatar_url))
         await ctx.send(embed=embed)
 
     @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
@@ -208,7 +211,7 @@ class Moderation(commands.Cog):
             await ctx.send(f'Oops! {error}')
 
         elif isinstance(error, commands.errors.UserNotFound):
-            await ctx.send(f'Oops! {error} Try mentioning or pinging them!')
+            await ctx.send(f'Oops! {error} Try mentioning or pinging them! You can also try using their ID as an argument.')
 
         elif isinstance(error, commands.errors.MissingRequiredArgument):
             await ctx.send(f'Oops, {error} Try typing `//help commandname` if you don\'t know how to use the command.')
@@ -325,6 +328,19 @@ class Moderation(commands.Cog):
         await ctx.send(f'Member **{member.display_name}** has been banned!')
         await ctx.message.add_reaction('✅')
 
+    @commands.command(name='bans', help='Shows a list of banned users in the server.', aliases=['banlist'])
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def bans(self, ctx):
+        bans = await ctx.guild.bans()
+        embed = (discord.Embed(color=discord.Color.blurple()).set_author(name='Now viewing banned members!', icon_url=ctx.author.avatar_url))
+        if bans:
+            for ban in bans:
+                embed.add_field(name=ban.user, value=f'ID: `{ban.user.id}` | Reason: `{ban.reason}`', inline=False)
+            await ctx.send(embed=embed)
+
+        else:
+            await ctx.send('No members are banned from this server.')
+
     @commands.command(name='unban', help='Unbans a member in server.')
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def unban(self, ctx, member: discord.User):
@@ -386,6 +402,23 @@ class Moderation(commands.Cog):
     async def delete_channel(self, ctx, channel_name: discord.TextChannel):
         await channel_name.delete()
         await ctx.message.add_reaction('✅')
+
+    @commands.command(name='invites', help='Shows all active server invite codes.', aliases=['invlist', 'allinv'])
+    @commands.has_role('BotAdmin')
+    async def invites(self, ctx):
+        invites = await ctx.guild.invites()
+        embed = (discord.Embed(color=discord.Color.blurple()).set_author(name='Now viewing invite codes!', icon_url=ctx.author.avatar_url))
+
+        if not invites:
+            await ctx.send('No invite codes have been generated.')
+
+        else:
+            invcount = 0
+            for invite in invites:
+                invcount += 1
+                embed.add_field(name=f'Invite #{invcount}', value=invite, inline=False)
+
+            await ctx.send(embed=embed)
 
     @commands.command(name='freeze-chat', help='Calms down chat.', aliases=['kill-chat'])
     @commands.has_role('BotAdmin')
