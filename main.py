@@ -416,7 +416,7 @@ class Moderation(commands.Cog):
             invcount = 0
             for invite in invites:
                 invcount += 1
-                embed.add_field(name=invite, value=f'Uses: {invite.uses} | Inviter: {invite.inviter}', inline=False)
+                embed.add_field(name=invite, value=f'Uses: {invite.uses} | Inviter: {invite.inviter.name}', inline=False)
             await ctx.send(embed=embed)
 
     @commands.command(name='freeze-chat', help='Calms down chat.', aliases=['kill-chat'])
