@@ -213,6 +213,9 @@ class Moderation(commands.Cog):
         elif isinstance(error, commands.errors.UserNotFound):
             await ctx.send(f'Oops! {error} Try mentioning or pinging them! You can also try using their ID as an argument.')
 
+        elif isinstance(error, commands.errors.RoleNotFound):
+            await ctx.send(f'Oops! {error} Try mentioning or pinging the role. You can also try using it\'s ID as an argument.')
+
         elif isinstance(error, commands.errors.MissingRequiredArgument):
             await ctx.send(f'Oops, {error} Try typing `//help commandname` if you don\'t know how to use the command.')
 
