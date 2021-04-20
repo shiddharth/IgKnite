@@ -367,7 +367,7 @@ class Moderation(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name='roleinfo', help='Shows all important information related to a specific role.', aliases=['roledetails'])
-    @commands.has_role('BotMod', 'BotAdmin')
+    @commands.has_any_role('BotMod', 'BotAdmin')
     async def roleinfo(self, ctx, role: discord.Role):
         embed = (discord.Embed(color=discord.Color.blurple()).set_author(name=f'Info on role: {str(role)}', icon_url=ctx.author.avatar_url))
         embed.add_field(name='Creation Date:', value=role.created_at).add_field(name='Role User Count', value=len(role.members), inline=False)
