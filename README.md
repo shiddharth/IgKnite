@@ -1,5 +1,5 @@
 # Veron1CA
-<img src="cover.webp"><br><br>
+<img src="readme_assets/asset1.webp"><br><br>
 An open source Discord moderation bot with spontaneous modding capabilities and some extra powers like handling the beat with features of a music bot.
 
 ![GitHub](https://img.shields.io/github/license/shiddharth/Veron1CA?color=blue&style=for-the-badge)
