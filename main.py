@@ -369,11 +369,10 @@ class Moderation(commands.Cog):
     @commands.command(name='roleinfo', help='Shows all important information related to a specific role.', aliases=['roledetails'])
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def roleinfo(self, ctx, role: discord.Role):
-        embed = (discord.Embed(color=discord.Color.blurple()).set_author(name=f'Info on role: {str(role)}', icon_url=ctx.author.avatar_url))
-        embed.add_field(name='Creation Date:', value=role.created_at).add_field(name='Role Holders', value=role.members)
+        embed = (discord.Embed(color=discord.Color.blurple()).set_author(name=f'Role Information: {str(role)}', icon_url=ctx.author.avatar_url))
+        embed.add_field(name='Creation Date:', value=role.created_at).add_field(name='Mentionable', value=role.mentionable)
         embed.add_field(name='Managed By Integration', value=role.is_integration()).add_field(name='Managed By Bot', value=role.is_bot_managed())
-        embed.add_field(name='Role Position', value=role.position)
-        embed.add_field(name='Role ID', value=role.id)
+        embed.add_field(name='Role Position', value=role.position).add_field(name='Role ID', value=f'`{role.id}`')
         await ctx.send(embed=embed)
 
     @commands.command(name='mk-role', help='Creates a role.')
