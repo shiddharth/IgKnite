@@ -363,7 +363,7 @@ class Moderation(commands.Cog):
         embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator)
         embed.add_field(name='Is a bot?', value='Yes, execute it.' if user.bot else 'Nah, a human. Chill!')
         embed.add_field(name='Role Count', value=len(user.roles))
-        embed.add_field(name='Status', value=user.status, inline=False)
+        embed.add_field(name='Discord Joining Date', value=user.created_at.strftime("%b %d, %Y"), inline=False)
         embed.set_thumbnail(url=user.avatar_url)
         embed.set_footer(text=f'Imagine {user.display_name} being a hacker!')
 
