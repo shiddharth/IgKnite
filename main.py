@@ -395,9 +395,19 @@ class Moderation(commands.Cog):
 
     @commands.command(name='mk-inv', help='Creates an invite.')
     @commands.has_any_role('BotMod', 'BotAdmin')
-    async def create_invite(self, ctx, max_age=0, max_uses=1, *, reason=None):
+    async def create_invite(self, ctx, max_age=60, max_uses=1, *, reason=None):
+        if not reason:
+            reason = f'Inviter: {ctx.author.display_name}'
+
         invite = await ctx.channel.create_invite(max_age=max_age, max_uses=max_uses, reason=reason)
-        embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Link', value='invite').add_field(name='Creation Time', value=invite.created_at).set_author(name='An invite was created!', icon_url=ctx.author.avatar_url))
+        embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Link', value=invite).add_field(name='Channel', value=invite.channel).add_field(name='ID', value=f'`{invite.id}`', inline=False).set_author(name='An invite was created!', icon_url=ctx.author.avatar_url))
+
+        invite_lifetime = invite.max_age
+        if invite_lifetime == 0:
+            embed.add_field(name='Lifetime', value='Infinity')
+        else:
+            embed.add_field(name='Lifetime', value=f'{invite_lifetime} Seconds')
+
         await ctx.send(embed=embed)
 
     @commands.command(name='mk-role', help='Creates a role.')
