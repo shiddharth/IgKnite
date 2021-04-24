@@ -414,7 +414,7 @@ class Moderation(commands.Cog):
     @commands.command(name='rm-inv', help='Removes a previously generated invite code or link.')
     @commands.has_role('BotAdmin')
     async def remove_invite(self, ctx, invite_id):
-        invites = await ctx.guild.invites():
+        invites = await ctx.guild.invites()
         for invite in invites:
             if invite.id == invite_id:
                 await invite.delete()
