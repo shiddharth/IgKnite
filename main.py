@@ -369,7 +369,7 @@ class Moderation(commands.Cog):
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='invites', help='Shows all active server invite codes.', aliases=['invlist', 'allinv'])
-    @commands.has_role('BotMod', 'BotAdmin')
+    @commands.has_any_role('BotMod', 'BotAdmin')
     async def invites(self, ctx):
         invites = await ctx.guild.invites()
         embed = (discord.Embed(color=discord.Color.blurple()).set_author(name='Now viewing invite codes!', icon_url=ctx.author.avatar_url))
