@@ -237,6 +237,23 @@ class Moderation(commands.Cog):
         response = random.choice(greeting_messages)
         await ctx.send(response)
 
+    @commands.command(name='userinfo', help='Shows all important information on a user.', aliases=['userdetails'])
+    async def userinfo(self, ctx, user: discord.User=None):
+        if not user:
+            user = ctx.author
+
+        embed = (discord.Embed(title=f'{user.display_name}\'s Bio', color=discord.Color.blurple()))
+
+        embed.add_field(name='Name', value=user.name).add_field(name='Nick', value=user.display_name)
+        embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator)
+        embed.add_field(name='Is a bot?', value='Yes, execute it.' if user.bot else 'Nah, a human. Chill!')
+        embed.add_field(name='Role Count', value=len(user.roles))
+        embed.add_field(name='Discord Joining Date', value=user.created_at.strftime("%b %d, %Y"), inline=False)
+        embed.set_thumbnail(url=user.avatar_url)
+        embed.set_footer(text=f'Imagine {user.display_name} being a hacker!')
+
+        await ctx.send(embed=embed)
+
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def send_dm(self, ctx, user: discord.User, *, message):
@@ -351,23 +368,21 @@ class Moderation(commands.Cog):
         await ctx.send(f'Member **{member.display_name}** has been unbanned!')
         await ctx.message.add_reaction('✅')
 
-    @commands.command(name='userinfo', help='Shows all important information on a user.', aliases=['userdetails'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
-    async def userinfo(self, ctx, user: discord.User=None):
-        if not user:
-            user = ctx.author
+    @commands.command(name='invites', help='Shows all active server invite codes.', aliases=['invlist', 'allinv'])
+    @commands.has_role('BotMod', 'BotAdmin')
+    async def invites(self, ctx):
+        invites = await ctx.guild.invites()
+        embed = (discord.Embed(color=discord.Color.blurple()).set_author(name='Now viewing invite codes!', icon_url=ctx.author.avatar_url))
 
-        embed = (discord.Embed(title=f'{user.display_name}\'s Bio', color=discord.Color.blurple()))
+        if not invites:
+            await ctx.send('No invite codes have been generated.')
 
-        embed.add_field(name='Name', value=user.name).add_field(name='Nick', value=user.display_name)
-        embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator)
-        embed.add_field(name='Is a bot?', value='Yes, execute it.' if user.bot else 'Nah, a human. Chill!')
-        embed.add_field(name='Role Count', value=len(user.roles))
-        embed.add_field(name='Discord Joining Date', value=user.created_at.strftime("%b %d, %Y"), inline=False)
-        embed.set_thumbnail(url=user.avatar_url)
-        embed.set_footer(text=f'Imagine {user.display_name} being a hacker!')
-
-        await ctx.send(embed=embed)
+        else:
+            invcount = 0
+            for invite in invites:
+                invcount += 1
+                embed.add_field(name=invite, value=f'Uses: {invite.uses} | Inviter: {invite.inviter.name}', inline=False)
+            await ctx.send(embed=embed)
 
     @commands.command(name='roleinfo', help='Shows all important information related to a specific role.', aliases=['roledetails'])
     @commands.has_any_role('BotMod', 'BotAdmin')
@@ -377,6 +392,12 @@ class Moderation(commands.Cog):
         embed.add_field(name='Managed By Integration', value=role.is_integration()).add_field(name='Managed By Bot', value=role.is_bot_managed())
         embed.add_field(name='Role Position', value=role.position).add_field(name='Role ID', value=f'`{role.id}`')
         await ctx.send(embed=embed)
+
+    @commands.command(name='mk-inv', help='Creates an invite.')
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def create_invite(self, ctx, max_age=0, max_uses=1, *, reason=f'Created by {ctx.author.display_name}'):
+        await ctx.channel.create_invite(max_age=max_age, max_uses=max_uses, reason=reason)
+        await ctx.send('An invite was created!')
 
     @commands.command(name='mk-role', help='Creates a role.')
     @commands.has_role('BotAdmin')
@@ -414,22 +435,6 @@ class Moderation(commands.Cog):
     async def delete_channel(self, ctx, channel_name: discord.TextChannel):
         await channel_name.delete()
         await ctx.message.add_reaction('✅')
-
-    @commands.command(name='invites', help='Shows all active server invite codes.', aliases=['invlist', 'allinv'])
-    @commands.has_role('BotAdmin')
-    async def invites(self, ctx):
-        invites = await ctx.guild.invites()
-        embed = (discord.Embed(color=discord.Color.blurple()).set_author(name='Now viewing invite codes!', icon_url=ctx.author.avatar_url))
-
-        if not invites:
-            await ctx.send('No invite codes have been generated.')
-
-        else:
-            invcount = 0
-            for invite in invites:
-                invcount += 1
-                embed.add_field(name=invite, value=f'Uses: {invite.uses} | Inviter: {invite.inviter.name}', inline=False)
-            await ctx.send(embed=embed)
 
     @commands.command(name='freeze-chat', help='Calms down chat.', aliases=['kill-chat'])
     @commands.has_role('BotAdmin')
