@@ -395,7 +395,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='mk-inv', help='Creates an invite.')
     @commands.has_any_role('BotMod', 'BotAdmin')
-    async def create_invite(self, ctx, max_age=0, max_uses=1, *, reason=f'Created by {ctx.author.display_name}'):
+    async def create_invite(self, ctx, max_age=0, max_uses=1, *, reason=None):
         invite = await ctx.channel.create_invite(max_age=max_age, max_uses=max_uses, reason=reason)
         embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Link', value='invite').add_field(name='Creation Time', value=invite.created_at).set_author(name='An invite was created!', icon_url=ctx.author.avatar_url))
         await ctx.send(embed=embed)
