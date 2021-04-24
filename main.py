@@ -368,6 +368,15 @@ class Moderation(commands.Cog):
         await ctx.send(f'Member **{member.display_name}** has been unbanned!')
         await ctx.message.add_reaction('✅')
 
+    @commands.command(name='roleinfo', help='Shows all important information related to a specific role.', aliases=['roledetails'])
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def roleinfo(self, ctx, role: discord.Role):
+        embed = (discord.Embed(color=discord.Color.blurple()).set_author(name=f'Role Information: {str(role)}', icon_url=ctx.author.avatar_url))
+        embed.add_field(name='Creation Date:', value=role.created_at).add_field(name='Mentionable', value=role.mentionable)
+        embed.add_field(name='Managed By Integration', value=role.is_integration()).add_field(name='Managed By Bot', value=role.is_bot_managed())
+        embed.add_field(name='Role Position', value=role.position).add_field(name='Role ID', value=f'`{role.id}`')
+        await ctx.send(embed=embed)
+
     @commands.command(name='invites', help='Shows all active server invite codes.', aliases=['invlist', 'allinv'])
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def invites(self, ctx):
@@ -381,34 +390,35 @@ class Moderation(commands.Cog):
             invcount = 0
             for invite in invites:
                 invcount += 1
-                embed.add_field(name=invite, value=f'Uses: {invite.uses} | Inviter: {invite.inviter.name}', inline=False)
+                embed.add_field(name=invite, value=f'Uses: {invite.uses} | Inviter: {invite.inviter.name} | ID: `{invite.id}`')
             await ctx.send(embed=embed)
 
-    @commands.command(name='roleinfo', help='Shows all important information related to a specific role.', aliases=['roledetails'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
-    async def roleinfo(self, ctx, role: discord.Role):
-        embed = (discord.Embed(color=discord.Color.blurple()).set_author(name=f'Role Information: {str(role)}', icon_url=ctx.author.avatar_url))
-        embed.add_field(name='Creation Date:', value=role.created_at).add_field(name='Mentionable', value=role.mentionable)
-        embed.add_field(name='Managed By Integration', value=role.is_integration()).add_field(name='Managed By Bot', value=role.is_bot_managed())
-        embed.add_field(name='Role Position', value=role.position).add_field(name='Role ID', value=f'`{role.id}`')
-        await ctx.send(embed=embed)
-
-    @commands.command(name='mk-inv', help='Creates an invite.')
+    @commands.command(name='mk-inv', help='Creates an invite code or link.')
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def create_invite(self, ctx, max_age=60, max_uses=1, *, reason=None):
         if not reason:
             reason = f'Inviter: {ctx.author.display_name}'
 
         invite = await ctx.channel.create_invite(max_age=max_age, max_uses=max_uses, reason=reason)
-        embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Link', value=invite).add_field(name='Channel', value=invite.channel).add_field(name='ID', value=f'`{invite.id}`', inline=False).set_author(name='An invite was created!', icon_url=ctx.author.avatar_url))
+        embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Link', value=invite).add_field(name='ID', value=f'`{invite.id}`').add_field(name='Channel', value=invite.channel).set_author(name='An invite was created!', icon_url=ctx.author.avatar_url))
 
-        invite_lifetime = invite.max_age
-        if invite_lifetime == 0:
-            embed.add_field(name='Lifetime', value='Infinity')
+        value = str()
+        if invite.max_age == 0:
+            value = 'Infinity'
         else:
-            embed.add_field(name='Lifetime', value=f'{invite_lifetime} Seconds')
+            value = f'{invite.max_age} Seconds'
 
+        embed.add_field(name='Lifetime', value=f'{invite_lifetime} Seconds').add_field(name='Max Uses', value=invite.max_uses)
         await ctx.send(embed=embed)
+
+    @commands.command(name='rm-inv', help='Removes a previously generated invite code or link.')
+    @commands.has_role('BotAdmin')
+    async def remove_invite(self, ctx, invite_id):
+        invites = await ctx.guild.invites:
+        for invite in invites:
+            if invite.id == invite_id:
+                await invite.delete()
+                await ctx.send('Invite deleted!')
 
     @commands.command(name='mk-role', help='Creates a role.')
     @commands.has_role('BotAdmin')
