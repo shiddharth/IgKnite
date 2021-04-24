@@ -408,7 +408,7 @@ class Moderation(commands.Cog):
         else:
             value = f'{invite.max_age} Seconds'
 
-        embed.add_field(name='Lifetime', value=f'{invite_lifetime} Seconds').add_field(name='Max Uses', value=invite.max_uses)
+        embed.add_field(name='Lifetime', value=value).add_field(name='Max Uses', value=invite.max_uses)
         await ctx.send(embed=embed)
 
     @commands.command(name='rm-inv', help='Removes a previously generated invite code or link.')
