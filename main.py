@@ -390,7 +390,7 @@ class Moderation(commands.Cog):
             invcount = 0
             for invite in invites:
                 invcount += 1
-                embed.add_field(name=invite, value=f'Uses: {invite.uses} | Inviter: {invite.inviter.name} | ID: `{invite.id}`')
+                embed.add_field(name=invite, value=f'Uses: {invite.uses} | Inviter: {invite.inviter.name} | ID: `{invite.id}`', inline=False)
             await ctx.send(embed=embed)
 
     @commands.command(name='mk-inv', help='Creates an invite code or link.')
