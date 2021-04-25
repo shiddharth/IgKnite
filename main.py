@@ -286,7 +286,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
     @commands.has_any_role('BotMod', 'BotAdmin')
-    async def jail(self, ctx, member: discord.Member, time=None, *, reason='No reason provided.'):
+    async def jail(self, ctx, member: discord.Member, *, reason='None'):
         do_jail = False
 
         if member != ctx.author:
@@ -302,18 +302,9 @@ class Moderation(commands.Cog):
             await ctx.send('You can\'t jail yourself!')
 
         if do_jail is True:
-            if not time:
-                time = 60
-
-            jail_member = [member, ctx.guild, reason, ctx.author]
-            jail_members.append(jail_member)
+            jail_members.append([member, ctx.guild, reason, ctx.author])
             await ctx.message.delete()
-
-            embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Duration', value=f'{time} Seconds').add_field(name='Reason', value=reason).set_author(name=f'{member.display_name} has been captured!', icon_url=ctx.author.avatar_url))
-            await ctx.send(embed=embed)
-            await asyncio.sleep(time)
-            jail_members.remove(jail_member)
-            await ctx.send(f'{member.mention}, you\'re free now. Be careful next time!')
+            await ctx.send(f'You\'ve been captured! {member.mention} | Reason: {reason}')
 
     @commands.command(name='jailed', help='Views jailed members.', aliases=['view-jail'])
     @commands.has_any_role('BotMod', 'BotAdmin')
@@ -322,7 +313,7 @@ class Moderation(commands.Cog):
         embed = discord.Embed(color=discord.Color.blurple()).set_author(name='Now viewing the prison!'.title(), icon_url=ctx.author.avatar_url)
         for jail_member in jail_members:
             if jail_member[1] == ctx.guild:
-                embed.add_field(name=jail_member[0].display_name, value=('Jailed By ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
+                embed.add_field(name=jail_member[0].display_name, value=('Jailed by ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
                 jail_has_member = True
 
         if jail_has_member is False:
@@ -381,7 +372,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def roleinfo(self, ctx, role: discord.Role):
         embed = (discord.Embed(color=discord.Color.blurple()).set_author(name=f'Role Information: {str(role)}', icon_url=ctx.author.avatar_url))
-        embed.add_field(name='Creation Date', value=role.created_at).add_field(name='Mentionable', value=role.mentionable)
+        embed.add_field(name='Creation Date:', value=role.created_at).add_field(name='Mentionable', value=role.mentionable)
         embed.add_field(name='Managed By Integration', value=role.is_integration()).add_field(name='Managed By Bot', value=role.is_bot_managed())
         embed.add_field(name='Role Position', value=role.position).add_field(name='Role ID', value=f'`{role.id}`')
         await ctx.send(embed=embed)
