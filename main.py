@@ -133,7 +133,7 @@ async def help(ctx, cmd=None):
             all_commands = str()
             cog = bot.get_cog(cog_name)
             for command in cog.get_commands():
-                all_commands += f'`{command}`\n'
+                all_commands += f'`{command}` '
             return all_commands
 
 
