@@ -287,6 +287,7 @@ class Moderation(commands.Cog):
     @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def jail(self, ctx, member: discord.Member, *, reason='None'):
+        # TODO: Make the jailing immortal against sudden restarts.
         do_jail = False
 
         if member != ctx.author:
@@ -460,6 +461,7 @@ class Moderation(commands.Cog):
     @commands.command(name='freeze-chat', help='Calms down chat.', aliases=['kill-chat'])
     @commands.has_role('BotAdmin')
     async def freeze(self, ctx):
+        # TODO: Make freezes immortal against restarts.
         frozen.append([ctx.author, ctx.guild, ctx.message.channel])
         await ctx.message.delete()
         await ctx.send(f'**Chat was frozen by {ctx.author.mention}!**')
