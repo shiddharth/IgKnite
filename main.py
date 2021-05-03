@@ -250,7 +250,7 @@ class Moderation(commands.Cog):
         embed.add_field(name='Role Count', value=len(user.roles))
         embed.add_field(name='Discord Joining Date', value=user.created_at.strftime("%b %d, %Y"), inline=False)
         embed.set_thumbnail(url=user.avatar_url)
-        embed.set_footer(text=f'Imagine {user.display_name} being a hacker!')
+        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Imagine {user.display_name} being a hacker!')
 
         await ctx.send(embed=embed)
 
@@ -311,7 +311,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def jailed(self, ctx):
         jail_has_member = False
-        embed = discord.Embed(color=discord.Color.blurple()).set_author(name='Now viewing the prison!'.title(), icon_url=ctx.author.avatar_url)
+        embed = (discord.Embed(title='Now viewing the prison!', color=discord.Color.blurple()).set_footer(icon_url=ctx.author.avatar_url, text='Imagine all being a hacker!'))
         for jail_member in jail_members:
             if jail_member[1] == ctx.guild:
                 embed.add_field(name=jail_member[0].display_name, value=('Jailed by ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
@@ -353,7 +353,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def bans(self, ctx):
         bans = await ctx.guild.bans()
-        embed = (discord.Embed(color=discord.Color.blurple()).set_author(name='Now viewing banned members!', icon_url=ctx.author.avatar_url))
+        embed = (discord.Embed(title='Now viewing banned members!', color=discord.Color.blurple()).set_footer(icon_url=ctx.author.avatar_url, text='Good thing you banned them!'))
         if bans:
             for ban in bans:
                 embed.add_field(name=ban.user, value=f'ID: `{ban.user.id}` | Reason: `{ban.reason}`', inline=False)
@@ -372,17 +372,18 @@ class Moderation(commands.Cog):
     @commands.command(name='roleinfo', help='Shows all important information related to a specific role.', aliases=['roledetails'])
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def roleinfo(self, ctx, role: discord.Role):
-        embed = (discord.Embed(color=discord.Color.blurple()).set_author(name=f'Role Information: {str(role)}', icon_url=ctx.author.avatar_url))
+        embed = (discord.Embed(title=f'Role Information: {str(role)}', color=discord.Color.blurple()))
         embed.add_field(name='Creation Date:', value=role.created_at).add_field(name='Mentionable', value=role.mentionable)
         embed.add_field(name='Managed By Integration', value=role.is_integration()).add_field(name='Managed By Bot', value=role.is_bot_managed())
         embed.add_field(name='Role Position', value=role.position).add_field(name='Role ID', value=f'`{role.id}`')
+        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Requested by {ctx.author.display_name}')
         await ctx.send(embed=embed)
 
     @commands.command(name='invites', help='Shows all active server invite codes.', aliases=['invlist', 'allinv'])
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def invites(self, ctx):
         invites = await ctx.guild.invites()
-        embed = (discord.Embed(color=discord.Color.blurple()).set_author(name='Now viewing invite codes!', icon_url=ctx.author.avatar_url))
+        embed = (discord.Embed(title='Now viewing invite codes!', color=discord.Color.blurple()).set_footer(icon_url=ctx.author.avatar_url, text='Who created this fancy invites?!'))
 
         if not invites:
             await ctx.send('No invite codes have been generated.')
