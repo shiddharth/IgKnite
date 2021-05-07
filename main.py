@@ -234,7 +234,7 @@ class Moderation(commands.Cog):
         await ctx.send(response)
 
     @commands.command(name='userinfo', help='Shows all important information on a user.', aliases=['userdetails'])
-    async def userinfo(self, ctx, user: discord.User=None):
+    async def userinfo(self, ctx, user: discord.Member=None):
         if not user:
             user = ctx.author
 
@@ -242,7 +242,7 @@ class Moderation(commands.Cog):
 
         embed.add_field(name='Name', value=user.name).add_field(name='Nick', value=user.display_name)
         embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator)
-        embed.add_field(name='Is a bot?', value='Yes, execute it.' if user.bot else 'Nah, a human. Chill!')
+        embed.add_field(name='Bot Bool', value='Yes, execute it.' if user.bot else 'Nah, a human. Chill!')
         embed.add_field(name='Role Count', value=len(user.roles))
         embed.add_field(name='Discord Joining Date', value=user.created_at.strftime("%b %d, %Y"), inline=False)
         embed.set_thumbnail(url=user.avatar_url)
