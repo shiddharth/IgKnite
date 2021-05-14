@@ -331,6 +331,7 @@ class Moderation(commands.Cog):
                     await ctx.send('You can\'t free yourself!')
 
     @commands.command(name='mute', help='Mutes a member from text and voice channels.', aliases=['shut'])
+    @commands.has_any_role('BotMod', 'BotAdmin')
     async def mute(ctx, member: discord.Member, *, reason='For not giving the cake to admin.'):
         guild = ctx.guild
         muted_role = discord.utils.get(guild.roles, name="BotMuted")
@@ -345,6 +346,7 @@ class Moderation(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name='unmute', help='Unmutes a member.', aliases=['unshut'])
+    @commands.has_any_role('BotMod', 'BotAdmin')
     async def unmute(ctx, member: discord.Member):
        muted_role = discord.utils.get(ctx.guild.roles, name="BotMuted")
 
