@@ -336,7 +336,7 @@ class Moderation(commands.Cog):
         await ctx.send(f'You\'re now blocked from chatting, {user.mention} | Reason: {reason}')
 
     @commands.command(name='Unblock', help='Unblocks a user.')
-    async def unblock(self, ctx, user: Sinner=None):
+    async def unblock(self, ctx, user: discord.Member):
         await ctx.set_permissions(user, send_messages=True)
         await ctx.message.add_reaction('✅')
 
