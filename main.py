@@ -332,13 +332,15 @@ class Moderation(commands.Cog):
 
     @commands.command(name='block', help='Blocks a user from chatting in a specific channel.')
     async def block(self, ctx, member: discord.Member, *, reason='For talking too much.'):
-        await ctx.channel.set_permissions(member, send_messages=False)
+        for channel in ctx.guild.channels:
+            await channel.set_permissions(member, send_messages=False)
         await ctx.message.delete()
         await ctx.send(f'You\'re now blocked from chatting, {member.mention} | Reason: {reason}')
 
     @commands.command(name='unblock', help='Unblocks a user.')
     async def unblock(self, ctx, member: discord.Member):
-        await ctx.channel.set_permissions(member, overwrite=None)
+        for channel in ctx.guild.channels:
+            await channel.set_permissions(member, overwrite=None)
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='kick', help='Kicks a member from server.')
