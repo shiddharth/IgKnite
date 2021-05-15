@@ -330,29 +330,6 @@ class Moderation(commands.Cog):
                 else:
                     await ctx.send('You can\'t free yourself!')
 
-    @commands.command(name='mute', help='Mutes a member from text and voice channels.', aliases=['shut'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
-    async def mute(self, ctx, member: discord.Member, *, reason='For not giving the cake to admin.'):
-        guild = ctx.guild
-        muted_role = discord.utils.get(guild.roles, name="BotMuted")
-
-        if not muted_role:
-            muted_role = await guild.create_role(name="BotMuted")
-            for channel in guild.channels:
-                await channel.set_permissions(muted_role, speak=False, send_messages=False, read_message_history=True, read_messages=False)
-
-        embed = (discord.Embed(title=f'{member.display_name} has been muted!', color=discord.Color.blurple()).add_field(name='Reason', value=reason))
-        await member.add_roles(muted_role, reason=reason)
-        await ctx.send(embed=embed)
-
-    @commands.command(name='unmute', help='Unmutes a member.', aliases=['unshut'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
-    async def unmute(self, ctx, member: discord.Member):
-       muted_role = discord.utils.get(ctx.guild.roles, name="BotMuted")
-
-       await member.remove_roles(muted_role)
-       await ctx.message.add_reaction('✅')
-
     @commands.command(name='kick', help='Kicks a member from server.')
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def kick(self, ctx, member: discord.User, *, reason=None):
