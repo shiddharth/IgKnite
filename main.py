@@ -282,7 +282,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
     @commands.has_any_role('BotMod', 'BotAdmin')
-    async def jail(self, ctx, member: discord.Member, *, reason='For smacking the chips!'):
+    async def jail(self, ctx, member: discord.Member, *, reason='No reason provided.'):
         do_jail = False
 
         if member != ctx.author:
@@ -331,28 +331,26 @@ class Moderation(commands.Cog):
                     await ctx.send('You can\'t free yourself!')
 
     @commands.command(name='block', help='Blocks a user from chatting in a specific channel.')
-    async def block(self, ctx, member: discord.Member, *, reason='For talking too much.'):
-        for channel in ctx.guild.channels:
-            await channel.set_permissions(member, send_messages=False)
+    async def block(self, ctx, member: discord.Member, *, reason='No reason provided.'):
+        await ctx.channel.set_permissions(member, send_messages=False)
         await ctx.message.delete()
         await ctx.send(f'You\'re now blocked from chatting, {member.mention} | Reason: {reason}')
 
     @commands.command(name='unblock', help='Unblocks a user.')
     async def unblock(self, ctx, member: discord.Member):
-        for channel in ctx.guild.channels:
-            await channel.set_permissions(member, overwrite=None)
+        await ctx.channel.set_permissions(member, overwrite=None)
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='kick', help='Kicks a member from server.')
     @commands.has_any_role('BotMod', 'BotAdmin')
-    async def kick(self, ctx, member: discord.User, *, reason=None):
+    async def kick(self, ctx, member: discord.User, *, reason='No reason provided.'):
         await ctx.guild.kick(member, reason=reason)
         await ctx.send(f'Member **{member.display_name}** has been kicked!')
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='ban', help='Bans a member from server.')
     @commands.has_any_role('BotMod', 'BotAdmin')
-    async def ban(self, ctx, member: discord.User, *, reason=None):
+    async def ban(self, ctx, member: discord.User, *, reason='No reason provided.'):
         await ctx.guild.ban(member, reason=reason)
         await ctx.send(f'Member **{member.display_name}** has been banned!')
         await ctx.message.add_reaction('✅')
@@ -405,7 +403,7 @@ class Moderation(commands.Cog):
 
     @commands.command(name='mk-inv', help='Creates an invite code or link.')
     @commands.has_any_role('BotMod', 'BotAdmin')
-    async def create_invite(self, ctx, max_age=60, max_uses=1, *, reason=None):
+    async def create_invite(self, ctx, max_age=60, max_uses=1, *, reason='No reason provided.'):
         if not reason:
             reason = f'Inviter: {ctx.author.display_name}'
 
