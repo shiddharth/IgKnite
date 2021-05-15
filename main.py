@@ -330,6 +330,16 @@ class Moderation(commands.Cog):
                 else:
                     await ctx.send('You can\'t free yourself!')
 
+    @commands.command(name='block', help='Blocks a user from chatting in a specific channel.')
+    async def block(self, ctx, user: discord.Member, *, reason='For talking too much.'):
+        await ctx.set_permissions(user, send_messages=False)
+        await ctx.send(f'You\'re now blocked from chatting, {user.mention} | Reason: {reason}')
+
+    @commands.command(name='Unblock', help='Unblocks a user.')
+    async def unblock(self, ctx, user: Sinner=None):
+        await ctx.set_permissions(user, send_messages=True)
+        await ctx.message.add_reaction('✅')
+
     @commands.command(name='kick', help='Kicks a member from server.')
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def kick(self, ctx, member: discord.User, *, reason=None):
