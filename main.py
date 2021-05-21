@@ -94,7 +94,7 @@ async def on_message(message):
                         msg_word = msg_word.replace(symbol, '')
 
                 for filtered_word in filtered_wordlist:
-                    if filtered_word.lower() in msg_word.lower():
+                    if filtered_word.lower() == msg_word.lower():
                         filtered_messages.append([message.author, message.guild, message.content])
                         await message.delete()
                         skip_command = True
