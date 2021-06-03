@@ -328,6 +328,7 @@ class Moderation(commands.Cog):
                     await ctx.send('You can\'t free yourself!')
 
     @commands.command(name='block', help='Blocks a user from chatting in a specific channel.')
+    @commands.has_any_role('BotMod', 'BotAdmin')
     async def block(self, ctx, member: discord.Member, *, reason='No reason provided.'):
         if member != ctx.author:
             await ctx.channel.set_permissions(member, send_messages=False)
@@ -338,6 +339,7 @@ class Moderation(commands.Cog):
             await ctx.send(f'You can\'t block yourself!')
 
     @commands.command(name='unblock', help='Unblocks a user.')
+    @commands.has_any_role('BotMod', 'BotAdmin')
     async def unblock(self, ctx, member: discord.Member):
         await ctx.channel.set_permissions(member, overwrite=None)
         await ctx.message.add_reaction('✅')
