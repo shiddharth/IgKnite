@@ -166,7 +166,7 @@ class Chill(commands.Cog):
 
     @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
     async def ping(self, ctx):
-        embed = (discord.Embed(title='Pong Status', color=discord.Color.blurple()).add_field(name='My Latency:', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Last Restarted:', value=f'On {last_restarted}', inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
+        embed = (discord.Embed(title='Uptime Status', color=discord.Color.blurple()).add_field(name='My Latency:', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Last Restarted:', value=f'On {last_restarted}', inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
         await ctx.send(embed=embed)
 
 
@@ -239,7 +239,7 @@ class Moderation(commands.Cog):
 
         embed.add_field(name='Name', value=user.name).add_field(name='Nick', value=user.display_name)
         embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator)
-        embed.add_field(name='Bot Bool', value='Yes, execute it.' if user.bot else 'Nah, a human. Chill!')
+        embed.add_field(name='Race', value='Bots, execute em!' if user.bot else 'Human')
         embed.add_field(name='Role Count', value=len(user.roles))
         embed.add_field(name='Discord Joining Date', value=user.created_at.strftime("%b %d, %Y"), inline=False)
         embed.set_thumbnail(url=user.avatar_url)
