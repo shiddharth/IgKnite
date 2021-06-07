@@ -41,7 +41,7 @@ python main.py
 <i>Now you're ready to rock!</i>
 
 #### and if you wanna go the cloud way...
-As Veron1CA's code is optimized for [Repl.it](https://repl.it), it's recommended to create a new repository there and host the bot on it. You can, alternatively, hack the code for yourself and host it on other platforms like [DisCloud!](https://discloudbot.com/)
+As Veron1CA's code is optimized for [Replit.com](https://replit.com), it's recommended to create a new repository there and host the bot on it. You can, alternatively, hack the code for yourself and host it on other platforms like [DisCloud!](https://discloudbot.com/)
 
 ## Licence
 <blockquote>
