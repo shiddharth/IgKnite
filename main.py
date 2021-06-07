@@ -168,7 +168,7 @@ class Chill(commands.Cog):
     @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
     async def ping(self, ctx):
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-last_restarted))))
-        embed = (discord.Embed(title='System Status', color=discord.Color.blurple()).add_field(name='Latency', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Last Restarted:', value=f'On {str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))}', inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
+        embed = (discord.Embed(title='System Status', color=discord.Color.blurple()).add_field(name='Latency', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Startup Time', value=f'On {str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))}', inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
         await ctx.send(embed=embed)
 
 
