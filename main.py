@@ -46,8 +46,8 @@ with open('filtered.txt', 'r') as filtered_wordfile:
     filtered_messages = list()
 
 # Creating variables for command uses.
-global last_restarted
-last_restarted = time.time()
+last_restarted_str = str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+last_restarted_obj = time.time()
 global jail_members
 jail_members = list()
 global frozen
@@ -167,8 +167,8 @@ class Chill(commands.Cog):
 
     @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
     async def ping(self, ctx):
-        uptime = str(datetime.timedelta(seconds=int(round(time.time()-last_restarted))))
-        embed = (discord.Embed(title='System Status', color=discord.Color.blurple()).add_field(name='Latency', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Startup Time', value=f'On {str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))}', inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
+        uptime = str(datetime.timedelta(seconds=int(round(time.time()-last_restarted_obj))))
+        embed = (discord.Embed(title='System Status', color=discord.Color.blurple()).add_field(name='Latency', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Startup Time', value=last_restarted_str, inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
         await ctx.send(embed=embed)
 
 
