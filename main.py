@@ -22,13 +22,23 @@ from discord.ext import commands
 from async_timeout import timeout
 from keep_alive import keep_alive
 
-# Define command prefix and description.
+
+# Define command prefix, description and variables.
 prefix = os.getenv('COMMAND_PREFIX')
 bot = commands.Bot(commands.when_mentioned_or(prefix), help_command=None)
 
+lock_roles = ['BotMod', 'BotAdmin']
+last_restarted_str = str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+last_restarted_obj = time.time()
+
+global jail_members
+jail_members = list()
+global frozen
+frozen = list()
+
+
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
-
 
 class VoiceError(Exception):
     pass
@@ -45,16 +55,8 @@ with open('filtered.txt', 'r') as filtered_wordfile:
     filtered_wordlist = filtered_wordfile.read().split()
     filtered_messages = list()
 
-# Creating variables for command uses.
-last_restarted_str = str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-last_restarted_obj = time.time()
-global jail_members
-jail_members = list()
-global frozen
-frozen = list()
 
-
-# Events.
+# Bot Events.
 @bot.event
 async def on_ready():
     os.system('clear')
@@ -219,13 +221,13 @@ class Moderation(commands.Cog):
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
     @commands.command(name='clear', help='Clears messages inside the given index.', aliases=['cls'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def clear(self, ctx, amount=1):
         amount += 1
         await ctx.channel.purge(limit=amount)
 
     @commands.command(name='sayhi', help='Helps to greet channel members.', aliases=['greet', 'welcome'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def sayhi(self, ctx, member: discord.Member):
         greeting_messages = [f"Hi {member.mention} Glad you're here.", f"Hello there! {member.mention}", f"Hey {member.mention}! Nice to meet you.", f"Hey, {member.mention} What's up?", f"Looks like someone just spoke my name. Anyway, how are you doing {member.mention}?", f"Happy to see you here, {member.mention}", f"Welcome! {member.mention} Have fun chatting!", f"Nice to meet you, {member.mention}! The name's {bot.user.name} by the way."]
         await ctx.message.delete()
@@ -250,7 +252,7 @@ class Moderation(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def send_dm(self, ctx, user: discord.User, *, message):
         embed = (discord.Embed(title=f'{ctx.author.display_name} has something up for you!', color=discord.Color.blurple()).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
         await user.send(embed=embed)
@@ -258,7 +260,7 @@ class Moderation(commands.Cog):
         await ctx.message.delete()
 
     @commands.command(name='audit', help='Views the latest entries of the audit log in detail (limited to 100 entries).', aliases=['audit-log'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def audit(self, ctx, audit_limit: int):
         if int(audit_limit) > 100:
             await ctx.send('Cannot send audit log entries more than 100 at a time!')
@@ -270,7 +272,7 @@ class Moderation(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command(name='restore-msg', help='Tries to restore previously filtered message if it was deleted by mistake.', aliases=['rest-msg'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def restore_msg(self, ctx):
         filtered_messages_guild = []
         for filtered_message in filtered_messages:
@@ -292,7 +294,7 @@ class Moderation(commands.Cog):
                 await webhook.delete()
 
     @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def jail(self, ctx, member: discord.Member, *, reason='No reason provided.'):
         do_jail = False
 
@@ -314,7 +316,7 @@ class Moderation(commands.Cog):
             await ctx.send(f'You\'ve been captured! {member.mention} | Reason: {reason}')
 
     @commands.command(name='jailed', help='Views jailed members.', aliases=['view-jail'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def jailed(self, ctx):
         jail_has_member = False
         embed = (discord.Embed(title='Now viewing the prison!', color=discord.Color.blurple()).set_footer(icon_url=ctx.author.avatar_url, text='Imagine all being a hacker!'))
@@ -330,7 +332,7 @@ class Moderation(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command(name='unjail', help='Removes a member from jail.', aliases=['release'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def unjail(self, ctx, member: discord.Member):
         for jail_member in jail_members:
             if jail_member[1] == ctx.guild and jail_member[0] == member:
@@ -342,7 +344,7 @@ class Moderation(commands.Cog):
                     await ctx.send('You can\'t free yourself!')
 
     @commands.command(name='block', help='Blocks a user from chatting in a specific channel.')
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def block(self, ctx, member: discord.Member, *, reason='No reason provided.'):
         if member != ctx.author:
             await ctx.channel.set_permissions(member, send_messages=False)
@@ -353,27 +355,27 @@ class Moderation(commands.Cog):
             await ctx.send(f'You can\'t block yourself!')
 
     @commands.command(name='unblock', help='Unblocks a user.')
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def unblock(self, ctx, member: discord.Member):
         await ctx.channel.set_permissions(member, overwrite=None)
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='kick', help='Kicks a member from server.')
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def kick(self, ctx, member: discord.User, *, reason='No reason provided.'):
         await ctx.guild.kick(member, reason=reason)
         await ctx.send(f'Member **{member.display_name}** has been kicked!')
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='ban', help='Bans a member from server.')
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def ban(self, ctx, member: discord.User, *, reason='No reason provided.'):
         await ctx.guild.ban(member, reason=reason)
         await ctx.send(f'Member **{member.display_name}** has been banned!')
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='bans', help='Shows a list of banned users in the server.', aliases=['banlist'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def bans(self, ctx):
         bans = await ctx.guild.bans()
         embed = (discord.Embed(title='Now viewing banned members!', color=discord.Color.blurple()).set_footer(icon_url=ctx.author.avatar_url, text='Good thing you banned them!'))
@@ -386,14 +388,14 @@ class Moderation(commands.Cog):
             await ctx.send('No members are banned from this server.')
 
     @commands.command(name='unban', help='Unbans a member in server.')
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def unban(self, ctx, member: discord.User):
         await ctx.guild.unban(member)
         await ctx.send(f'Member **{member.display_name}** has been unbanned!')
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='roleinfo', help='Shows all important information related to a specific role.', aliases=['roledetails'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def roleinfo(self, ctx, role: discord.Role):
         embed = (discord.Embed(title=f'Role Information: {str(role)}', color=discord.Color.blurple()))
         embed.add_field(name='Creation Date:', value=role.created_at).add_field(name='Mentionable', value=role.mentionable)
@@ -403,7 +405,7 @@ class Moderation(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name='invites', help='Shows all active server invite codes.', aliases=['invlist', 'allinv'])
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def invites(self, ctx):
         invites = await ctx.guild.invites()
         embed = (discord.Embed(title='Now viewing invite codes!', color=discord.Color.blurple()).set_footer(icon_url=ctx.author.avatar_url, text='Who created this fancy invites?!'))
@@ -419,7 +421,7 @@ class Moderation(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command(name='mk-inv', help='Creates an invite code or link.')
-    @commands.has_any_role('BotMod', 'BotAdmin')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def create_invite(self, ctx, max_age=60, max_uses=1, *, reason='No reason provided.'):
         if not reason:
             reason = f'Inviter: {ctx.author.display_name}'
@@ -437,7 +439,7 @@ class Moderation(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name='rm-inv', help='Removes a previously generated invite code or link.')
-    @commands.has_role('BotAdmin')
+    @commands.has_role(lock_roles[1])
     async def remove_invite(self, ctx, invite_id):
         invites = await ctx.guild.invites()
         for invite in invites:
@@ -446,13 +448,13 @@ class Moderation(commands.Cog):
                 await ctx.send('Invite deleted!')
 
     @commands.command(name='mk-role', help='Creates a role.')
-    @commands.has_role('BotAdmin')
+    @commands.has_role(lock_roles[1])
     async def create_new_role(self, ctx, *, role):
         await ctx.guild.create_role(name=role)
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='rm-role', help='Removes an existing role.')
-    @commands.has_role('BotAdmin')
+    @commands.has_role(lock_roles[1])
     async def remove_role(self, ctx, *, role: discord.Role):
         if role is None:
             await ctx.send('That\'s not a role, I guess?')
@@ -462,13 +464,13 @@ class Moderation(commands.Cog):
             await ctx.message.add_reaction('✅')
 
     @commands.command(name='assign-role', help='Assigns an existing role to a server member.', pass_context=True)
-    @commands.has_role('BotAdmin')
+    @commands.has_role(lock_roles[1])
     async def assign_role(self, ctx, member: discord.Member, role: discord.Role):
         await member.add_roles(role)
         await ctx.send(f'Role {role.mention} has been given to {member.mention}, peace! :partying_face:')
 
     @commands.command(name='mk-ch', help='Creates a server channel.')
-    @commands.has_role('BotAdmin')
+    @commands.has_role(lock_roles[1])
     async def create_channel(self, ctx, *, channel_name):
         guild = ctx.guild
         existing_channel = discord.utils.get(guild.channels, name=channel_name)
@@ -477,13 +479,13 @@ class Moderation(commands.Cog):
             await ctx.message.add_reaction('✅')
 
     @commands.command(name='rm-ch', help='Removes an existing server channel.')
-    @commands.has_role('BotAdmin')
+    @commands.has_role(lock_roles[1])
     async def delete_channel(self, ctx, channel_name: discord.TextChannel):
         await channel_name.delete()
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='freeze-chat', help='Calms down chat.', aliases=['kill-chat'])
-    @commands.has_role('BotAdmin')
+    @commands.has_role(lock_roles[1])
     async def freeze(self, ctx):
         # TODO: Make freezes immortal against restarts.
         frozen.append([ctx.author, ctx.guild, ctx.message.channel])
@@ -491,7 +493,7 @@ class Moderation(commands.Cog):
         await ctx.send(f'**Chat was frozen by {ctx.author.mention}!**')
 
     @commands.command(name='thaw-chat', help='Removes frozen state from chat.', aliases=['open-chat'])
-    @commands.has_role('BotAdmin')
+    @commands.has_role(lock_roles[1])
     async def thaw(self, ctx):
         for frozen_guild in frozen:
             if frozen_guild[1] == ctx.guild:
