@@ -257,6 +257,18 @@ class Moderation(commands.Cog):
         await ctx.send(f'{ctx.author.mention} your message has been sent!')
         await ctx.message.delete()
 
+    @commands.command(name='audit', help='Views the latest entries of the audit log in detail (limited to 100 entries).', aliases=['audit-log'])
+    @commands.has_any_role('BotMod', 'BotAdmin')
+    async def audit(self, ctx, audit_limit: int):
+        if int(audit_limit) > 100:
+            await ctx.send('Cannot send audit log entries more than 100 at a time!')
+
+        else:
+            embed = (discord.Embed(title='Audit Log', description=f'Showing the latest 10 entries that were made in the audit log of {ctx.guild.name}.', color=discord.Color.blurple()).set_footer(text='Investigating the uncommon!', icon_url=ctx.author.avatar_url))
+            async for audit_entry in ctx.guild.audit_logs(limit=audit_limit):
+                embed.add_field(name=f'- {audit_entry.action}', value=f'User: {audit_entry.user} | Target: {audit_entry.target}', inline=False)
+            await ctx.send(embed=embed)
+
     @commands.command(name='restore-msg', help='Tries to restore previously filtered message if it was deleted by mistake.', aliases=['rest-msg'])
     @commands.has_any_role('BotMod', 'BotAdmin')
     async def restore_msg(self, ctx):
