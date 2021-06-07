@@ -264,7 +264,7 @@ class Moderation(commands.Cog):
             await ctx.send('Cannot send audit log entries more than 100 at a time!')
 
         else:
-            embed = (discord.Embed(title='Audit Log', description=f'Showing the latest 10 entries that were made in the audit log of {ctx.guild.name}.', color=discord.Color.blurple()).set_footer(text='Investigating the uncommon!', icon_url=ctx.author.avatar_url))
+            embed = (discord.Embed(title='Audit Log', description=f'Showing the latest {audit_limit} entries that were made in the audit log of {ctx.guild.name}.', color=discord.Color.blurple()).set_footer(text='Investigating the uncommon!', icon_url=ctx.author.avatar_url))
             async for audit_entry in ctx.guild.audit_logs(limit=audit_limit):
                 embed.add_field(name=f'- {audit_entry.action}', value=f'User: {audit_entry.user} | Target: {audit_entry.target}', inline=False)
             await ctx.send(embed=embed)
