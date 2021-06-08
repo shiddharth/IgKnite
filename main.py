@@ -24,7 +24,7 @@ from keep_alive import keep_alive
 
 
 # Define system variables and stuff.
-prefix = 'vrn.'
+prefix = os.getenv('COMMAND_PREFIX')
 accent_color = 0x859398
 bot = commands.Bot(commands.when_mentioned_or(prefix), help_command=None)
 
