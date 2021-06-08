@@ -23,8 +23,9 @@ from async_timeout import timeout
 from keep_alive import keep_alive
 
 
-# Define command prefix, description and variables.
-prefix = os.getenv('COMMAND_PREFIX')
+# Define system variables and stuff.
+prefix = 'vrn.'
+accent_color = 0x859398
 bot = commands.Bot(commands.when_mentioned_or(prefix), help_command=None)
 
 lock_roles = ['BotMod', 'BotAdmin']
@@ -116,17 +117,17 @@ async def on_message(message):
 @bot.group(invoke_without_command=True)
 async def help(ctx, cmd=None):
     if not cmd:
-        embed = discord.Embed(title=f'It\'s {bot.user.name} onboard!', color=discord.Color.blurple())
+        embed = discord.Embed(title=f'It\'s {bot.user.name} onboard!', color=accent_color)
 
         embed.add_field(name='Some quick, basic stuff...', value='I\'m an open source Discord music & moderation bot, and I can help you to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
         embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands or `{prefix}help commandname` to get information on a particular command.', inline=False)
-        embed.add_field(name='A handful of clickables!', value='[Invite Me](https://discord.com/api/oauth2/authorize?client_id=828196184845713469&permissions=808971638&scope=bot) / [View My Website](https://shiddharth.github.io/Veron1CA) / [Join My Discord Server](https://discord.gg/rxd5v4n6KV)', inline=False)
+        embed.add_field(name='A handful of clickables!', value='[Invite Me](https://discord.com/api/oauth2/authorize?client_id=828196184845713469&permissions=808971638&scope=bot) / [My Website](https://shiddharth.github.io/Veron1CA) / [My Discord Server](https://discord.gg/rxd5v4n6KV)', inline=False)
 
         embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Help requested by {ctx.author.display_name}')
         await ctx.send(embed=embed)
 
     elif cmd.lower() == 'all':
-        embed = discord.Embed(title='Here\'s an entire list of commands!', color=discord.Color.blurple())
+        embed = discord.Embed(title='Here\'s an entire list of commands!', color=accent_color)
 
         def get_cog_commands(cog_name):
             all_commands = str()
@@ -145,7 +146,7 @@ async def help(ctx, cmd=None):
     else:
         for command in bot.commands:
             if str(command.name) == str(cmd.lower()):
-                embed = (discord.Embed(title=f'Command Docs -> {command.name}', color=discord.Color.blurple()).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(icon_url=ctx.author.avatar_url, text=f'Command help requested by {ctx.author.display_name}'))
+                embed = (discord.Embed(title=f'Command Docs -> {command.name}', color=accent_color).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(icon_url=ctx.author.avatar_url, text=f'Command help requested by {ctx.author.display_name}'))
 
                 aliases = str()
                 if command.aliases == []:
@@ -164,13 +165,13 @@ class Chill(commands.Cog):
         if not member:
             member = ctx.message.author
 
-        embed = (discord.Embed(title='Here\'s what I found!', color=discord.Color.blurple()).set_image(url=member.avatar_url).set_footer(icon_url=ctx.author.avatar_url, text='This looks too fancy to be honest.'))
+        embed = (discord.Embed(title='Here\'s what I found!', color=accent_color).set_image(url=member.avatar_url).set_footer(icon_url=ctx.author.avatar_url, text='This looks too fancy to be honest.'))
         await ctx.send(embed=embed)
 
     @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
     async def ping(self, ctx):
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-last_restarted_obj))))
-        embed = (discord.Embed(title='System Status', color=discord.Color.blurple()).add_field(name='Latency', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Startup Time', value=last_restarted_str, inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
+        embed = (discord.Embed(title='System Status', color=accent_color).add_field(name='Latency', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Startup Time', value=last_restarted_str, inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
         await ctx.send(embed=embed)
 
 
@@ -239,7 +240,7 @@ class Moderation(commands.Cog):
         if not user:
             user = ctx.author
 
-        embed = (discord.Embed(title=f'{user.display_name}\'s Bio', color=discord.Color.blurple()))
+        embed = (discord.Embed(title=f'{user.display_name}\'s Bio', color=accent_color))
 
         embed.add_field(name='Name', value=user.name).add_field(name='Nick', value=user.display_name)
         embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator)
@@ -254,7 +255,7 @@ class Moderation(commands.Cog):
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def send_dm(self, ctx, user: discord.User, *, message):
-        embed = (discord.Embed(title=f'{ctx.author.display_name} has something up for you!', color=discord.Color.blurple()).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
+        embed = (discord.Embed(title=f'{ctx.author.display_name} has something up for you!', color=accent_color).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
         await user.send(embed=embed)
         await ctx.send(f'{ctx.author.mention} your message has been sent!')
         await ctx.message.delete()
@@ -266,7 +267,7 @@ class Moderation(commands.Cog):
             await ctx.send('Cannot send audit log entries more than 100 at a time!')
 
         else:
-            embed = (discord.Embed(title='Audit Log', description=f'Showing the latest {audit_limit} entries that were made in the audit log of {ctx.guild.name}.', color=discord.Color.blurple()).set_footer(text='Investigating the uncommon!', icon_url=ctx.author.avatar_url))
+            embed = (discord.Embed(title='Audit Log', description=f'Showing the latest {audit_limit} entries that were made in the audit log of {ctx.guild.name}.', color=accent_color).set_footer(text='Investigating the uncommon!', icon_url=ctx.author.avatar_url))
             async for audit_entry in ctx.guild.audit_logs(limit=audit_limit):
                 embed.add_field(name=f'- {audit_entry.action}', value=f'User: {audit_entry.user} | Target: {audit_entry.target}', inline=False)
             await ctx.send(embed=embed)
@@ -319,7 +320,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def jailed(self, ctx):
         jail_has_member = False
-        embed = (discord.Embed(title='Now viewing the prison!', color=discord.Color.blurple()).set_footer(icon_url=ctx.author.avatar_url, text='Imagine all being a hacker!'))
+        embed = (discord.Embed(title='Now viewing the prison!', color=accent_color).set_footer(icon_url=ctx.author.avatar_url, text='Imagine all being a hacker!'))
         for jail_member in jail_members:
             if jail_member[1] == ctx.guild:
                 embed.add_field(name=jail_member[0].display_name, value=('Jailed by ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
@@ -378,7 +379,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def bans(self, ctx):
         bans = await ctx.guild.bans()
-        embed = (discord.Embed(title='Now viewing banned members!', color=discord.Color.blurple()).set_footer(icon_url=ctx.author.avatar_url, text='Good thing you banned them!'))
+        embed = (discord.Embed(title='Now viewing banned members!', color=accent_color).set_footer(icon_url=ctx.author.avatar_url, text='Good thing you banned them!'))
         if bans:
             for ban in bans:
                 embed.add_field(name=ban.user, value=f'ID: `{ban.user.id}` | Reason: `{ban.reason}`', inline=False)
@@ -397,7 +398,7 @@ class Moderation(commands.Cog):
     @commands.command(name='roleinfo', help='Shows all important information related to a specific role.', aliases=['roledetails'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def roleinfo(self, ctx, role: discord.Role):
-        embed = (discord.Embed(title=f'Role Information: {str(role)}', color=discord.Color.blurple()))
+        embed = (discord.Embed(title=f'Role Information: {str(role)}', color=accent_color))
         embed.add_field(name='Creation Date:', value=role.created_at).add_field(name='Mentionable', value=role.mentionable)
         embed.add_field(name='Managed By Integration', value=role.is_integration()).add_field(name='Managed By Bot', value=role.is_bot_managed())
         embed.add_field(name='Role Position', value=role.position).add_field(name='Role ID', value=f'`{role.id}`')
@@ -408,7 +409,7 @@ class Moderation(commands.Cog):
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def invites(self, ctx):
         invites = await ctx.guild.invites()
-        embed = (discord.Embed(title='Now viewing invite codes!', color=discord.Color.blurple()).set_footer(icon_url=ctx.author.avatar_url, text='Who created this fancy invites?!'))
+        embed = (discord.Embed(title='Now viewing invite codes!', color=accent_color).set_footer(icon_url=ctx.author.avatar_url, text='Who created this fancy invites?!'))
 
         if not invites:
             await ctx.send('No invite codes have been generated.')
@@ -427,7 +428,7 @@ class Moderation(commands.Cog):
             reason = f'Inviter: {ctx.author.display_name}'
 
         invite = await ctx.channel.create_invite(max_age=max_age, max_uses=max_uses, reason=reason)
-        embed = (discord.Embed(color=discord.Color.blurple()).add_field(name='Link', value=invite).add_field(name='ID', value=f'`{invite.id}`').add_field(name='Channel', value=invite.channel).set_author(name='An invite was created!', icon_url=ctx.author.avatar_url))
+        embed = (discord.Embed(color=accent_color).add_field(name='Link', value=invite).add_field(name='ID', value=f'`{invite.id}`').add_field(name='Channel', value=invite.channel).set_author(name='An invite was created!', icon_url=ctx.author.avatar_url))
 
         value = str()
         if invite.max_age == 0:
@@ -621,7 +622,7 @@ class Song:
     def create_embed(self):
         embed = (discord.Embed(title='Now vibin\' to:',
                                description='```css\n{0.source.title}\n```'.format(self),
-                               color=discord.Color.blurple())
+                               color=accent_color)
                  .add_field(name='Duration', value=self.source.duration)
                  .add_field(name='Requested by', value=self.requester.mention)
                  .add_field(name='Uploader', value='[{0.source.uploader}]({0.source.uploader_url})'.format(self))
