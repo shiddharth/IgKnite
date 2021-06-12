@@ -23,15 +23,23 @@ from async_timeout import timeout
 from keep_alive import keep_alive
 
 
-# Define system variables and stuff.
+# System variables.
+owner = int(os.getenv('OWNER_ID'))
 prefix = os.getenv('COMMAND_PREFIX')
 accent_color = 0x859398
+lock_roles = ['BotMod', 'BotAdmin']
 bot = commands.Bot(commands.when_mentioned_or(prefix), help_command=None)
 
-lock_roles = ['BotMod', 'BotAdmin']
+# System startup data.
 last_restarted_str = str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 last_restarted_obj = time.time()
 
+# Toggles.
+jail_toggle = True
+anti_swear_toggle = True
+freeze_chats_toggle = True
+
+# Global variables.
 global jail_members
 jail_members = list()
 global frozen
@@ -40,15 +48,51 @@ global message_records
 message_records = list()
 
 
-# Bug reports.
-youtube_dl.utils.bug_reports_message = lambda: ''
+# System functions.
+def get_cog_commands(cog_name):
+    all_commands = str()
+    cog = bot.get_cog(cog_name)
+    for command in cog.get_commands():
+        all_commands += f'`{command}` '
+    return all_commands
 
-class VoiceError(Exception):
-    pass
+async def developer_check(ctx):
+    if ctx.author.id == owner:
+        return True
+    else:
+        await ctx.send('You aren\'t allowed to access the secret files!')
+        return False
 
+async def freezecheck(message):
+    if freeze_chats_toggle:
+        for frozen_guild in frozen:
+            if frozen_guild[1] == message.guild and frozen_guild[2] == message.channel and frozen_guild[0] != message.author:
+                await message.delete()
+                return True
 
-class YTDLError(Exception):
-    pass
+async def swearcheck(message):
+    if anti_swear_toggle:
+        if not message.author.bot:
+            msg = message.content
+            symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/', '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
+
+            for msg_word in msg.split():
+                for symbol in symbols:
+                    if symbol in msg_word:
+                        msg_word = msg_word.replace(symbol, '')
+
+                for filtered_word in filtered_wordlist:
+                    if filtered_word.lower() == msg_word.lower():
+                        filtered_messages.append([message.author, message.guild, message.content])
+                        await message.delete()
+                        return True
+
+async def jailcheck(message):
+    if jail_toggle:
+        for jail_member in jail_members:
+            if jail_member[1] == message.guild and jail_member[0] == message.author:
+                await message.delete()
+                return True
 
 
 # Opening wordlist file for word filter feature.
@@ -59,7 +103,7 @@ with open('filtered.txt', 'r') as filtered_wordfile:
     filtered_messages = list()
 
 
-# Bot Events.
+# Bot events.
 @bot.event
 async def on_ready():
     os.system('clear')
@@ -75,51 +119,20 @@ async def on_member_join(ctx, member):
 
 @bot.event
 async def on_message(message):
-    skip_command = False
-    skip_swearcheck = False
-    skip_jail = False
-
     if message.author == bot.user:
         return
 
-    for frozen_guild in frozen:
-        if frozen_guild[1] == message.guild and frozen_guild[2] == message.channel and frozen_guild[0] != message.author:
-            await message.delete()
-            skip_command = True
-            skip_swearcheck = True
-            skip_jail = True
-
-    if skip_swearcheck is not True:
-        if not message.author.bot:
-            msg = message.content
-            symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/', '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
-
-            for msg_word in msg.split():
-                for symbol in symbols:
-                    if symbol in msg_word:
-                        msg_word = msg_word.replace(symbol, '')
-
-                for filtered_word in filtered_wordlist:
-                    if filtered_word.lower() == msg_word.lower():
-                        filtered_messages.append([message.author, message.guild, message.content])
-                        await message.delete()
-                        skip_command = True
-
-    if skip_jail is not True:
-        for jail_member in jail_members:
-            if jail_member[1] == message.guild and jail_member[0] == message.author and skip_command is not True:
-                await message.delete()
-                skip_command = True
-
-    if skip_command is not True:
-        await bot.process_commands(message)
+    if not await freezecheck(message):
+        if not await swearcheck(message):
+            if not await jailcheck(message):
+                await bot.process_commands(message)
 
 
 # Help command.
 @bot.group(invoke_without_command=True)
 async def help(ctx, cmd=None):
     if not cmd:
-        embed = discord.Embed(title=f'It\'s {bot.user.name} onboard!', color=accent_color)
+        embed = (discord.Embed(title=f'It\'s {bot.user.name} onboard!', color=accent_color))
 
         embed.add_field(name='Some quick, basic stuff...', value='I\'m an open source Discord music & moderation bot, and I can help you to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
         embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands or `{prefix}help commandname` to get information on a particular command.', inline=False)
@@ -129,16 +142,7 @@ async def help(ctx, cmd=None):
         await ctx.send(embed=embed)
 
     elif cmd.lower() == 'all':
-        embed = discord.Embed(title='Here\'s an entire list of commands!', color=accent_color)
-
-        def get_cog_commands(cog_name):
-            all_commands = str()
-            cog = bot.get_cog(cog_name)
-            for command in cog.get_commands():
-                all_commands += f'`{command}` '
-            return all_commands
-
-
+        embed = (discord.Embed(title='Here\'s an entire list of commands!', color=accent_color))
         embed.add_field(name='Chill', value=get_cog_commands('Chill'))
         embed.add_field(name='Moderation', value=get_cog_commands('Moderation'))
         embed.add_field(name='Music', value=get_cog_commands('Music'))
@@ -152,12 +156,23 @@ async def help(ctx, cmd=None):
 
                 aliases = str()
                 if command.aliases == []:
-                    aliases = "No aliases available!"
+                    aliases = "No aliases are available."
                 else:
                     aliases = str(command.aliases).replace('[', '').replace(']', '').replace('\'', '')
 
                 embed.add_field(name='Aliases', value=aliases, inline=False)
                 await ctx.send(embed=embed)
+
+
+# Bug reports.
+youtube_dl.utils.bug_reports_message = lambda: ''
+
+class VoiceError(Exception):
+    pass
+
+
+class YTDLError(Exception):
+    pass
 
 
 # Chill category commands.
@@ -303,7 +318,7 @@ class Moderation(commands.Cog):
         last_messages = await ctx.channel.history(limit=1).flatten()
         for last_message in last_messages:
             message_records.append([last_message, ctx.guild])
-        await ctx.send('Registered activity to records successfully.')
+        await ctx.message.add_reaction('✅')
 
     @commands.command(name='captured-msgs', help='Shows the latest captured messages.', aliases=['cptr-msgs'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
@@ -340,7 +355,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('You can\'t jail yourself!')
 
-        if do_jail is True:
+        if do_jail:
             jail_members.append([member, ctx.guild, reason, ctx.author])
             await ctx.message.delete()
             await ctx.send(f'You\'ve been captured! {member.mention} | Reason: {reason}')
@@ -395,14 +410,12 @@ class Moderation(commands.Cog):
     async def kick(self, ctx, member: discord.User, *, reason='No reason provided.'):
         await ctx.guild.kick(member, reason=reason)
         await ctx.send(f'Member **{member.name}** has been kicked!')
-        await ctx.message.add_reaction('✅')
 
     @commands.command(name='ban', help='Bans a member from server.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def ban(self, ctx, member: discord.User, *, reason='No reason provided.'):
         await ctx.guild.ban(member, reason=reason)
         await ctx.send(f'Member **{member.name}** has been banned!')
-        await ctx.message.add_reaction('✅')
 
     @commands.command(name='bans', help='Shows a list of banned users in the server.', aliases=['banlist'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
@@ -422,7 +435,6 @@ class Moderation(commands.Cog):
     async def unban(self, ctx, member: discord.User):
         await ctx.guild.unban(member)
         await ctx.send(f'Member **{member.name}** has been unbanned!')
-        await ctx.message.add_reaction('✅')
 
     @commands.command(name='roleinfo', help='Shows all important information related to a specific role.', aliases=['roledetails'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
@@ -475,7 +487,7 @@ class Moderation(commands.Cog):
         for invite in invites:
             if invite.id == invite_id:
                 await invite.delete()
-                await ctx.send('Invite deleted!')
+                await ctx.send('Invite has been deleted.')
 
     @commands.command(name='mk-role', help='Creates a role.')
     @commands.has_role(lock_roles[1])
@@ -517,7 +529,6 @@ class Moderation(commands.Cog):
     @commands.command(name='freeze-chat', help='Calms down chat.', aliases=['kill-chat'])
     @commands.has_role(lock_roles[1])
     async def freeze(self, ctx):
-        # TODO: Make freezes immortal against restarts.
         frozen.append([ctx.author, ctx.guild, ctx.message.channel])
         await ctx.message.delete()
         await ctx.send(f'**Chat was frozen by {ctx.author.mention}!**')
@@ -797,6 +808,7 @@ class Music(commands.Cog):
             await ctx.voice_state.voice.move_to(destination)
             return
 
+        await ctx.message.add_reaction('✅')
         ctx.voice_state.voice = await destination.connect()
 
     @commands.command(name='summon', help='Summons bot to a particular voice channel.')
@@ -810,6 +822,7 @@ class Music(commands.Cog):
             return
 
         ctx.voice_state.voice = await destination.connect()
+        await ctx.message.add_reaction('✅')
 
     @commands.command(name='leave', help='Clears the queue and leaves the voice channel.')
     async def _leave(self, ctx: commands.Context):
@@ -818,6 +831,7 @@ class Music(commands.Cog):
 
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
+        await ctx.message.add_reaction('✅')
 
     @commands.command(name='volume', help='Sets the volume of the player.')
     async def _volume(self, ctx: commands.Context, *, volume: int):
@@ -838,13 +852,13 @@ class Music(commands.Cog):
     async def _pause(self, ctx: commands.Context):
         if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
             ctx.voice_state.voice.pause()
-            await ctx.message.add_reaction('⏯')
+            await ctx.message.add_reaction('✅')
 
     @commands.command(name='resume', help='Resumes a currently paused song.')
     async def _resume(self, ctx: commands.Context):
         if ctx.voice_state.is_playing and ctx.voice_state.voice.is_paused():
             ctx.voice_state.voice.resume()
-            await ctx.message.add_reaction('⏯')
+            await ctx.message.add_reaction('✅')
 
     @commands.command(name='stop', help='Stops playing song and clears the queue.')
     async def _stop(self, ctx: commands.Context):
@@ -852,7 +866,7 @@ class Music(commands.Cog):
 
         if ctx.voice_state.is_playing:
             ctx.voice_state.voice.stop()
-            await ctx.message.add_reaction('⏹')
+            await ctx.message.add_reaction('✅')
 
     @commands.command(name='skip', help='Vote to skip a song. The requester can automatically skip.')
     async def _skip(self, ctx: commands.Context):
@@ -861,7 +875,7 @@ class Music(commands.Cog):
 
         voter = ctx.author
         if voter == ctx.voice_state.current.requester:
-            await ctx.message.add_reaction('⏭')
+            await ctx.message.add_reaction('✅')
             ctx.voice_state.skip()
 
         elif voter.id not in ctx.voice_state.skip_votes:
@@ -869,7 +883,7 @@ class Music(commands.Cog):
             total_votes = len(ctx.voice_state.skip_votes)
 
             if total_votes >= 3:
-                await ctx.message.add_reaction('⏭')
+                await ctx.message.add_reaction('✅')
                 ctx.voice_state.skip()
             else:
                 await ctx.send('Skip vote added, currently at **{}/3** votes.'.format(total_votes))
@@ -947,10 +961,51 @@ class Music(commands.Cog):
                 raise commands.CommandError('I\'m already in a voice channel.')
 
 
+# Developer commands/tools.
+class Developer(commands.Cog):
+    def __init__(self, ctx):
+        self.bot = bot
+        self.freeze_chats_toggle = freeze_chats_toggle
+        self.anti_swear_toggle = anti_swear_toggle
+        self.jail_toggle = jail_toggle
+
+    @commands.command(name='devtools', help='Shows all the developer tools that can be used.')
+    async def devtools(self, ctx):
+        if await developer_check(ctx):
+            embed = (discord.Embed(title='Developer Tools', description=f'Make sure to use these with consciousness. Type `{prefix}help toolname` to get help on a particular command/tool.', color=accent_color).set_footer(text='This has to be the matrix!', icon_url=ctx.author.avatar_url).add_field(name='Commands', value=get_cog_commands('Developer')))
+            await ctx.send(embed=embed)
+
+    @commands.command(name='toggle', help='Toggles specific features.')
+    async def toggle(self, ctx, toggle_obj=None):
+        if await developer_check(ctx):
+            embed = (discord.Embed(title='Toggle-able Features', description=f'You can see the boolean values that are assigned to each of the fields. This represents that either the feature is turned ON (True) or OFF (False).', color=accent_color).add_field(name='jail', value=self.jail_toggle).add_field(name='antiswear', value=self.anti_swear_toggle).add_field(name='freezechats', value=self.freeze_chats_toggle))
+            await ctx.send(embed=embed)
+
+    @commands.command(name='devpanel', help='Shows overall system status.')
+    async def devpanel(self, ctx):
+        if await developer_check(ctx):
+            embed = (discord.Embed(title='Developer Panel', color=accent_color).add_field(name='System Latency', value=f'{round(self.bot.latency * 1000)}ms').add_field(name='Jailer Count', value=len(jail_members)).add_field(name='Message Record Count', value=len(message_records)).set_footer(text=f'Type {prefix}devtools to get all the commands that you can use as a developer.', icon_url=ctx.author.avatar_url))
+            await ctx.send(embed=embed)
+
+    @commands.command(name='restart', help='Restarts the system.')
+    async def restart(self, ctx):
+        if await developer_check(ctx):
+            embed = (discord.Embed(title='Restarting! Please allow me upto 5 seconds.', color=accent_color))
+            await ctx.send(embed=embed)
+            os.execv(sys.executable, ['python'] + sys.argv)
+
+    @commands.command(name='logout', help='Logs out from the system.')
+    async def logout(self, ctx):
+        if await developer_check(ctx):
+            print('Logging out of the system...')
+            await ctx.message.add_reaction('✅')
+            await self.bot.logout()
+
 # Add available cogs.
 bot.add_cog(Chill(bot))
 bot.add_cog(Moderation(bot))
 bot.add_cog(Music(bot))
+bot.add_cog(Developer(bot))
 
 # Run the bot.
 keep_alive()

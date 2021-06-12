@@ -28,6 +28,7 @@ cd Veron1CA && touch .env
 ```
 TOKEN=yourtokenhere
 COMMAND_PREFIX=yourprefixhere
+OWNER_ID=yourIDhere
 ```
 * After setting up the bot secrets appropriately, open up your Terminal in the project directory. Make sure you have Python and Poetry installed for the upcoming step:
 ```
