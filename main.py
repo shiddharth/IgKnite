@@ -142,7 +142,7 @@ async def help(ctx, cmd=None):
         await ctx.send(embed=embed)
 
     elif cmd.lower() == 'all':
-        embed = (discord.Embed(title='Here\'s an entire list of commands!', color=accent_color))
+        embed = (discord.Embed(title='Here\'s an entire list of commands!', description=f'My default command prefix is `{prefix}` and you can type `{prefix}help commandname` in the chat to get information on a particular command.', color=accent_color))
         embed.add_field(name='Chill', value=get_cog_commands('Chill'))
         embed.add_field(name='Moderation', value=get_cog_commands('Moderation'))
         embed.add_field(name='Music', value=get_cog_commands('Music'))
