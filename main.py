@@ -981,7 +981,7 @@ class Developer(commands.Cog):
             embed = (discord.Embed(title='Toggle-able Features', description=f'You can see the boolean values that are assigned to each of the fields. This represents that either the feature is turned ON (True) or OFF (False).', color=accent_color).add_field(name='jail', value=self.jail_toggle).add_field(name='antiswear', value=self.anti_swear_toggle).add_field(name='freezechats', value=self.freeze_chats_toggle))
             await ctx.send(embed=embed)
 
-    @commands.command(name='devpanel', help='Shows overall system status.')
+    @commands.command(name='panel', help='Shows overall system status.')
     async def devpanel(self, ctx):
         if await developer_check(ctx):
             embed = (discord.Embed(title='Developer Panel', color=accent_color).add_field(name='System Latency', value=f'{round(self.bot.latency * 1000)}ms').add_field(name='Jailer Count', value=len(jail_members)).add_field(name='Message Record Count', value=len(message_records)).set_footer(text=f'Type {prefix}devtools to get all the commands that you can use as a developer.', icon_url=ctx.author.avatar_url))
