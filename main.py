@@ -1,6 +1,6 @@
 '''
 Veron1CA
-An open source Discord moderation bot.
+Licensed under MIT; Copyright 2021 Anindya Shiddhartha
 '''
 
 
@@ -108,8 +108,8 @@ with open('filtered.txt', 'r') as filtered_wordfile:
 async def on_ready():
     os.system('clear')
     print(f'{bot.user.name} | Viewing Terminal\n')
-    print(f'\nLog: {bot.user.name} has been deployed in total {len(bot.guilds)} servers.\n~~~')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help and I\'m Injected in {len(bot.guilds)} servers!'))
+    print(f'\nLog: {bot.user.name} has been deployed in {len(bot.guilds)} server(s).\n~~~')
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'Stop it! Get some {prefix}help'))
 
 
 @bot.event
@@ -150,18 +150,24 @@ async def help(ctx, cmd=None):
         await ctx.send(embed=embed)
 
     else:
+        allow_embed = True
         for command in bot.commands:
             if str(command.name) == str(cmd.lower()):
-                embed = (discord.Embed(title=f'Command Docs -> {command.name}', color=accent_color).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(icon_url=ctx.author.avatar_url, text=f'Command help requested by {ctx.author.name}'))
+                if command.cog_name == 'Developer':
+                    if not await developer_check(ctx):
+                        allow_embed = False
 
-                aliases = str()
-                if command.aliases == []:
-                    aliases = "No aliases are available."
-                else:
-                    aliases = str(command.aliases).replace('[', '').replace(']', '').replace('\'', '')
+                if allow_embed:
+                    embed = (discord.Embed(title=f'Command Docs -> {command.name}', color=accent_color).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(icon_url=ctx.author.avatar_url, text=f'Command help requested by {ctx.author.name}'))
 
-                embed.add_field(name='Aliases', value=aliases, inline=False)
-                await ctx.send(embed=embed)
+                    aliases = str()
+                    if command.aliases == []:
+                        aliases = "No aliases are available."
+                    else:
+                        aliases = str(command.aliases).replace('[', '').replace(']', '').replace('\'', '')
+
+                    embed.add_field(name='Aliases', value=aliases, inline=False)
+                    await ctx.send(embed=embed)
 
 
 # Bug reports.
@@ -187,8 +193,19 @@ class Chill(commands.Cog):
 
     @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
     async def ping(self, ctx):
+        def calc_ping(ping):
+            if ping <= 20:
+                return 'Excellent'
+            elif ping >= 21 and ping <= 40:
+                return 'Great'
+            elif ping >= 41 and ping <= 90:
+                return 'Good'
+            else:
+                return 'Average'
+
+        ping = round(bot.latency * 1000)
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-last_restarted_obj))))
-        embed = (discord.Embed(title='System Status', color=accent_color).add_field(name='Latency', value=f'Running at {round(bot.latency * 1000)}ms', inline=False).add_field(name='Startup Time', value=last_restarted_str, inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
+        embed = (discord.Embed(title='System Status', color=accent_color).add_field(name='Latency', value=f'{ping}ms ({calc_ping(ping)})', inline=False).add_field(name='Startup Time', value=last_restarted_str, inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
         await ctx.send(embed=embed)
 
 
