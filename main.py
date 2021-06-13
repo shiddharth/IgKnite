@@ -35,8 +35,11 @@ last_restarted_str = str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 last_restarted_obj = time.time()
 
 # Toggles.
+global jail_toggle
 jail_toggle = True
+global anti_swear_toggle
 anti_swear_toggle = True
+global freeze_chats_toggle
 freeze_chats_toggle = True
 
 # Global variables.
@@ -109,7 +112,7 @@ async def on_ready():
     os.system('clear')
     print(f'{bot.user.name} | Viewing Terminal\n')
     print(f'\nLog: {bot.user.name} has been deployed in {len(bot.guilds)} server(s).\n~~~')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'Stop it! Get some {prefix}help'))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help and I\'m injected in {len(bot.guilds)} server(s)!'))
 
 
 @bot.event
@@ -358,52 +361,62 @@ class Moderation(commands.Cog):
     @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def jail(self, ctx, member: discord.Member, *, reason='No reason provided.'):
-        do_jail = False
+        if jail_toggle:
+            do_jail = False
 
-        if member != ctx.author:
-            if member.guild_permissions.administrator:
-                if ctx.author.guild_permissions.administrator:
-                    do_jail = True
+            if member != ctx.author:
+                if member.guild_permissions.administrator:
+                    if ctx.author.guild_permissions.administrator:
+                        do_jail = True
+                    else:
+                        await ctx.send('You can\'t jail an admin!')
                 else:
-                    await ctx.send('You can\'t jail an admin!')
+                    do_jail = True
+
             else:
-                do_jail = True
+                await ctx.send('You can\'t jail yourself!')
+
+            if do_jail:
+                jail_members.append([member, ctx.guild, reason, ctx.author])
+                await ctx.message.delete()
+                await ctx.send(f'You\'ve been captured! {member.mention} | Reason: {reason}')
 
         else:
-            await ctx.send('You can\'t jail yourself!')
-
-        if do_jail:
-            jail_members.append([member, ctx.guild, reason, ctx.author])
-            await ctx.message.delete()
-            await ctx.send(f'You\'ve been captured! {member.mention} | Reason: {reason}')
+            await ctx.send('Jails have been temporarily disabled by the developer.')
 
     @commands.command(name='jailed', help='Views jailed members.', aliases=['view-jail'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def jailed(self, ctx):
-        jail_has_member = False
-        embed = (discord.Embed(title='Now viewing the prison!', color=accent_color).set_footer(icon_url=ctx.author.avatar_url, text='Imagine all being a hacker!'))
-        for jail_member in jail_members:
-            if jail_member[1] == ctx.guild:
-                embed.add_field(name=jail_member[0].name, value=('Jailed by ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
-                jail_has_member = True
+        if jail_toggle:
+            jail_has_member = False
+            embed = (discord.Embed(title='Now viewing the prison!', color=accent_color).set_footer(icon_url=ctx.author.avatar_url, text='Imagine all being a hacker!'))
+            for jail_member in jail_members:
+                if jail_member[1] == ctx.guild:
+                    embed.add_field(name=jail_member[0].name, value=('Jailed by ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
+                    jail_has_member = True
 
-        if jail_has_member is False:
-            await ctx.send('No members are inside the jail.')
+            if jail_has_member is False:
+                await ctx.send('No members are inside the jail.')
 
+            else:
+                await ctx.send(embed=embed)
         else:
-            await ctx.send(embed=embed)
+            await ctx.send('Jails have been temporarily disabled by the developer.')
 
     @commands.command(name='unjail', help='Removes a member from jail.', aliases=['release'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def unjail(self, ctx, member: discord.Member):
-        for jail_member in jail_members:
-            if jail_member[1] == ctx.guild and jail_member[0] == member:
-                if member != ctx.author:
-                    jail_members.remove(jail_member)
-                    await ctx.message.add_reaction('✅')
+        if jail_toggle:
+            for jail_member in jail_members:
+                if jail_member[1] == ctx.guild and jail_member[0] == member:
+                    if member != ctx.author:
+                        jail_members.remove(jail_member)
+                        await ctx.message.add_reaction('✅')
 
-                else:
-                    await ctx.send('You can\'t free yourself!')
+                    else:
+                        await ctx.send('You can\'t free yourself!')
+        else:
+            await ctx.send('Jails have been temporarily disabled by the developer.')
 
     @commands.command(name='block', help='Blocks a user from chatting in a specific channel.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
@@ -546,17 +559,23 @@ class Moderation(commands.Cog):
     @commands.command(name='freeze-chat', help='Calms down chat.', aliases=['kill-chat'])
     @commands.has_role(lock_roles[1])
     async def freeze(self, ctx):
-        frozen.append([ctx.author, ctx.guild, ctx.message.channel])
-        await ctx.message.delete()
-        await ctx.send(f'**Chat was frozen by {ctx.author.mention}!**')
+        if freeze_chats_toggle:
+            frozen.append([ctx.author, ctx.guild, ctx.message.channel])
+            await ctx.message.delete()
+            await ctx.send(f'**Chat was frozen by {ctx.author.mention}!**')
+        else:
+            await ctx.send('Chat freezes have been temporarily disabled by the developer.')
 
     @commands.command(name='thaw-chat', help='Removes frozen state from chat.', aliases=['open-chat'])
     @commands.has_role(lock_roles[1])
     async def thaw(self, ctx):
-        for frozen_guild in frozen:
-            if frozen_guild[1] == ctx.guild:
-                frozen.remove(frozen_guild)
-                await ctx.message.add_reaction('✅')
+        if freeze_chats_toggle:
+            for frozen_guild in frozen:
+                if frozen_guild[1] == ctx.guild:
+                    frozen.remove(frozen_guild)
+                    await ctx.message.add_reaction('✅')
+        else:
+            await ctx.send('Chat freezes have been temporarily disabled by the developer.')
 
 
 # Music category commands.
@@ -982,9 +1001,6 @@ class Music(commands.Cog):
 class Developer(commands.Cog):
     def __init__(self, ctx):
         self.bot = bot
-        self.freeze_chats_toggle = freeze_chats_toggle
-        self.anti_swear_toggle = anti_swear_toggle
-        self.jail_toggle = jail_toggle
 
     @commands.command(name='devtools', help='Shows all the developer tools that can be used.')
     async def devtools(self, ctx):
@@ -995,8 +1011,27 @@ class Developer(commands.Cog):
     @commands.command(name='toggle', help='Toggles specific features.')
     async def toggle(self, ctx, toggle_obj=None):
         if await developer_check(ctx):
-            embed = (discord.Embed(title='Toggle-able Features', description=f'You can see the boolean values that are assigned to each of the fields. This represents that either the feature is turned ON (True) or OFF (False).', color=accent_color).add_field(name='jail', value=self.jail_toggle).add_field(name='antiswear', value=self.anti_swear_toggle).add_field(name='freezechats', value=self.freeze_chats_toggle))
-            await ctx.send(embed=embed)
+            global jail_toggle
+            global anti_swear_toggle
+            global freeze_chats_toggle
+
+            toggle_objs = ['jail', 'antiswear', 'freezechats']
+            if not toggle_obj:
+
+                embed = (discord.Embed(title='Toggle-able Features', description=f'You can see the boolean values that are assigned to each of the fields. This represents that either the feature is turned ON (True) or OFF (False). Type `{prefix}toggle togglename` to modify values of specific options.', color=accent_color).add_field(name=toggle_objs[0], value=jail_toggle).add_field(name=toggle_objs[1], value=anti_swear_toggle).add_field(name=toggle_objs[2], value=freeze_chats_toggle).set_footer(text='A toggle-y world, for sure!', icon_url=ctx.author.avatar_url))
+                await ctx.send(embed=embed)
+            else:
+                if toggle_obj.lower() == toggle_objs[0]:
+                    jail_toggle = not jail_toggle
+                    await ctx.send(f'{toggle_objs[0]} has been toggled to `{jail_toggle}`')
+                elif toggle_obj.lower() == toggle_objs[1]:
+                    anti_swear_toggle = not anti_swear_toggle
+                    await ctx.send(f'{toggle_objs[1]} has been toggled to `{anti_swear_toggle}`')
+                elif toggle_obj.lower() == toggle_objs[2]:
+                    freeze_chats_toggle = not freeze_chats_toggle
+                    await ctx.send(f'{toggle_objs[2]} has been toggled to `{freeze_chats_toggle}`')
+                else:
+                    await ctx.send(f'Invalid option! Try typing `{prefix}toggle` for more information.')
 
     @commands.command(name='panel', help='Shows overall system status.')
     async def devpanel(self, ctx):
@@ -1007,6 +1042,7 @@ class Developer(commands.Cog):
     @commands.command(name='restart', help='Restarts the system.')
     async def restart(self, ctx):
         if await developer_check(ctx):
+            print('Log: Restarting!')
             embed = (discord.Embed(title='Restarting! Please allow me upto 5 seconds.', color=accent_color))
             await ctx.send(embed=embed)
             os.execv(sys.executable, ['python'] + sys.argv)
@@ -1014,7 +1050,7 @@ class Developer(commands.Cog):
     @commands.command(name='logout', help='Logs out from the system.')
     async def logout(self, ctx):
         if await developer_check(ctx):
-            print('Logging out of the system...')
+            print('Log: Signing out of the system.')
             await ctx.message.add_reaction('✅')
             await self.bot.logout()
 
