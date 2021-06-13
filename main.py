@@ -1036,7 +1036,7 @@ class Developer(commands.Cog):
     @commands.command(name='panel', help='Shows overall system status.')
     async def devpanel(self, ctx):
         if await developer_check(ctx):
-            embed = (discord.Embed(title='Developer Panel', color=accent_color).add_field(name='System Latency', value=f'{round(self.bot.latency * 1000)}ms').add_field(name='Jailer Count', value=len(jail_members)).add_field(name='Message Record Count', value=len(message_records)).set_footer(text=f'Type {prefix}devtools to get all the commands that you can use as a developer.', icon_url=ctx.author.avatar_url))
+            embed = (discord.Embed(title='Developer Panel', color=accent_color).add_field(name='Chats Frozen', value=len(frozen)).add_field(name='Jailer Count', value=len(jail_members)).add_field(name='Message Record Count', value=len(message_records)).set_footer(text=f'Type {prefix}devtools to get all the commands that you can use as a developer.', icon_url=ctx.author.avatar_url))
             await ctx.send(embed=embed)
 
     @commands.command(name='restart', help='Restarts the system.')
