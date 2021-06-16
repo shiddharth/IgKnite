@@ -41,8 +41,8 @@ global anti_swear_toggle
 anti_swear_toggle = True
 global freeze_chats_toggle
 freeze_chats_toggle = True
-global capture_messages_toggle
-capture_messages_toggle = True
+global capture_msgs_toggle
+capture_msgs_toggle = True
 
 # Global variables.
 global jail_members
@@ -203,7 +203,7 @@ class Chill(commands.Cog):
                 return 'Excellent'
             elif ping >= 21 and ping <= 40:
                 return 'Great'
-            elif ping >= 41 and ping <= 100:
+            elif ping >= 41 and ping <= 90:
                 return 'Good'
             else:
                 return 'Average'
@@ -336,15 +336,11 @@ class Moderation(commands.Cog):
     @commands.command(name='capture-msg', help='Captures the latest message sent by a user, mostly used for storing suspicious records.', aliases=['store-msg'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def capture_msg(self, ctx):
-        if capture_messages_toggle:
-            await ctx.message.delete()
-            last_messages = await ctx.channel.history(limit=1).flatten()
-            for last_message in last_messages:
-                message_records.append([last_message, ctx.guild])
-            await ctx.message.add_reaction('✅')
-
-        else:
-            await ctx.send('Message capturing has been temporarily disabled by the developer.')
+        await ctx.message.delete()
+        last_messages = await ctx.channel.history(limit=1).flatten()
+        for last_message in last_messages:
+            message_records.append([last_message, ctx.guild])
+        await ctx.message.add_reaction('✅')
 
     @commands.command(name='captured-msgs', help='Shows the latest captured messages.', aliases=['cptr-msgs'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
@@ -1020,11 +1016,11 @@ class Developer(commands.Cog):
             global jail_toggle
             global anti_swear_toggle
             global freeze_chats_toggle
-            global capture_messages_toggle
-
+            global capture_msgs_toggle
             toggle_objs = ['jail', 'antiswear', 'freezechats', 'capturemsgs']
+
             if not toggle_obj:
-                embed = (discord.Embed(title='Toggle-able Features', description=f'You can see the boolean values that are assigned to each of the fields. This represents that either the feature is turned ON (True) or OFF (False). Type `{prefix}toggle togglename` to modify values of specific options.', color=accent_color).add_field(name=toggle_objs[0], value=jail_toggle).add_field(name=toggle_objs[1], value=anti_swear_toggle).add_field(name=toggle_objs[2], value=freeze_chats_toggle).set_footer(text='A toggle-y world, for sure!', icon_url=ctx.author.avatar_url))
+                embed = (discord.Embed(title='Toggle-able Features', description=f'You can see the boolean values that are assigned to each of the fields. This represents that either the feature is turned ON (True) or OFF (False). Type `{prefix}toggle togglename` to modify values of specific options.', color=accent_color).add_field(name=toggle_objs[0], value=jail_toggle).add_field(name=toggle_objs[1], value=anti_swear_toggle).add_field(name=toggle_objs[2], value=freeze_chats_toggle).add_field(name=toggle_objs[3], value=capture_msgs_toggle).set_footer(text='A toggle-y world, for sure!', icon_url=ctx.author.avatar_url))
                 await ctx.send(embed=embed)
 
             else:
@@ -1038,8 +1034,8 @@ class Developer(commands.Cog):
                     freeze_chats_toggle = not freeze_chats_toggle
                     await ctx.send(f'{toggle_objs[2]} has been toggled to `{freeze_chats_toggle}`')
                 elif toggle_obj.lower() == toggle_objs[3]:
-                    capture_messages_toggle = not capture_messages_toggle
-                    await ctx.send(f'{toggle_objs[3]} has been toggled to `{capture_messages_toggle}`')
+                    capture_msgs_toggle = not capture_msgs_toggle
+                    await ctx.send(f'{toggle_objs[3]} has been toggled to `{capture_msgs_toggle}`')
                 else:
                     await ctx.send(f'Invalid option! Try typing `{prefix}toggle` for more information.')
 
