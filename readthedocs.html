@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/styles-docs.css">
+  <title>Veron1CA: Documentation</title>
+</head>
+
+<body>
+  <header id="main-header">
+    <nav id="navbar">
+      <h1>Veron1CA's Docs</h1>
+      <ul>
+        <li class="nav-link"><a href="index.html"><< Return To Home</a></li>
+        <li class="nav-link"><a href="#introduction">Introduction</a></li>
+        <li class="nav-link"><a href="#what-you">The Fundamentals</a></li>
+        <li class="nav-link"><a href="#setting-things-up">Initialization</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main id="main-doc">
+    <section class="main-section" id="introduction">
+      <header>A short introduction!</header>
+      <article class="main-article">
+        <img src="assets/images/doc_img1.webp">
+        <p>Veron1CA is an open source Discord moderation & music bot designed to do server management and entertain both at once. It has a bunch of easy-to-use commands that can pretty much make the work of customizing your Discord server a breeze!</p>
+        <p></p>
+      </article>
+    </section>
+
+    <section class="main-section" id="what-you">
+      <header>What you should already know</header>
+      <article class="main-article">
+        <p>This guide assumes you have the following basic background:</p>
+        <ul>
+          <li>A general understanding of how Discord bots work.</li>
+          <li>Good knowledge on setting up / hosting code on your own.</li>
+          <li>Have some satisfactory knowledge in Discord Server Moderation.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="main-section" id="setting-things-up">
+      <header>Setting things up...</header>
+      <article class="main-article">
+        <img src="assets/images/doc_img2.webp">
+        <p>The first and the very basic step of using Veron1CA in your own server of choice is to add it. To do this, simply go to <a href="https://shiddharth.github.io/Veron1CA">Veron1CA's official website</a> and click on 'Inject'. This will prompt you to a screen that's identical with the reference image shown above. Simply select the server you wanna add Veron1CA in, do an easy human verification check and you should see Veron1CA in your server.</p>
+        <p>The next part is to get to know how to actually use it. First of all, create two roles, BotMod and BotAdmin. Here's what they do:</p>
+        <ul>
+          <li>BotMod - This role is used for unlocking the server moderation capabilities for any user with this role.</li>
+          <li>BotAdmin - This role can do everything from the previous role and it also unlocks server customizing abilities for any user with this role.</li>
+          <li>You should assign only one of them to each person, as BotAdmin can do whatever BotMod, you don't really need two roles, it just makes it more messy.</li>
+        </ul>
+        <p>Now when it comes to actually using Veron1CA, you don't need any roles to access the commands. But if you're the moderator / admin of the server itself, then you may need to crank your powers a bit higher up, and that's why Veron1CA's moderation features exist. You can assign yourself BotAdmin if you're the admin and BotMod if you're the moderator, but make sure that no roles get assigned to someone by mistake, it can lead to *chaotic* disasters.</p>
+        <p>Okay, coming to the actual subject, now you can use the built-in commands to get accquainted with the system and stuff. Here is a small explanation on how commands work in Veron1CA:</p>
+        <code>
+          # The default prefix for Veron1CA is vrn. and you can start by typing your very first command with every Discord bot.
+          <br>vrn.help<br><br>
+          # You can add an 'all' keyword to display all the available commands that one can use.
+          <br>vrn.help all<br><br>
+          # You can also type a command's name instead of the keyword to get help on that particular command.
+          <br>vrn.help commandname<br><br>
+          # The final stage, where we actually use a command. Remember when you saw all the commands in a list? Well, type vrn. followed by the command to use it, the ping command is an example here which shows the bot's status.
+          <br><br>vrn.ping
+        </code>
+        <p>You should now be well on your way into tweaking and playing with the features that Veron1CA gives you out of the box.</p>
+      </article>
+    </section>
+
+    <p id="creator">Documented by <a href="https://shiddharth.github.io">Anindya Shiddhartha</a></p>
+  </main>
+</body>
+
+</html>
