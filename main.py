@@ -76,6 +76,7 @@ async def freezecheck(message):
                 return True
 
 async def swearcheck(message):
+    profanity_inside = int()
     if anti_swear_toggle:
         if not message.author.bot:
             msg = message.content
@@ -88,9 +89,16 @@ async def swearcheck(message):
 
                 for filtered_word in filtered_wordlist:
                     if filtered_word.lower() == msg_word.lower():
-                        filtered_messages.append([message.author, message.guild, message.content])
-                        await message.delete()
-                        return True
+                        profanity_inside += 1
+
+            if profanity_inside != 0:
+                filtered_messages.append([message.author, message.guild, message.content])
+                await message.delete()
+
+                if profanity_inside >= 3:
+                    await message.channel.set_permissions(message.author, send_messages=False)
+                    await message.channel.send(f'You\'been automatically blocked from chatting, {message.author.mention}! Try not to swear that much.')
+                return True
 
 async def jailcheck(message):
     if jail_toggle:
