@@ -1066,7 +1066,7 @@ class Developer(commands.Cog):
         if await developer_check(ctx):
             print('Log: Signing out of the system.')
             await ctx.message.add_reaction('✅')
-            await self.bot.logout()
+            await self.bot.close()
 
 # Add available cogs.
 bot.add_cog(Chill(bot))
