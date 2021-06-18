@@ -97,7 +97,7 @@ async def swearcheck(message):
 
                 if profanity_inside >= 3:
                     await message.channel.set_permissions(message.author, send_messages=False)
-                    await message.channel.send(f'You\'been automatically blocked from chatting, {message.author.mention}! Try not to swear that much.')
+                    await message.channel.send(f'You\'ve been automatically blocked from chatting, {message.author.mention}! Try not to swear that much.')
                 return True
 
 async def jailcheck(message):
