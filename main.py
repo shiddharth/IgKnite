@@ -24,7 +24,7 @@ from keep_alive import keep_alive
 
 
 # System variables.
-owner = int(os.getenv('OWNER_ID'))
+owner = int(os.getenv('OWNER_ID')
 prefix = os.getenv('COMMAND_PREFIX')
 accent_color = 0x859398
 lock_roles = ['BotMod', 'BotAdmin']
@@ -224,6 +224,9 @@ class Chill(commands.Cog):
 
 # Moderation category commands.
 class Moderation(commands.Cog):
+    def __init__(self, ctx):
+        self.bot = bot
+
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if hasattr(ctx.command, 'on_error'):
@@ -374,17 +377,19 @@ class Moderation(commands.Cog):
         if jail_toggle:
             do_jail = False
 
-            if member != ctx.author:
-                if member.guild_permissions.administrator:
-                    if ctx.author.guild_permissions.administrator:
-                        do_jail = True
+            if member != bot.user:
+                if member != ctx.author:
+                    if member.guild_permissions.administrator:
+                        if ctx.author.guild_permissions.administrator:
+                            do_jail = True
+                        else:
+                            await ctx.send('You can\'t jail an admin!')
                     else:
-                        await ctx.send('You can\'t jail an admin!')
+                        do_jail = True
                 else:
-                    do_jail = True
-
+                    await ctx.send('You can\'t jail yourself!')
             else:
-                await ctx.send('You can\'t jail yourself!')
+                await ctx.send('Why are you even trying to jail me?')
 
             if do_jail:
                 jail_members.append([member, ctx.guild, reason, ctx.author])
@@ -431,13 +436,16 @@ class Moderation(commands.Cog):
     @commands.command(name='block', help='Blocks a user from chatting in a specific channel.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def block(self, ctx, member: discord.Member, *, reason='No reason provided.'):
-        if member != ctx.author:
-            await ctx.channel.set_permissions(member, send_messages=False)
-            await ctx.message.delete()
-            await ctx.send(f'You\'re now blocked from chatting, {member.mention} | Reason: {reason}')
+        if member != bot.user:
+            if member != ctx.author:
+                await ctx.channel.set_permissions(member, send_messages=False)
+                await ctx.message.delete()
+                await ctx.send(f'You\'re now blocked from chatting, {member.mention} | Reason: {reason}')
 
+            else:
+                await ctx.send(f'You can\'t block yourself!')
         else:
-            await ctx.send(f'You can\'t block yourself!')
+            await ctx.send(f'Why are you even trying to block me?')
 
     @commands.command(name='unblock', help='Unblocks a user.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
