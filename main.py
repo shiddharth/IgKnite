@@ -353,8 +353,8 @@ class Moderation(commands.Cog):
         await ctx.message.delete()
         last_messages = await ctx.channel.history(limit=1).flatten()
         for last_message in last_messages:
+            await last_message.add_reaction('✅')
             message_records.append([last_message, ctx.guild])
-        await ctx.message.add_reaction('✅')
 
     @commands.command(name='captured-msgs', help='Shows the latest captured messages.', aliases=['cptr-msgs'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
