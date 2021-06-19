@@ -196,6 +196,9 @@ class YTDLError(Exception):
 
 # Chill category commands.
 class Chill(commands.Cog):
+    def __init__(self, ctx):
+        self.bot = bot
+
     @commands.command(name='avatar', help='Shows a member\'s Discord avatar.')
     async def avatar(self, ctx, member: discord.Member=None):
         if not member:
@@ -216,7 +219,7 @@ class Chill(commands.Cog):
             else:
                 return 'Average'
 
-        ping = round(bot.latency * 1000)
+        ping = round(self.bot.latency * 1000)
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-last_restarted_obj))))
         embed = (discord.Embed(title='System Status', color=accent_color).add_field(name='Latency', value=f'{ping}ms ({calc_ping(ping)})', inline=False).add_field(name='Startup Time', value=last_restarted_str, inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
         await ctx.send(embed=embed)
@@ -280,7 +283,7 @@ class Moderation(commands.Cog):
     @commands.command(name='sayhi', help='Helps to greet channel members.', aliases=['greet', 'welcome'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def sayhi(self, ctx, member: discord.Member):
-        greeting_messages = [f"Hi {member.mention} Glad you're here.", f"Hello there! {member.mention}", f"Hey {member.mention}! Nice to meet you.", f"Hey, {member.mention} What's up?", f"Looks like someone just spoke my name. Anyway, how are you doing {member.mention}?", f"Happy to see you here, {member.mention}", f"Welcome! {member.mention} Have fun chatting!", f"Nice to meet you, {member.mention}! The name's {bot.user.name} by the way."]
+        greeting_messages = [f"Hi {member.mention} Glad you're here.", f"Hello there! {member.mention}", f"Hey {member.mention}! Nice to meet you.", f"Hey, {member.mention} What's up?", f"Looks like someone just spoke my name. Anyway, how are you doing {member.mention}?", f"Happy to see you here, {member.mention}", f"Welcome! {member.mention} Have fun chatting!", f"Nice to meet you, {member.mention}! The name's {self.bot.user.name} by the way."]
         await ctx.message.delete()
         response = random.choice(greeting_messages)
         await ctx.send(response)
@@ -377,7 +380,7 @@ class Moderation(commands.Cog):
         if jail_toggle:
             do_jail = False
 
-            if member != bot.user:
+            if member != self.bot.user:
                 if member != ctx.author:
                     if member.guild_permissions.administrator:
                         if ctx.author.guild_permissions.administrator:
@@ -436,7 +439,7 @@ class Moderation(commands.Cog):
     @commands.command(name='block', help='Blocks a user from chatting in a specific channel.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def block(self, ctx, member: discord.Member, *, reason='No reason provided.'):
-        if member != bot.user:
+        if member != self.bot.user:
             if member != ctx.author:
                 await ctx.channel.set_permissions(member, send_messages=False)
                 await ctx.message.delete()
