@@ -24,7 +24,7 @@ from keep_alive import keep_alive
 
 
 # System variables.
-owner = int(os.getenv('OWNER_ID')
+owner = int(os.getenv('OWNER_ID'))
 prefix = os.getenv('COMMAND_PREFIX')
 accent_color = 0x859398
 lock_roles = ['BotMod', 'BotAdmin']
