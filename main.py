@@ -13,7 +13,8 @@ import asyncio
 import traceback
 import functools
 import itertools
-import datetime, time
+import datetime
+import time
 
 # Import third-party libraries.
 import discord
@@ -61,12 +62,14 @@ def get_cog_commands(cog_name):
         all_commands += f'`{command}` '
     return all_commands
 
+
 async def developer_check(ctx):
     if ctx.author.id == owner:
         return True
     else:
         await ctx.send('You aren\'t allowed to access the secret files!')
         return False
+
 
 async def freezecheck(message):
     if freeze_chats_toggle:
@@ -75,12 +78,14 @@ async def freezecheck(message):
                 await message.delete()
                 return True
 
+
 async def swearcheck(message):
     profanity_inside = int()
     if anti_swear_toggle:
         if not message.author.bot:
             msg = message.content
-            symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/', '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
+            symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/',
+                       '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
 
             for msg_word in msg.split():
                 for symbol in symbols:
@@ -92,13 +97,15 @@ async def swearcheck(message):
                         profanity_inside += 1
 
             if profanity_inside != 0:
-                filtered_messages.append([message.author, message.guild, message.content])
+                filtered_messages.append(
+                    [message.author, message.guild, message.content])
                 await message.delete()
 
                 if profanity_inside >= 3:
                     await message.channel.set_permissions(message.author, send_messages=False)
                     await message.channel.send(f'You\'ve been automatically blocked from chatting, {message.author.mention}! Try not to swear that much.')
                 return True
+
 
 async def jailcheck(message):
     if jail_toggle:
@@ -121,7 +128,8 @@ with open('filtered.txt', 'r') as filtered_wordfile:
 async def on_ready():
     os.system('clear')
     print(f'{bot.user.name} | Viewing Terminal\n')
-    print(f'\nLog: {bot.user.name} has been deployed in {len(bot.guilds)} server(s).\n~~~')
+    print(
+        f'\nLog: {bot.user.name} has been deployed in {len(bot.guilds)} server(s).\n~~~')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help and I\'m injected in {len(bot.guilds)} server(s)!'))
 
 
@@ -145,21 +153,29 @@ async def on_message(message):
 @bot.group(invoke_without_command=True)
 async def help(ctx, cmd=None):
     if not cmd:
-        embed = (discord.Embed(title=f'It\'s {bot.user.name} onboard!', color=accent_color))
+        embed = (discord.Embed(
+            title=f'It\'s {bot.user.name} onboard!', color=accent_color))
 
-        embed.add_field(name='Some quick, basic stuff...', value='I\'m an open source Discord music & moderation bot, and I can help you to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
-        embed.add_field(name='How to access me?', value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands or `{prefix}help commandname` to get information on a particular command.', inline=False)
-        embed.add_field(name='A handful of clickables!', value='[Invite Me](https://discord.com/api/oauth2/authorize?client_id=828196184845713469&permissions=808971638&scope=bot) / [My Website](https://shiddharth.github.io/Veron1CA) / [My Discord Server](https://discord.gg/rxd5v4n6KV)', inline=False)
+        embed.add_field(name='Some quick, basic stuff...',
+                        value='I\'m an open source Discord music & moderation bot, and I can help you to manage your server properly. From assigning roles to freezing chat, there\'s a ton of stuff that I can do! Visit [my official website](https://shiddharth.github.io/Veron1CA) to learn more about me and maybe add me to your own Discord server. Peace!')
+        embed.add_field(name='How to access me?',
+                        value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands or `{prefix}help commandname` to get information on a particular command.', inline=False)
+        embed.add_field(name='A handful of clickables!',
+                        value='[Invite Me](https://discord.com/api/oauth2/authorize?client_id=828196184845713469&permissions=808971638&scope=bot) / [My Website](https://shiddharth.github.io/Veron1CA) / [My Discord Server](https://discord.gg/rxd5v4n6KV)', inline=False)
 
-        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Help requested by {ctx.author.name}')
+        embed.set_footer(icon_url=ctx.author.avatar_url,
+                         text=f'Help requested by {ctx.author.name}')
         await ctx.send(embed=embed)
 
     elif cmd.lower() == 'all':
-        embed = (discord.Embed(title='Here\'s an entire list of commands!', description=f'My default command prefix is `{prefix}` and you can type `{prefix}help commandname` in the chat to get information on a particular command.', color=accent_color))
+        embed = (discord.Embed(title='Here\'s an entire list of commands!',
+                 description=f'My default command prefix is `{prefix}` and you can type `{prefix}help commandname` in the chat to get information on a particular command.', color=accent_color))
         embed.add_field(name='Chill', value=get_cog_commands('Chill'))
-        embed.add_field(name='Moderation', value=get_cog_commands('Moderation'))
+        embed.add_field(name='Moderation',
+                        value=get_cog_commands('Moderation'))
         embed.add_field(name='Music', value=get_cog_commands('Music'))
-        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Command list requested by {ctx.author.name}')
+        embed.set_footer(icon_url=ctx.author.avatar_url,
+                         text=f'Command list requested by {ctx.author.name}')
         await ctx.send(embed=embed)
 
     else:
@@ -171,20 +187,24 @@ async def help(ctx, cmd=None):
                         allow_embed = False
 
                 if allow_embed:
-                    embed = (discord.Embed(title=f'Command Docs -> {command.name}', color=accent_color).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(icon_url=ctx.author.avatar_url, text=f'Command help requested by {ctx.author.name}'))
+                    embed = (discord.Embed(title=f'Command Docs -> {command.name}', color=accent_color).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(
+                        name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(icon_url=ctx.author.avatar_url, text=f'Command help requested by {ctx.author.name}'))
 
                     aliases = str()
                     if command.aliases == []:
                         aliases = "No aliases are available."
                     else:
-                        aliases = str(command.aliases).replace('[', '').replace(']', '').replace('\'', '')
+                        aliases = str(command.aliases).replace(
+                            '[', '').replace(']', '').replace('\'', '')
 
-                    embed.add_field(name='Aliases', value=aliases, inline=False)
+                    embed.add_field(
+                        name='Aliases', value=aliases, inline=False)
                     await ctx.send(embed=embed)
 
 
 # Bug reports.
 youtube_dl.utils.bug_reports_message = lambda: ''
+
 
 class VoiceError(Exception):
     pass
@@ -200,11 +220,12 @@ class Chill(commands.Cog):
         self.bot = bot
 
     @commands.command(name='avatar', help='Shows a member\'s Discord avatar.')
-    async def avatar(self, ctx, member: discord.Member=None):
+    async def avatar(self, ctx, member: discord.Member = None):
         if not member:
             member = ctx.message.author
 
-        embed = (discord.Embed(title='Here\'s what I found!', color=accent_color).set_image(url=member.avatar_url).set_footer(icon_url=ctx.author.avatar_url, text='This looks too fancy to be honest.'))
+        embed = (discord.Embed(title='Here\'s what I found!', color=accent_color).set_image(
+            url=member.avatar_url).set_footer(icon_url=ctx.author.avatar_url, text='This looks too fancy to be honest.'))
         await ctx.send(embed=embed)
 
     @commands.command(name='ping', help='Shows the current response time of the bot.', aliases=['pong'])
@@ -220,8 +241,10 @@ class Chill(commands.Cog):
                 return 'Average'
 
         ping = round(self.bot.latency * 1000)
-        uptime = str(datetime.timedelta(seconds=int(round(time.time()-last_restarted_obj))))
-        embed = (discord.Embed(title='System Status', color=accent_color).add_field(name='Latency', value=f'{ping}ms ({calc_ping(ping)})', inline=False).add_field(name='Startup Time', value=last_restarted_str, inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
+        uptime = str(datetime.timedelta(seconds=int(
+            round(time.time() - last_restarted_obj))))
+        embed = (discord.Embed(title='System Status', color=accent_color).add_field(name='Latency', value=f'{ping}ms ({calc_ping(ping)})', inline=False).add_field(
+            name='Startup Time', value=last_restarted_str, inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
         await ctx.send(embed=embed)
 
 
@@ -271,8 +294,10 @@ class Moderation(commands.Cog):
             await ctx.send(f'Oops, {error} Try typing `//help commandname` if you don\'t know how to use the command.')
 
         else:
-            print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+            print('Ignoring exception in command {}:'.format(
+                ctx.command), file=sys.stderr)
+            traceback.print_exception(
+                type(error), error, error.__traceback__, file=sys.stderr)
 
     @commands.command(name='clear', help='Clears messages inside the given index.', aliases=['cls'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
@@ -283,32 +308,40 @@ class Moderation(commands.Cog):
     @commands.command(name='sayhi', help='Helps to greet channel members.', aliases=['greet', 'welcome'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def sayhi(self, ctx, member: discord.Member):
-        greeting_messages = [f"Hi {member.mention} Glad you're here.", f"Hello there! {member.mention}", f"Hey {member.mention}! Nice to meet you.", f"Hey, {member.mention} What's up?", f"Looks like someone just spoke my name. Anyway, how are you doing {member.mention}?", f"Happy to see you here, {member.mention}", f"Welcome! {member.mention} Have fun chatting!", f"Nice to meet you, {member.mention}! The name's {self.bot.user.name} by the way."]
+        greeting_messages = [f"Hi {member.mention} Glad you're here.", f"Hello there! {member.mention}", f"Hey {member.mention}! Nice to meet you.", f"Hey, {member.mention} What's up?", f"Looks like someone just spoke my name. Anyway, how are you doing {member.mention}?",
+                             f"Happy to see you here, {member.mention}", f"Welcome! {member.mention} Have fun chatting!", f"Nice to meet you, {member.mention}! The name's {self.bot.user.name} by the way."]
         await ctx.message.delete()
         response = random.choice(greeting_messages)
         await ctx.send(response)
 
     @commands.command(name='userinfo', help='Shows all important information on a user.', aliases=['userdetails'])
-    async def userinfo(self, ctx, user: discord.Member=None):
+    async def userinfo(self, ctx, user: discord.Member = None):
         if not user:
             user = ctx.author
 
-        embed = (discord.Embed(title=f'{user.name}\'s Bio', color=accent_color))
+        embed = (discord.Embed(
+            title=f'{user.name}\'s Bio', color=accent_color))
 
-        embed.add_field(name='Name', value=user.name).add_field(name='Nick', value=user.name)
-        embed.add_field(name='ID', value=user.id).add_field(name='Discriminator', value=user.discriminator)
-        embed.add_field(name='Race', value='Bots, execute em!' if user.bot else 'Human')
+        embed.add_field(name='Name', value=user.name).add_field(
+            name='Nick', value=user.name)
+        embed.add_field(name='ID', value=user.id).add_field(
+            name='Discriminator', value=user.discriminator)
+        embed.add_field(
+            name='Race', value='Bots, execute em!' if user.bot else 'Human')
         embed.add_field(name='Role Count', value=len(user.roles))
-        embed.add_field(name='Discord Joining Date', value=user.created_at.strftime("%b %d, %Y"), inline=False)
+        embed.add_field(name='Discord Joining Date',
+                        value=user.created_at.strftime("%b %d, %Y"), inline=False)
         embed.set_thumbnail(url=user.avatar_url)
-        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Imagine {user.name} being a hacker!')
+        embed.set_footer(icon_url=ctx.author.avatar_url,
+                         text=f'Imagine {user.name} being a hacker!')
 
         await ctx.send(embed=embed)
 
     @commands.command(name='send-dm', help='Helps to send DMs to specific users.', aliases=['sdm'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def send_dm(self, ctx, user: discord.User, *, message):
-        embed = (discord.Embed(title=f'{ctx.author.name} has something up for you!', color=accent_color).add_field(name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
+        embed = (discord.Embed(title=f'{ctx.author.name} has something up for you!', color=accent_color).add_field(
+            name='Message:', value=message).set_footer(text='Delivered with <3 by Veron1CA!').set_thumbnail(url=ctx.author.avatar_url))
         await user.send(embed=embed)
         await ctx.send(f'{ctx.author.mention} your message has been sent!')
         await ctx.message.delete()
@@ -320,9 +353,11 @@ class Moderation(commands.Cog):
             await ctx.send('Cannot send audit log entries more than 100 at a time!')
 
         else:
-            embed = (discord.Embed(title='Audit Log', description=f'Showing the latest {audit_limit} entries that were made in the audit log of {ctx.guild.name}.', color=accent_color).set_footer(text='Investigating the uncommon!', icon_url=ctx.author.avatar_url))
+            embed = (discord.Embed(title='Audit Log', description=f'Showing the latest {audit_limit} entries that were made in the audit log of {ctx.guild.name}.', color=accent_color).set_footer(
+                text='Investigating the uncommon!', icon_url=ctx.author.avatar_url))
             async for audit_entry in ctx.guild.audit_logs(limit=audit_limit):
-                embed.add_field(name=f'- {audit_entry.action}', value=f'User: {audit_entry.user} | Target: {audit_entry.target}', inline=False)
+                embed.add_field(
+                    name=f'- {audit_entry.action}', value=f'User: {audit_entry.user} | Target: {audit_entry.target}', inline=False)
             await ctx.send(embed=embed)
 
     @commands.command(name='restore-msg', help='Tries to restore previously filtered message if it was deleted by mistake.', aliases=['rest-msg'])
@@ -363,12 +398,14 @@ class Moderation(commands.Cog):
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def captured_msgs(self, ctx):
         if capture_msgs_toggle:
-            embed = (discord.Embed(title='Message Records', color=accent_color).set_footer(text='Imagine the records being connected to illuminati!', icon_url=ctx.author.avatar_url))
+            embed = (discord.Embed(title='Message Records', color=accent_color).set_footer(
+                text='Imagine the records being connected to illuminati!', icon_url=ctx.author.avatar_url))
             records_present = False
 
             for message_record in message_records:
                 if message_record[1] == ctx.guild:
-                    embed.add_field(name=f'\"{message_record[0].content}\"', value=f'Sent by {message_record[0].author.name}', inline=False)
+                    embed.add_field(
+                        name=f'\"{message_record[0].content}\"', value=f'Sent by {message_record[0].author.name}', inline=False)
                     message_records.remove(message_record)
                     records_present = True
 
@@ -413,10 +450,12 @@ class Moderation(commands.Cog):
     async def jailed(self, ctx):
         if jail_toggle:
             jail_has_member = False
-            embed = (discord.Embed(title='Now viewing the prison!', color=accent_color).set_footer(icon_url=ctx.author.avatar_url, text='Imagine all being a hacker!'))
+            embed = (discord.Embed(title='Now viewing the prison!', color=accent_color).set_footer(
+                icon_url=ctx.author.avatar_url, text='Imagine all being a hacker!'))
             for jail_member in jail_members:
                 if jail_member[1] == ctx.guild:
-                    embed.add_field(name=jail_member[0].name, value=('Jailed by ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
+                    embed.add_field(name=jail_member[0].name, value=(
+                        'Jailed by ' + jail_member[3].mention + ' | Reason: `' + jail_member[2] + '`'), inline=False)
                     jail_has_member = True
 
             if jail_has_member is False:
@@ -478,10 +517,12 @@ class Moderation(commands.Cog):
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def bans(self, ctx):
         bans = await ctx.guild.bans()
-        embed = (discord.Embed(title='Now viewing banned members!', color=accent_color).set_footer(icon_url=ctx.author.avatar_url, text='Good thing you banned them!'))
+        embed = (discord.Embed(title='Now viewing banned members!', color=accent_color).set_footer(
+            icon_url=ctx.author.avatar_url, text='Good thing you banned them!'))
         if bans:
             for ban in bans:
-                embed.add_field(name=ban.user, value=f'ID: `{ban.user.id}` | Reason: `{ban.reason}`', inline=False)
+                embed.add_field(
+                    name=ban.user, value=f'ID: `{ban.user.id}` | Reason: `{ban.reason}`', inline=False)
             await ctx.send(embed=embed)
 
         else:
@@ -496,18 +537,24 @@ class Moderation(commands.Cog):
     @commands.command(name='roleinfo', help='Shows all important information related to a specific role.', aliases=['roledetails'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def roleinfo(self, ctx, role: discord.Role):
-        embed = (discord.Embed(title=f'Role Information: {str(role)}', color=accent_color))
-        embed.add_field(name='Creation Date:', value=role.created_at).add_field(name='Mentionable', value=role.mentionable)
-        embed.add_field(name='Managed By Integration', value=role.is_integration()).add_field(name='Managed By Bot', value=role.is_bot_managed())
-        embed.add_field(name='Role Position', value=role.position).add_field(name='Role ID', value=f'`{role.id}`')
-        embed.set_footer(icon_url=ctx.author.avatar_url, text=f'Requested by {ctx.author.name}')
+        embed = (discord.Embed(
+            title=f'Role Information: {str(role)}', color=accent_color))
+        embed.add_field(name='Creation Date:', value=role.created_at).add_field(
+            name='Mentionable', value=role.mentionable)
+        embed.add_field(name='Managed By Integration', value=role.is_integration(
+        )).add_field(name='Managed By Bot', value=role.is_bot_managed())
+        embed.add_field(name='Role Position', value=role.position).add_field(
+            name='Role ID', value=f'`{role.id}`')
+        embed.set_footer(icon_url=ctx.author.avatar_url,
+                         text=f'Requested by {ctx.author.name}')
         await ctx.send(embed=embed)
 
     @commands.command(name='invites', help='Shows all active server invite codes.', aliases=['invlist', 'allinv'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def invites(self, ctx):
         invites = await ctx.guild.invites()
-        embed = (discord.Embed(title='Now viewing invite codes!', color=accent_color).set_footer(icon_url=ctx.author.avatar_url, text='Who created this fancy invites?!'))
+        embed = (discord.Embed(title='Now viewing invite codes!', color=accent_color).set_footer(
+            icon_url=ctx.author.avatar_url, text='Who created this fancy invites?!'))
 
         if not invites:
             await ctx.send('No invite codes have been generated.')
@@ -516,7 +563,8 @@ class Moderation(commands.Cog):
             invcount = 0
             for invite in invites:
                 invcount += 1
-                embed.add_field(name=invite, value=f'Uses: {invite.uses} | Inviter: {invite.inviter.name} | ID: `{invite.id}`', inline=False)
+                embed.add_field(
+                    name=invite, value=f'Uses: {invite.uses} | Inviter: {invite.inviter.name} | ID: `{invite.id}`', inline=False)
             await ctx.send(embed=embed)
 
     @commands.command(name='mk-inv', help='Creates an invite code or link.')
@@ -526,7 +574,8 @@ class Moderation(commands.Cog):
             reason = f'Inviter: {ctx.author.name}'
 
         invite = await ctx.channel.create_invite(max_age=max_age, max_uses=max_uses, reason=reason)
-        embed = (discord.Embed(color=accent_color).add_field(name='Link', value=invite).add_field(name='ID', value=f'`{invite.id}`').add_field(name='Channel', value=invite.channel).set_author(name='An invite was created!', icon_url=ctx.author.avatar_url))
+        embed = (discord.Embed(color=accent_color).add_field(name='Link', value=invite).add_field(name='ID', value=f'`{invite.id}`').add_field(
+            name='Channel', value=invite.channel).set_author(name='An invite was created!', icon_url=ctx.author.avatar_url))
 
         value = str()
         if invite.max_age == 0:
@@ -534,7 +583,8 @@ class Moderation(commands.Cog):
         else:
             value = f'{invite.max_age} Seconds'
 
-        embed.add_field(name='Lifetime', value=value).add_field(name='Max Uses', value=invite.max_uses)
+        embed.add_field(name='Lifetime', value=value).add_field(
+            name='Max Uses', value=invite.max_uses)
         await ctx.send(embed=embed)
 
     @commands.command(name='rm-inv', help='Removes a previously generated invite code or link.')
@@ -659,11 +709,13 @@ class YTDLSource(discord.PCMVolumeTransformer):
     async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.BaseEventLoop = None):
         loop = loop or asyncio.get_event_loop()
 
-        partial = functools.partial(cls.ytdl.extract_info, search, download=False, process=False)
+        partial = functools.partial(
+            cls.ytdl.extract_info, search, download=False, process=False)
         data = await loop.run_in_executor(None, partial)
 
         if data is None:
-            raise YTDLError('Couldn\'t find anything that matches **{}**'.format(search))
+            raise YTDLError(
+                'Couldn\'t find anything that matches **{}**'.format(search))
 
         if 'entries' not in data:
             process_info = data
@@ -675,10 +727,12 @@ class YTDLSource(discord.PCMVolumeTransformer):
                     break
 
             if process_info is None:
-                raise YTDLError('Couldn\'t find anything that matches **{}**'.format(search))
+                raise YTDLError(
+                    'Couldn\'t find anything that matches **{}**'.format(search))
 
         webpage_url = process_info['webpage_url']
-        partial = functools.partial(cls.ytdl.extract_info, webpage_url, download=False)
+        partial = functools.partial(
+            cls.ytdl.extract_info, webpage_url, download=False)
         processed_info = await loop.run_in_executor(None, partial)
 
         if processed_info is None:
@@ -692,7 +746,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
                 try:
                     info = processed_info['entries'].pop(0)
                 except IndexError:
-                    raise YTDLError('Couldn\'t retrieve any matches for **{}**'.format(webpage_url))
+                    raise YTDLError(
+                        'Couldn\'t retrieve any matches for **{}**'.format(webpage_url))
 
         return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
 
@@ -724,7 +779,8 @@ class Song:
 
     def create_embed(self):
         embed = (discord.Embed(title='Now vibin\' to:',
-                               description='```css\n{0.source.title}\n```'.format(self),
+                               description='```css\n{0.source.title}\n```'.format(
+                                   self),
                                color=accent_color)
                  .add_field(name='Duration', value=self.source.duration)
                  .add_field(name='Requested by', value=self.requester.mention)
@@ -854,7 +910,8 @@ class Music(commands.Cog):
 
     def cog_check(self, ctx: commands.Context):
         if not ctx.guild:
-            raise commands.NoPrivateMessage('Sorry, this command can\'t be used in DM channels.')
+            raise commands.NoPrivateMessage(
+                'Sorry, this command can\'t be used in DM channels.')
 
         return True
 
@@ -877,7 +934,8 @@ class Music(commands.Cog):
     @commands.command(name='summon', help='Summons bot to a particular voice channel.')
     async def _summon(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
         if not channel and not ctx.author.voice:
-            raise VoiceError('You are neither connected to a voice channel nor specified a channel to join.')
+            raise VoiceError(
+                'You are neither connected to a voice channel nor specified a channel to join.')
 
         destination = channel or ctx.author.voice.channel
         if ctx.voice_state.voice:
@@ -967,7 +1025,8 @@ class Music(commands.Cog):
 
         queue = ''
         for i, song in enumerate(ctx.voice_state.songs[start:end], start=start):
-            queue += '`{0}.` [**{1.source.title}**]({1.source.url})\n'.format(i + 1, song)
+            queue += '`{0}.` [**{1.source.title}**]({1.source.url})\n'.format(
+                i + 1, song)
 
         embed = (discord.Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
                  .set_footer(text='Viewing page {}/{}'.format(page, pages)))
@@ -1017,7 +1076,8 @@ class Music(commands.Cog):
     @_play.before_invoke
     async def ensure_voice_state(self, ctx: commands.Context):
         if not ctx.author.voice or not ctx.author.voice.channel:
-            raise commands.CommandError('You are not connected to any voice channel.')
+            raise commands.CommandError(
+                'You are not connected to any voice channel.')
 
         if ctx.voice_client:
             if ctx.voice_client.channel != ctx.author.voice.channel:
@@ -1032,7 +1092,8 @@ class Developer(commands.Cog):
     @commands.command(name='devtools', help='Shows all the developer tools that can be used.')
     async def devtools(self, ctx):
         if await developer_check(ctx):
-            embed = (discord.Embed(title='Developer Tools', description=f'Make sure to use these with consciousness. Type `{prefix}help toolname` to get help on a particular command/tool.', color=accent_color).set_footer(text='This has to be the matrix!', icon_url=ctx.author.avatar_url).add_field(name='Commands', value=get_cog_commands('Developer')))
+            embed = (discord.Embed(title='Developer Tools', description=f'Make sure to use these with consciousness. Type `{prefix}help toolname` to get help on a particular command/tool.', color=accent_color).set_footer(
+                text='This has to be the matrix!', icon_url=ctx.author.avatar_url).add_field(name='Commands', value=get_cog_commands('Developer')))
             await ctx.send(embed=embed)
 
     @commands.command(name='toggle', help='Toggles specific features.')
@@ -1045,7 +1106,8 @@ class Developer(commands.Cog):
             toggle_objs = ['jail', 'antiswear', 'freezechats', 'capturemsgs']
 
             if not toggle_obj:
-                embed = (discord.Embed(title='Toggle-able Features', description=f'You can see the boolean values that are assigned to each of the fields. This represents that either the feature is turned ON (True) or OFF (False). Type `{prefix}toggle togglename` to modify values of specific options.', color=accent_color).add_field(name=toggle_objs[0], value=jail_toggle).add_field(name=toggle_objs[1], value=anti_swear_toggle).add_field(name=toggle_objs[2], value=freeze_chats_toggle).add_field(name=toggle_objs[3], value=capture_msgs_toggle).set_footer(text='A toggle-y world, for sure!', icon_url=ctx.author.avatar_url))
+                embed = (discord.Embed(title='Toggle-able Features', description=f'You can see the boolean values that are assigned to each of the fields. This represents that either the feature is turned ON (True) or OFF (False). Type `{prefix}toggle togglename` to modify values of specific options.', color=accent_color).add_field(
+                    name=toggle_objs[0], value=jail_toggle).add_field(name=toggle_objs[1], value=anti_swear_toggle).add_field(name=toggle_objs[2], value=freeze_chats_toggle).add_field(name=toggle_objs[3], value=capture_msgs_toggle).set_footer(text='A toggle-y world, for sure!', icon_url=ctx.author.avatar_url))
                 await ctx.send(embed=embed)
 
             else:
@@ -1067,14 +1129,16 @@ class Developer(commands.Cog):
     @commands.command(name='panel', help='Shows overall system status.')
     async def devpanel(self, ctx):
         if await developer_check(ctx):
-            embed = (discord.Embed(title='Developer Panel', color=accent_color).add_field(name='Chats Frozen', value=len(frozen)).add_field(name='Jailer Count', value=len(jail_members)).add_field(name='Message Record Count', value=len(message_records)).set_footer(text=f'Type {prefix}devtools to get all the commands that you can use as a developer.', icon_url=ctx.author.avatar_url))
+            embed = (discord.Embed(title='Developer Panel', color=accent_color).add_field(name='Chats Frozen', value=len(frozen)).add_field(name='Jailer Count', value=len(jail_members)).add_field(
+                name='Message Record Count', value=len(message_records)).set_footer(text=f'Type {prefix}devtools to get all the commands that you can use as a developer.', icon_url=ctx.author.avatar_url))
             await ctx.send(embed=embed)
 
     @commands.command(name='restart', help='Restarts the system.')
     async def restart(self, ctx):
         if await developer_check(ctx):
             print('Log: Restarting!')
-            embed = (discord.Embed(title='Restarting! Please allow me upto 5 seconds.', color=accent_color))
+            embed = (discord.Embed(
+                title='Restarting! Please allow me upto 5 seconds.', color=accent_color))
             await ctx.send(embed=embed)
             os.execv(sys.executable, ['python'] + sys.argv)
 
@@ -1084,6 +1148,7 @@ class Developer(commands.Cog):
             print('Log: Signing out of the system.')
             await ctx.message.add_reaction('✅')
             await self.bot.close()
+
 
 # Add available cogs.
 bot.add_cog(Chill(bot))
