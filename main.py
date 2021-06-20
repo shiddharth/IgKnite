@@ -350,29 +350,35 @@ class Moderation(commands.Cog):
     @commands.command(name='capture-msg', help='Captures the latest message sent by a user, mostly used for storing suspicious records.', aliases=['store-msg'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def capture_msg(self, ctx):
-        await ctx.message.delete()
-        last_messages = await ctx.channel.history(limit=1).flatten()
-        for last_message in last_messages:
-            await last_message.add_reaction('✅')
-            message_records.append([last_message, ctx.guild])
+        if capture_msgs_toggle:
+            await ctx.message.delete()
+            last_messages = await ctx.channel.history(limit=1).flatten()
+            for last_message in last_messages:
+                await last_message.add_reaction('✅')
+                message_records.append([last_message, ctx.guild])
+        else:
+            await ctx.send('Message captures have been temporarily disabled by the developer.')
 
     @commands.command(name='captured-msgs', help='Shows the latest captured messages.', aliases=['cptr-msgs'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def captured_msgs(self, ctx):
-        embed = (discord.Embed(title='Message Records', color=accent_color).set_footer(text='Imagine the records being connected to illuminati!', icon_url=ctx.author.avatar_url))
-        records_present = False
+        if capture_msgs_toggle:
+            embed = (discord.Embed(title='Message Records', color=accent_color).set_footer(text='Imagine the records being connected to illuminati!', icon_url=ctx.author.avatar_url))
+            records_present = False
 
-        for message_record in message_records:
-            if message_record[1] == ctx.guild:
-                embed.add_field(name=f'\"{message_record[0].content}\"', value=f'Sent by {message_record[0].author.name}', inline=False)
-                message_records.remove(message_record)
-                records_present = True
+            for message_record in message_records:
+                if message_record[1] == ctx.guild:
+                    embed.add_field(name=f'\"{message_record[0].content}\"', value=f'Sent by {message_record[0].author.name}', inline=False)
+                    message_records.remove(message_record)
+                    records_present = True
 
-        if records_present is False:
-            await ctx.send('No records were found.')
+            if records_present is False:
+                await ctx.send('No records were found.')
 
+            else:
+                await ctx.send(embed=embed)
         else:
-            await ctx.send(embed=embed)
+            await ctx.send('Message captures have been temporarily disabled by the developer.')
 
     @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
