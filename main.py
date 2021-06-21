@@ -86,7 +86,7 @@ async def swearcheck(message):
         if not message.author.bot:
             msg = message.content
             symbols = ['?', '.', ',', '(', ')', '[', ']', '{', '}', '+', '-', '/',
-                       '=', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
+                       '=', '|', '_', '*', '&', '!', '@', '#', '$', '%', '^', '<', '>', '`', '~']
 
             for msg_word in msg.split():
                 for symbol in symbols:
