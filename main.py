@@ -1159,8 +1159,4 @@ bot.add_cog(Developer(bot))
 
 # Run the bot.
 keep_alive()
-if not config('TOKEN'):
-    print('Error: Local environment variable TOKEN is not assigned!')
-
-else:
-    bot.run(config('TOKEN'))
+bot.run(config('TOKEN'))
