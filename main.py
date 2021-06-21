@@ -11,22 +11,23 @@ import time
 import math
 import random
 import asyncio
+import datetime
 import traceback
 import functools
 import itertools
-import datetime
 
 # Import third-party libraries.
 import discord
 import youtube_dl
+from decouple import config
 from discord.ext import commands
 from async_timeout import timeout
 from keep_alive import keep_alive
 
 
 # System variables.
-owner = int(os.getenv('OWNER_ID'))
-prefix = os.getenv('COMMAND_PREFIX')
+owner = int(config('OWNER_ID'))
+prefix = config('COMMAND_PREFIX')
 accent_color = 0x859398
 lock_roles = ['BotMod', 'BotAdmin']
 bot = commands.Bot(commands.when_mentioned_or(prefix), help_command=None)
@@ -1158,4 +1159,8 @@ bot.add_cog(Developer(bot))
 
 # Run the bot.
 keep_alive()
-bot.run(os.getenv('TOKEN'))
+if not config('TOKEN'):
+    print('Error: Local environment variable TOKEN is not assigned!')
+
+else:
+    bot.run(config('TOKEN'))
