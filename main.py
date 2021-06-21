@@ -135,7 +135,7 @@ async def on_ready():
 
 
 @bot.event
-async def on_member_join(ctx, member):
+async def on_member_join(member):
     await member.send(f'Hi there, {member.mention}! Hope you enjoy your stay at {member.guild.name}!')
 
 
