@@ -7,6 +7,7 @@ Licensed under MIT; Copyright 2021 Anindya Shiddhartha
 # Import default libraries.
 import os
 import sys
+import time
 import math
 import random
 import asyncio
@@ -14,7 +15,6 @@ import traceback
 import functools
 import itertools
 import datetime
-import time
 
 # Import third-party libraries.
 import discord
