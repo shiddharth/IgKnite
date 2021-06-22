@@ -506,13 +506,15 @@ class Moderation(commands.Cog):
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def kick(self, ctx, member: discord.User, *, reason='No reason provided.'):
         await ctx.guild.kick(member, reason=reason)
-        await ctx.send(f'Member **{member.name}** has been kicked!')
+        await ctx.send(f'Member **{member.name}** has been kicked! Reason: {reason}')
+        await ctx.message.delete()
 
     @commands.command(name='ban', help='Bans a member from server.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def ban(self, ctx, member: discord.User, *, reason='No reason provided.'):
         await ctx.guild.ban(member, reason=reason)
-        await ctx.send(f'Member **{member.name}** has been banned!')
+        await ctx.send(f'Member **{member.name}** has been banned! Reason: {reason}')
+        await ctx.message.delete()
 
     @commands.command(name='bans', help='Shows a list of banned users in the server.', aliases=['banlist'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
