@@ -341,14 +341,18 @@ class Moderation(commands.Cog):
     @commands.command(name='guildinfo', help='Shows all important information on the current guild / server.', aliases=['serverinfo'])
     async def guildinfo(self, ctx):
         guild = ctx.guild
-        embed = (discord.Embed(title=guild.name, description=guild.description, color=accent_color))
+        embed = (discord.Embed(title=guild.name,
+                 description=f'Showing all necessary information related to this guild. Scroll to find out more about {guild.name}!', color=accent_color))
 
-        embed.add_field(name='Owner', value=guild.owner)
+        embed.add_field(name='Creation Date', value=guild.created_at)
         embed.add_field(name='Region', value=guild.region)
-        embed.add_field(name='Server ID', value=guild.id, inline=False)
+        embed.add_field(name='Server ID', value=guild.id)
         embed.add_field(name='Member Count', value=guild.member_count)
+        embed.add_field(name='Role Count', value=len(guild.roles))
+        embed.add_field(name='Channel Count', value=len(guild.channels))
         embed.set_thumbnail(url=ctx.guild.icon_url)
-        embed.set_footer(icon_url=ctx.author.avatar_url, text='Looks fine to me, at least.')
+        embed.set_footer(icon_url=ctx.author.avatar_url,
+                         text='Looks fine to me, at least.')
 
         await ctx.send(embed=embed)
 
