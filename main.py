@@ -1109,7 +1109,7 @@ class Developer(commands.Cog):
             toggle_objs = ['jail', 'antiswear', 'freezechats', 'capturemsgs']
 
             async def show_message_toggled(toggle_obj, toggle):
-                await ctx.send(f'{toggle_obj} has been toggled to `{toggle}`')
+                await ctx.send(f'{toggle_obj} has been toggled to `{not toggle}`')
                 return not toggle
 
             if not toggle_obj:
