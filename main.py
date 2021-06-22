@@ -45,6 +45,8 @@ global freeze_chats_toggle
 freeze_chats_toggle = True
 global capture_msgs_toggle
 capture_msgs_toggle = True
+global process_commands_toggle
+process_commands_toggle = True
 
 # Global variables.
 global jail_members
@@ -147,7 +149,8 @@ async def on_message(message):
     if not await freezecheck(message):
         if not await swearcheck(message):
             if not await jailcheck(message):
-                await bot.process_commands(message)
+                if process_commands_toggle:
+                    await bot.process_commands(message)
 
 
 # Help command.
@@ -1104,26 +1107,34 @@ class Developer(commands.Cog):
             global anti_swear_toggle
             global freeze_chats_toggle
             global capture_msgs_toggle
-            toggle_objs = ['jail', 'antiswear', 'freezechats', 'capturemsgs']
+            global process_commands_toggle
+
+            async def show_toggled(toggle_org, toggle):
+                await ctx.send(f'{toggle_org} has been set to {toggle}')
+
+            toggle_objs = ['jail', 'antiswear', 'freezechats', 'capturemsgs', 'processcmds']
 
             if not toggle_obj:
                 embed = (discord.Embed(title='Toggle-able Features', description=f'You can see the boolean values that are assigned to each of the fields. This represents that either the feature is turned ON (True) or OFF (False). Type `{prefix}toggle togglename` to modify values of specific options.', color=accent_color).add_field(
-                    name=toggle_objs[0], value=jail_toggle).add_field(name=toggle_objs[1], value=anti_swear_toggle).add_field(name=toggle_objs[2], value=freeze_chats_toggle).add_field(name=toggle_objs[3], value=capture_msgs_toggle).set_footer(text='A toggle-y world, for sure!', icon_url=ctx.author.avatar_url))
+                    name=toggle_objs[0], value=jail_toggle).add_field(name=toggle_objs[1], value=anti_swear_toggle).add_field(name=toggle_objs[2], value=freeze_chats_toggle).add_field(name=toggle_objs[3], value=capture_msgs_toggle).add_field(name=toggle_objs[4], value=process_commands_toggle).set_footer(text='A toggle-y world, for sure!', icon_url=ctx.author.avatar_url))
                 await ctx.send(embed=embed)
 
             else:
                 if toggle_obj.lower() == toggle_objs[0]:
                     jail_toggle = not jail_toggle
-                    await ctx.send(f'{toggle_objs[0]} has been toggled to `{jail_toggle}`')
+                    await show_toggled(toggle_objs[0], jail_toggle)
                 elif toggle_obj.lower() == toggle_objs[1]:
                     anti_swear_toggle = not anti_swear_toggle
-                    await ctx.send(f'{toggle_objs[1]} has been toggled to `{anti_swear_toggle}`')
+                    await show_toggled(toggle_objs[1], anti_swear_toggle)
                 elif toggle_obj.lower() == toggle_objs[2]:
                     freeze_chats_toggle = not freeze_chats_toggle
-                    await ctx.send(f'{toggle_objs[2]} has been toggled to `{freeze_chats_toggle}`')
+                    await show_toggled(toggle_objs[2], freeze_chats_toggle)
                 elif toggle_obj.lower() == toggle_objs[3]:
                     capture_msgs_toggle = not capture_msgs_toggle
-                    await ctx.send(f'{toggle_objs[3]} has been toggled to `{capture_msgs_toggle}`')
+                    await show_toggled(toggle_objs[3], capture_msgs_toggle)
+                elif toggle_obj.lower() == toggle_objs[4]:
+                    process_commands_toggle = not process_commands_toggle
+                    await show_toggled(toggle_objs[4], process_commands_toggle)
                 else:
                     await ctx.send(f'Invalid option! Try typing `{prefix}toggle` for more information.')
 
