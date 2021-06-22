@@ -325,16 +325,16 @@ class Moderation(commands.Cog):
 
         embed.add_field(name='Name', value=user.name).add_field(
             name='Nick', value=user.name)
-        embed.add_field(name='ID', value=user.id).add_field(
+        embed.add_field(name='User ID', value=user.id).add_field(
             name='Discriminator', value=user.discriminator)
         embed.add_field(
             name='Race', value='Bots, execute em!' if user.bot else 'Human')
-        embed.add_field(name='Role Count', value=len(user.roles))
+        embed.add_field(name='Roles', value=len(user.roles))
         embed.add_field(name='Discord Joining Date',
                         value=user.created_at.strftime("%b %d, %Y"), inline=False)
         embed.set_thumbnail(url=user.avatar_url)
-        embed.set_footer(icon_url=ctx.author.avatar_url,
-                         text=f'Imagine {user.name} being a hacker!')
+        embed.set_footer(text=f'Imagine {user.name} being a hacker!',
+                         icon_url=ctx.author.avatar_url)
 
         await ctx.send(embed=embed)
 
@@ -344,12 +344,12 @@ class Moderation(commands.Cog):
         embed = (discord.Embed(title=guild.name,
                  description=f'Showing all necessary information related to this guild. Scroll to find out more about {guild.name}!', color=accent_color))
 
-        embed.add_field(name='Creation Date', value=guild.created_at)
+        embed.add_field(name='Creation Date', value=guild.created_at.strftime("%b %d, %Y"))
         embed.add_field(name='Region', value=guild.region)
         embed.add_field(name='Server ID', value=guild.id)
-        embed.add_field(name='Member Count', value=guild.member_count)
-        embed.add_field(name='Role Count', value=len(guild.roles))
-        embed.add_field(name='Channel Count', value=len(guild.channels))
+        embed.add_field(name='Members', value=guild.member_count)
+        embed.add_field(name='Roles', value=len(guild.roles))
+        embed.add_field(name='Channels', value=len(guild.channels))
         embed.set_thumbnail(url=ctx.guild.icon_url)
         embed.set_footer(icon_url=ctx.author.avatar_url,
                          text='Looks fine to me, at least.')
