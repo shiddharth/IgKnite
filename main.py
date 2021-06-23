@@ -115,6 +115,7 @@ async def jailcheck(message):
                 await message.delete()
                 return True
 
+
 async def webcheck(message):
     global msg_web_target
     global msg_web_records
@@ -125,9 +126,11 @@ async def webcheck(message):
                 if len(msg_web_records) <= 5:
                     msg_web_records.append(message)
                 else:
-                    embed = (discord.Embed(title='Web Trap Retracted', description='The web trap that you had enabled has been retracted successfully after it\'s operation. Below is the list of five messages that the web captured.', color=accent_color).set_footer(text='Looks like he messed up real bad here!', icon_url=target[1].avatar_url))
+                    embed = (discord.Embed(title='Web Trap Retracted', description='The web trap that you had enabled has been retracted successfully after it\'s operation. Below is the list of five messages that the web captured.',
+                             color=accent_color).set_footer(text='Looks like he messed up real bad here!', icon_url=target[1].avatar_url))
                     for message in msg_web_records:
-                        embed.add_field(name=f'\'{message.content}\'', value=f'Sent by {message.author.name} at {message.channel}')
+                        embed.add_field(
+                            name=f'\'{message.content}\'', value=f'Sent by {message.author.name} at {message.channel}')
                     await target[1].send(embed=embed)
                     msg_web_target = list()
                     msg_web_records = list()
@@ -346,7 +349,8 @@ class Moderation(commands.Cog):
         embed = (discord.Embed(title=guild.name,
                  description=f'Showing all necessary information related to this guild. Scroll to find out more about {guild.name}!', color=accent_color))
 
-        embed.add_field(name='Creation Date', value=guild.created_at.strftime("%b %d, %Y"))
+        embed.add_field(name='Creation Date',
+                        value=guild.created_at.strftime("%b %d, %Y"))
         embed.add_field(name='Region', value=guild.region)
         embed.add_field(name='Server ID', value=guild.id)
         embed.add_field(name='Members', value=guild.member_count)
@@ -360,9 +364,17 @@ class Moderation(commands.Cog):
 
     @commands.command(name='purge', help='Clears messages inside the given index.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
-    async def clear(self, ctx, amount=1):
+    async def purge(self, ctx, amount=1):
         amount += 1
         await ctx.channel.purge(limit=amount)
+
+    @commands.command(name='ripplepurge', help='Clears messages inside the given index that are sent by a specific user.')
+    @commands.has_any_role(lock_roles[0], lock_roles[1])
+    async def ripplepurge(self, ctx, member: discord.Member, amount=2):
+        messages = await ctx.history(limit=amount).flatten()
+        for message in messages:
+            if message.author == member:
+                await message.delete()
 
     @commands.command(name='sayhi', help='Helps to greet channel members.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
@@ -1144,7 +1156,8 @@ class Developer(commands.Cog):
     @commands.command(name='panel', help='Shows overall system status.')
     async def devpanel(self, ctx):
         if await developer_check(ctx):
-            embed = (discord.Embed(title='Developer Panel', color=accent_color).add_field(name='Chats Frozen', value=len(frozen)).add_field(name='Jailer Count', value=len(jail_members)).set_footer(text=f'Type {prefix}devtools to get all the commands that you can use as a developer.', icon_url=ctx.author.avatar_url))
+            embed = (discord.Embed(title='Developer Panel', color=accent_color).add_field(name='Chats Frozen', value=len(frozen)).add_field(name='Jailer Count', value=len(
+                jail_members)).set_footer(text=f'Type {prefix}devtools to get all the commands that you can use as a developer.', icon_url=ctx.author.avatar_url))
             await ctx.send(embed=embed)
 
     @commands.command(name='restart', help='Restarts the system.')
