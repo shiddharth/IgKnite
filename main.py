@@ -364,8 +364,6 @@ class Moderation(commands.Cog):
         amount += 1
         await ctx.channel.purge(limit=amount)
 
-    @commands.command(name='ripplepurge', help='Clears messages sent by a specific user inside the given index.')
-
     @commands.command(name='sayhi', help='Helps to greet channel members.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def sayhi(self, ctx, member: discord.Member):
