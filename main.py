@@ -208,7 +208,7 @@ async def help(ctx, cmd=None):
                         allow_embed = False
 
                 if allow_embed:
-                    embed = (discord.Embed(title=f'Command Docs -> {command.name}', color=accent_color).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(
+                    embed = (discord.Embed(title=f'Command Docs -> {command.name}', color=accent_color).add_field(name='Description', value=command.help).add_field(
                         name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(icon_url=ctx.author.avatar_url, text=f'Command help requested by {ctx.author.name}'))
 
                     aliases = str()
@@ -218,8 +218,8 @@ async def help(ctx, cmd=None):
                         aliases = str(command.aliases).replace(
                             '[', '').replace(']', '').replace('\'', '')
 
-                    embed.add_field(
-                        name='Aliases', value=aliases, inline=False)
+                    embed.add_field(name='Aliases', value=aliases, inline=False).add_field(
+                        name='Type', value=command.cog_name)
                     await ctx.send(embed=embed)
 
 
@@ -362,13 +362,13 @@ class Moderation(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(name='purge', help='Clears messages inside the given index.')
+    @commands.command(name='purge', help='Clears messages within the given index.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def purge(self, ctx, amount=1):
         amount += 1
         await ctx.channel.purge(limit=amount)
 
-    @commands.command(name='ripplepurge', help='Clears messages inside the given index that are sent by a specific user.')
+    @commands.command(name='ripplepurge', help='Clears messages that are sent by a specific user within the given index.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def ripplepurge(self, ctx, member: discord.Member, amount=2):
         messages = await ctx.history(limit=amount).flatten()
