@@ -134,6 +134,7 @@ async def webcheck(message):
                     await target[1].send(embed=embed)
                     msg_web_target = list()
                     msg_web_records = list()
+                    
 
 # Opening wordlist file for word filter feature.
 with open('filtered.txt', 'r') as filtered_wordfile:
