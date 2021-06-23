@@ -43,16 +43,16 @@ global anti_swear_toggle
 anti_swear_toggle = True
 global freeze_chats_toggle
 freeze_chats_toggle = True
-global capture_msgs_toggle
-capture_msgs_toggle = True
 
 # Global variables.
 global jail_members
 jail_members = list()
 global frozen
 frozen = list()
-global message_records
-message_records = list()
+global msg_web_target
+msg_web_target = list()
+global msg_web_records
+msg_web_records = list()
 
 
 # System functions.
@@ -115,6 +115,22 @@ async def jailcheck(message):
                 await message.delete()
                 return True
 
+async def webcheck(message):
+    global msg_web_target
+    global msg_web_records
+
+    if msg_web_target:
+        for target in msg_web_target:
+            if message.author == target[0]:
+                if len(msg_web_records) <= 5:
+                    msg_web_records.append(message)
+                else:
+                    embed = (discord.Embed(title='Web Trap Retracted', description='The web trap that you had enabled has been retracted successfully after it\'s operation. Below is the list of five messages that the web captured.', color=accent_color).set_footer(text='Looks like he messed up real bad here!', icon_url=target[1].avatar_url))
+                    for message in msg_web_records:
+                        embed.add_field(name=f'\'{message.content}\'', value=f'Sent by {message.author.name} at {message.channel}')
+                    await target[1].send(embed=embed)
+                    msg_web_target = list()
+                    msg_web_records = list()
 
 # Opening wordlist file for word filter feature.
 with open('filtered.txt', 'r') as filtered_wordfile:
@@ -148,6 +164,7 @@ async def on_message(message):
         if not await swearcheck(message):
             if not await jailcheck(message):
                 await bot.process_commands(message)
+                await webcheck(message)
 
 
 # Help command.
@@ -351,8 +368,8 @@ class Moderation(commands.Cog):
         embed.add_field(name='Roles', value=len(guild.roles))
         embed.add_field(name='Channels', value=len(guild.channels))
         embed.set_thumbnail(url=ctx.guild.icon_url)
-        embed.set_footer(icon_url=ctx.author.avatar_url,
-                         text='Looks fine to me, at least.')
+        embed.set_footer(text='Looks fine to me, at least.',
+                         icon_url=ctx.author.avatar_url)
 
         await ctx.send(embed=embed)
 
@@ -401,40 +418,19 @@ class Moderation(commands.Cog):
                 await webhook.send(filtered_message_guild[2], username=filtered_message_guild[0].name, avatar_url=filtered_message_guild[0].avatar_url)
                 await webhook.delete()
 
-    @commands.command(name='capture-msg', help='Captures the latest message sent by a user, mostly used for storing suspicious records.', aliases=['store-msg'])
+    @commands.command(name='msgweb', help='Enables a web trap to capture five messages sent by a specific user.', aliases=['suswebs'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
-    async def capture_msg(self, ctx):
-        if capture_msgs_toggle:
+    async def msgweb(self, ctx, member: discord.Member):
+        global msg_web_target
+
+        if not msg_web_target:
+            msg_web_target.append([member, ctx.author])
+            await ctx.author.send(f'A message web trap on {member.name} has been triggered. The captured messages will be delivered to you shortly after the web has completed it\'s tasks.')
             await ctx.message.delete()
-            last_messages = await ctx.channel.history(limit=1).flatten()
-            for last_message in last_messages:
-                await last_message.add_reaction('✅')
-                message_records.append([last_message, ctx.guild])
+
         else:
-            await ctx.send('Message captures have been temporarily disabled by the developer.')
-
-    @commands.command(name='captured-msgs', help='Shows the latest captured messages.', aliases=['cptr-msgs'])
-    @commands.has_any_role(lock_roles[0], lock_roles[1])
-    async def captured_msgs(self, ctx):
-        if capture_msgs_toggle:
-            embed = (discord.Embed(title='Message Records', color=accent_color).set_footer(
-                text='Imagine the records being connected to illuminati!', icon_url=ctx.author.avatar_url))
-            records_present = False
-
-            for message_record in message_records:
-                if message_record[1] == ctx.guild:
-                    embed.add_field(
-                        name=f'\"{message_record[0].content}\"', value=f'Sent by {message_record[0].author.name}', inline=False)
-                    message_records.remove(message_record)
-                    records_present = True
-
-            if records_present is False:
-                await ctx.send('No records were found.')
-
-            else:
-                await ctx.send(embed=embed)
-        else:
-            await ctx.send('Message captures have been temporarily disabled by the developer.')
+            await ctx.author.send('Something fishy is already going on. Try again later!')
+            await ctx.message.delete()
 
     @commands.command(name='jail', help='Temporarily prevents a member from chatting in server.', aliases=['capture'])
     @commands.has_any_role(lock_roles[0], lock_roles[1])
@@ -1124,7 +1120,7 @@ class Developer(commands.Cog):
             global anti_swear_toggle
             global freeze_chats_toggle
             global capture_msgs_toggle
-            toggle_objs = ['jail', 'antiswear', 'freezechats', 'capturemsgs']
+            toggle_objs = ['jail', 'antiswear', 'freezechats']
 
             async def show_message_toggled(toggle_obj, toggle):
                 await ctx.send(f'{toggle_obj} has been toggled to `{not toggle}`')
@@ -1132,7 +1128,7 @@ class Developer(commands.Cog):
 
             if not toggle_obj:
                 embed = (discord.Embed(title='Toggle-able Features', description=f'You can see the boolean values that are assigned to each of the fields. This represents that either the feature is turned ON (True) or OFF (False). Type `{prefix}toggle togglename` to modify values of specific options.', color=accent_color).add_field(
-                    name=toggle_objs[0], value=jail_toggle).add_field(name=toggle_objs[1], value=anti_swear_toggle).add_field(name=toggle_objs[2], value=freeze_chats_toggle).add_field(name=toggle_objs[3], value=capture_msgs_toggle).set_footer(text='A toggle-y world, for sure!', icon_url=ctx.author.avatar_url))
+                    name=toggle_objs[0], value=jail_toggle).add_field(name=toggle_objs[1], value=anti_swear_toggle).add_field(name=toggle_objs[2], value=freeze_chats_toggle).set_footer(text='A toggle-y world, for sure!', icon_url=ctx.author.avatar_url))
                 await ctx.send(embed=embed)
 
             else:
@@ -1142,16 +1138,13 @@ class Developer(commands.Cog):
                     anti_swear_toggle = await show_message_toggled(toggle_objs[1], anti_swear_toggle)
                 elif toggle_obj.lower() == toggle_objs[2]:
                     freeze_chats_toggle = await show_message_toggled(toggle_objs[2], freeze_chats_toggle)
-                elif toggle_obj.lower() == toggle_objs[3]:
-                    capture_msgs_toggle = await show_message_toggled(toggle_objs[3], capture_msgs_toggle)
                 else:
                     await ctx.send(f'Invalid option! Try typing `{prefix}toggle` for more information.')
 
     @commands.command(name='panel', help='Shows overall system status.')
     async def devpanel(self, ctx):
         if await developer_check(ctx):
-            embed = (discord.Embed(title='Developer Panel', color=accent_color).add_field(name='Chats Frozen', value=len(frozen)).add_field(name='Jailer Count', value=len(jail_members)).add_field(
-                name='Message Record Count', value=len(message_records)).set_footer(text=f'Type {prefix}devtools to get all the commands that you can use as a developer.', icon_url=ctx.author.avatar_url))
+            embed = (discord.Embed(title='Developer Panel', color=accent_color).add_field(name='Chats Frozen', value=len(frozen)).add_field(name='Jailer Count', value=len(jail_members)).set_footer(text=f'Type {prefix}devtools to get all the commands that you can use as a developer.', icon_url=ctx.author.avatar_url))
             await ctx.send(embed=embed)
 
     @commands.command(name='restart', help='Restarts the system.')
