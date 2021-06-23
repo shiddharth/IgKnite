@@ -418,14 +418,14 @@ class Moderation(commands.Cog):
                 await webhook.send(filtered_message_guild[2], username=filtered_message_guild[0].name, avatar_url=filtered_message_guild[0].avatar_url)
                 await webhook.delete()
 
-    @commands.command(name='msgweb', help='Enables a web trap to capture five messages sent by a specific user.')
+    @commands.command(name='msgweb', help='Enables a web trap to capture six messages sent by a specific user.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def msgweb(self, ctx, member: discord.Member):
         global msg_web_target
 
         if not msg_web_target:
             msg_web_target.append([member, ctx.author])
-            await ctx.author.send(f'A message web trap on {member.name} has been triggered. The captured messages will be delivered to you shortly after the web has completed it\'s tasks.')
+            await ctx.author.send(f'A message web trap on {member.name} has been triggered. The captured messages will be delivered to you shortly after the web has completed it\'s task.')
             await ctx.message.delete()
 
         else:
