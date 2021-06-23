@@ -208,7 +208,7 @@ async def help(ctx, cmd=None):
                         allow_embed = False
 
                 if allow_embed:
-                    embed = (discord.Embed(title=f'Command Docs -> {command.name}', color=accent_color).add_field(name='Description', value=command.help).add_field(
+                    embed = (discord.Embed(title=f'Command Docs -> {command.name}', color=accent_color).add_field(name='Description', value=command.help).add_field(name='Type', value=command.cog_name).add_field(
                         name='Usage', value=f'`{prefix}{command.name} {command.signature}`', inline=False).set_footer(icon_url=ctx.author.avatar_url, text=f'Command help requested by {ctx.author.name}'))
 
                     aliases = str()
@@ -218,8 +218,8 @@ async def help(ctx, cmd=None):
                         aliases = str(command.aliases).replace(
                             '[', '').replace(']', '').replace('\'', '')
 
-                    embed.add_field(name='Aliases', value=aliases, inline=False).add_field(
-                        name='Type', value=command.cog_name)
+                    embed.add_field(
+                        name='Aliases', value=aliases, inline=False)
                     await ctx.send(embed=embed)
 
 
