@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "veronica"
-version = "19.6.2021"
+version = "23.6.2021"
 description = "Veron1CA is an open source Discord moderation & music bot designed to do server management and entertain both at once. It has a bunch of easy-to-use commands that can pretty much make the work of customizating your Discord server a breeze!"
 authors = ["shiddharth <hitblastofficial@gmail.com>"]
 
