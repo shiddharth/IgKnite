@@ -1,6 +1,6 @@
 # Veron1CA
 <img src="readme_assets/asset1.webp"><br><br>
-An open source Discord moderation bot with all-in-one server moderation capabilities and beat handling capabilties.
+An open source Discord moderation bot with all-in-one server moderation and beat handling capabilties.
 
 ![GitHub](https://img.shields.io/github/license/shiddharth/Veron1CA?color=blue&style=for-the-badge)
 ![GitHub Repo stars](https://img.shields.io/github/stars/shiddharth/Veron1CA?color=blue&style=for-the-badge)
