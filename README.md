@@ -1,17 +1,20 @@
 # Veron1CA
 <img src="readme_assets/asset1.webp"><br><br>
-An open source Discord moderation bot with spontaneous modding capabilities and some extra powers like handling the beat with features of a music bot.
+An open source Discord moderation bot with all-in-one server moderation capabilities and beat handling capabilties.
 
 ![GitHub](https://img.shields.io/github/license/shiddharth/Veron1CA?color=blue&style=for-the-badge)
 ![GitHub Repo stars](https://img.shields.io/github/stars/shiddharth/Veron1CA?color=blue&style=for-the-badge)
 ![GitHub watchers](https://img.shields.io/github/watchers/shiddharth/Veron1CA?color=blue&style=for-the-badge)
 
-## Feature Highlights
-Now this is where things get interesting...
+## Getting to know...
+Now this is where things get interesting.
 
-Veron1CA is the combination of a Discord moderation bot and a music bot. It comes packed with features like built-in swear filter, jailing and so on. Along with a lot of server management and modding capabilities, it can play music too! Useful features like shuffle, loop are also available with it. If you want to increase your experience with swear filter, Veron1CA also comes with an expandible database of unwanted words.
+Veron1CA is designed to be the collab of a Discord moderation bot and a chill music bot. It mainly focuses on next level server moderation, which can make customizing and controlling Discord servers a breeze! It's source is open as well, which means anybody can contribute to it if they spot a nasty bug in the code. We would like you to explore the powers of Veron1CA by yourself, as there's a lot of stuff out there waiting! A complete documentation on Veron1CA is under work-in-progress (BETA) so that you can have a more detailed view on itself.
 
 <i>Learn more / invite Veron1CA from [the official website here!](https://shiddharth.github.io/Veron1CA)</i>
+
+## Contribution
+As mentioned in an earlier statement, Veron1CA is open source, and if you feel like submitting your own ideas and improving the codebase, you can do that in the form of a pull request! We will check what you've done and maybe it will get added if it's good enough!
 
 ## Licence
 <blockquote>
