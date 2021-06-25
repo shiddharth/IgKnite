@@ -1,5 +1,7 @@
 /*Fonts*/
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sacramento&display=swap');
+
 
 /*Base*/
 * {
@@ -63,17 +65,16 @@ body {
 /*Intro*/
 .intro {
 	height: 400px;
-	background: linear-gradient(to bottom right, #1D262E, #A0A0A0);
+	background: linear-gradient(to bottom right, #ffffff, #b6c1c6);
 	margin-top: 70px;
 	text-align: center;
 	padding-top: 70px;
 }
 
 .intro h1 {
+	font-family: 'Sacramento', cursive;
 	font-size: 7em;
 	color: #23272A;
-	font-weight: bold;
-	text-transform: uppercase;
 	text-align: center;
 	margin-bottom: 70px;
 }
@@ -106,7 +107,7 @@ body {
 }
 
 .btn:hover {
-	background-color: #364c60;
+	background-color: #65757c;
 	box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
 	color: #fff;
 	transform: translateY(-7px);
@@ -134,7 +135,7 @@ body {
 	display: block;
 	width: 60px;
 	height: 3px;
-	background: #364c60;
+	background: #65757c;
 	margin: 15px auto 10px auto;
 }
 
@@ -183,7 +184,7 @@ body {
 	display: block;
 	width: 60px;
 	height: 3px;
-	background: #364c60;
+	background: #65757c;
 	margin: 15px auto 15px auto;
 }
 
@@ -234,7 +235,7 @@ body {
 	display: block;
 	width: 60px;
 	height: 3px;
-	background: #364c60;
+	background: #65757c;
 	margin: 15px auto 15px auto;
 }
 
