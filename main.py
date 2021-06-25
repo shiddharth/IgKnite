@@ -28,7 +28,7 @@ from keep_alive import keep_alive
 # System variables.
 owner = int(config('OWNER_ID'))
 prefix = config('COMMAND_PREFIX')
-accent_color = 0x859398
+accent_color = 0xb6c1c6
 lock_roles = ['BotMod', 'BotAdmin']
 bot = commands.Bot(commands.when_mentioned_or(prefix), help_command=None)
 
