@@ -21,7 +21,6 @@ body {
 
 #navbar {
   height: 100%;
-  border-right: solid 2.5px #333;
 }
 
 #navbar>h1 {
@@ -40,6 +39,7 @@ body {
 
 #navbar ul li {
   border: solid 1.3px #333;
+  margin-bottom: 0.2rem;
 }
 
 #main-header #navbar ul li a {
