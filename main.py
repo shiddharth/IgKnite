@@ -184,7 +184,8 @@ async def help(ctx, cmd=None):
                         value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands or `{prefix}help commandname` to get information on a particular command.', inline=False)
         embed.add_field(name='A handful of clickables!',
                         value='[Invite Me](https://discord.com/api/oauth2/authorize?client_id=828196184845713469&permissions=808971638&scope=bot) / [My Website](https://shiddharth.github.io/Veron1CA) / [My Discord Server](https://discord.gg/rxd5v4n6KV)', inline=False)
-        embed.add_field(name='Wanna vote for me?' value='[Top.gg](https://top.gg/bot/828196184845713469/vote/)')
+        embed.add_field(name='Wanna vote for me?',
+                        value='[Top.gg](https://top.gg/bot/828196184845713469/vote/)')
         embed.set_footer(icon_url=ctx.author.avatar_url,
                          text=f'Help requested by {ctx.author.name}')
         await ctx.send(embed=embed)
