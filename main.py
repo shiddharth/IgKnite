@@ -150,9 +150,10 @@ with open('filtered.txt', 'r') as filtered_wordfile:
 # Bot events.
 @bot.event
 async def on_ready():
+    os.system('clear')
     print(f'{bot.user.name} | Viewing Terminal\n')
     print(
-        f'\nLog: {bot.user.name} has been deployed in {len(bot.guilds)} server(s).\n~~~')
+        f'\nLog: {bot.user.name} has been deployed in {len(bot.guilds)} server(s).')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help and I\'m injected in {len(bot.guilds)} server(s)!'))
 
 
@@ -1189,5 +1190,4 @@ bot.add_cog(Developer(bot))
 
 # Run the bot.
 keep_alive()
-os.system('clear')
 bot.run(token)
