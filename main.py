@@ -25,9 +25,12 @@ from async_timeout import timeout
 from keep_alive import keep_alive
 
 
+# Environment variables.
+owner = config('OWNER_ID', cast=int)
+prefix = config('COMMAND_PREFIX', cast=str)
+token = config('TOKEN', cast=int)
+
 # System variables.
-owner = int(config('OWNER_ID'))
-prefix = config('COMMAND_PREFIX')
 accent_color = 0xb6c1c6
 lock_roles = ['BotMod', 'BotAdmin']
 bot = commands.Bot(commands.when_mentioned_or(prefix), help_command=None)
@@ -147,7 +150,6 @@ with open('filtered.txt', 'r') as filtered_wordfile:
 # Bot events.
 @bot.event
 async def on_ready():
-    os.system('clear')
     print(f'{bot.user.name} | Viewing Terminal\n')
     print(
         f'\nLog: {bot.user.name} has been deployed in {len(bot.guilds)} server(s).\n~~~')
@@ -1187,4 +1189,5 @@ bot.add_cog(Developer(bot))
 
 # Run the bot.
 keep_alive()
-bot.run(config('TOKEN'))
+os.system('clear')
+bot.run(token)
