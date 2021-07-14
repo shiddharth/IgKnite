@@ -335,9 +335,10 @@ class Moderation(commands.Cog):
 
         embed.add_field(name='Name', value=user.name).add_field(
             name='Nick', value=user.display_name)
-        embed.add_field(name='ID', value=user.id).add_field(
+        embed.add_field(name='User ID', value=user.id).add_field(
             name='Discriminator', value=user.discriminator)
-        embed.add_field(name='Race', value='Bots, execute em!' if user.bot else 'Human', inline=False)
+        embed.add_field(
+            name='Race', value='Bots, execute em!' if user.bot else 'Human')
         embed.add_field(name='Roles', value=len(user.roles))
         embed.add_field(name='Discord Joining Date',
                         value=user.created_at.strftime("%b %d, %Y"), inline=False)
@@ -356,11 +357,10 @@ class Moderation(commands.Cog):
         embed.add_field(name='Creation Date',
                         value=guild.created_at.strftime("%b %d, %Y"))
         embed.add_field(name='Region', value=guild.region)
-        embed.add_field(name='ID', value=guild.id, inline=False)
+        embed.add_field(name='Server ID', value=guild.id)
         embed.add_field(name='Members', value=guild.member_count)
-        embed.add_field(name='Roles', value=len(guild.roles), inline=False)
+        embed.add_field(name='Roles', value=len(guild.roles))
         embed.add_field(name='Channels', value=len(guild.channels))
-        embed.add_field(name='Verification Level', value=str(ctx.guild.verification_level), inline=False)
         embed.set_thumbnail(url=ctx.guild.icon_url)
         embed.set_footer(text='Looks fine to me, at least.',
                          icon_url=ctx.author.avatar_url)
@@ -571,14 +571,14 @@ class Moderation(commands.Cog):
     @commands.command(name='roleinfo', help='Shows all important information related to a specific role.')
     @commands.has_any_role(lock_roles[0], lock_roles[1])
     async def roleinfo(self, ctx, role: discord.Role):
-        embed = (discord.Embed(title=f'Role Information: {str(role)}', color=accent_color))
-        embed.add_field(name='Creation Date:', value=role.created_at)
-        embed.add_field(name='Mentionable', value=role.mentionable)
+        embed = (discord.Embed(
+            title=f'Role Information: {str(role)}', color=accent_color))
+        embed.add_field(name='Creation Date:', value=role.created_at).add_field(
+            name='Mentionable', value=role.mentionable)
         embed.add_field(name='Managed By Integration', value=role.is_integration(
-        ), inline=False)
-        embed.add_field(name='Managed By Bot', value=role.is_bot_managed())
-        embed.add_field(name='Position', value=role.position, inline=False)
-        embed.add_field(name='ID', value=f'`{role.id}`')
+        )).add_field(name='Managed By Bot', value=role.is_bot_managed())
+        embed.add_field(name='Role Position', value=role.position).add_field(
+            name='Role ID', value=f'`{role.id}`')
         embed.set_footer(icon_url=ctx.author.avatar_url,
                          text=f'Requested by {ctx.author.name}')
         await ctx.send(embed=embed)
