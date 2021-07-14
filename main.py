@@ -331,7 +331,7 @@ class Moderation(commands.Cog):
             title=f'{user.name}\'s Bio', color=accent_color))
 
         embed.add_field(name='Name', value=user.name).add_field(
-            name='Nick', value=user.name)
+            name='Nick', value=user.display_name)
         embed.add_field(name='User ID', value=user.id).add_field(
             name='Discriminator', value=user.discriminator)
         embed.add_field(
