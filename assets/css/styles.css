@@ -150,7 +150,7 @@ body {
 
 /*Functions*/
 .func {
-	height: 500px; /* testando o comprimento */
+	height: 500px;
 	background: #23272A;
 }
 
@@ -170,13 +170,7 @@ body {
 .func_img {
 	width: auto;
 	height: 250px;
-	transition: 0.3s;
 	cursor: pointer;
-}
-
-.func_img:hover {
-	overflow: hidden;
-	transform: scale(0.9);
 }
 
 .func h2:before, .func h2:after {
