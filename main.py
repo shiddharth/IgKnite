@@ -28,7 +28,7 @@ from keep_alive import keep_alive
 # Environment variables.
 owner = config('OWNER_ID', cast=int)
 prefix = config('COMMAND_PREFIX', cast=str)
-token = config('TOKEN', cast=int)
+token = config('TOKEN', cast=str)
 
 # System variables.
 accent_color = 0xb6c1c6
