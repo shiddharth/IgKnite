@@ -573,7 +573,7 @@ class Moderation(commands.Cog):
     async def roleinfo(self, ctx, role: discord.Role):
         embed = (discord.Embed(
             title=f'Role Information: {str(role)}', color=accent_color))
-        embed.add_field(name='Creation Date:', value=role.created_at).add_field(
+        embed.add_field(name='Creation Date:', value=role.created_at.strftime("%b %d, %Y")).add_field(
             name='Mentionable', value=role.mentionable)
         embed.add_field(name='Managed By Integration', value=role.is_integration(
         )).add_field(name='Managed By Bot', value=role.is_bot_managed())
