@@ -17,6 +17,7 @@ import functools
 import itertools
 
 # Import third-party libraries.
+import topgg
 import discord
 import youtube_dl
 from decouple import config
@@ -272,6 +273,10 @@ class Chill(commands.Cog):
         embed = (discord.Embed(title='System Status', color=accent_color).add_field(name='Latency', value=f'{ping}ms ({calc_ping(ping)})', inline=False).add_field(
             name='Startup Time', value=last_restarted_str, inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
         await ctx.send(embed=embed)
+
+    @commands.command(name='vote', help='Helps you vote for me on specific sites!')
+    async def vote(self, ctx):
+        await ctx.send('This command is under work-in-progress. Please be patient!')
 
 
 # Moderation category commands.
