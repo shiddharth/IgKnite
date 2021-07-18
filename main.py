@@ -30,11 +30,13 @@ from keep_alive import keep_alive
 owner = config('OWNER_ID', cast=int)
 prefix = config('COMMAND_PREFIX', cast=str)
 token = config('TOKEN', cast=str)
+dbl_token = config('DBL_TOKEN', cast=str)
 
 # System variables.
 accent_color = 0xb6c1c6
 lock_roles = ['BotMod', 'BotAdmin']
 bot = commands.Bot(commands.when_mentioned_or(prefix), help_command=None)
+bot.topggpy = topgg.DBLClient(bot, dbl_token)
 
 # System startup data.
 last_restarted_str = str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
@@ -188,8 +190,6 @@ async def help(ctx, cmd=None):
                         value=f'My default command prefix is `{prefix}` and you can type `{prefix}help all` to get an entire list of usable commands or `{prefix}help commandname` to get information on a particular command.', inline=False)
         embed.add_field(name='A handful of clickables!',
                         value='[Invite Me](https://discord.com/api/oauth2/authorize?client_id=828196184845713469&permissions=808971638&scope=bot) / [My Website](https://shiddharth.github.io/Veron1CA) / [My Discord Server](https://discord.gg/rxd5v4n6KV)', inline=False)
-        embed.add_field(name='Wanna vote for me?',
-                        value='[Top.gg](https://top.gg/bot/828196184845713469/vote/)')
         embed.set_footer(icon_url=ctx.author.avatar_url,
                          text=f'Help requested by {ctx.author.name}')
         await ctx.send(embed=embed)
@@ -276,7 +276,12 @@ class Chill(commands.Cog):
 
     @commands.command(name='vote', help='Helps you vote for me on specific sites!')
     async def vote(self, ctx):
-        await ctx.send('This command is under work-in-progress. Please be patient!')
+        if not await self.bot.topggpy.get_user_vote(ctx.author.id):
+            embed = (discord.Embed(title=':military_medal: Voting Section', description='Hey! Looks like you haven\'t voted for me today. If you\'re free, then be sure to check the links below to vote for me on Top.gg! It really helps my creator to get energetic and encourage him to launch more updates.', color=accent_color).add_field(name='Voting Links', value='Link ~1: [Click here to redirect!](https://top.gg/bot/828196184845713469/vote/)').set_footer(icon_url=ctx.author.avatar_url, text=f'{len(await self.bot.topggpy.get_bot_votes())} looks like a decent voting count for today!'))
+            await ctx.send(embed=embed)
+
+        else:
+            await ctx.send('You have already voted for me today, yay!')
 
 
 # Moderation category commands.
