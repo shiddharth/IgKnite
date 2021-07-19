@@ -70,6 +70,21 @@ def get_cog_commands(cog_name):
     return all_commands
 
 
+def generate_random_footer():
+    footers_list = [
+        'Hey there pal :D',
+        'If you wanna vote for me on a platform like Top.gg or somewhere else, be sure to check the vote command!',
+        'Imagine flying...',
+        'Hey! This looks sketchy, not gonna lie.',
+        'Have a good day...... or good night whatever.',
+        'This has to be the matrix!',
+        'Noob is you.',
+        'Back to the future!',
+        'We need a hashmap.'
+    ]
+    return random.choice(footers_list)
+
+
 async def developer_check(ctx):
     if ctx.author.id == owner:
         return True
@@ -133,7 +148,7 @@ async def webcheck(message):
                     msg_web_records.append(message)
                 else:
                     embed = (discord.Embed(title='Web Trap Retracted', description='The web trap that you had enabled has been retracted successfully after it\'s operation. Below is the list of five messages that the web captured.',
-                             color=accent_color).set_footer(text='Looks like he messed up real bad here!', icon_url=target[1].avatar_url))
+                             color=accent_color).set_footer(text=generate_random_footer(), icon_url=target[1].avatar_url))
                     for message in msg_web_records:
                         embed.add_field(
                             name=f'\'{message.content}\'', value=f'Sent by {message.author.name} at {message.channel}')
@@ -252,7 +267,7 @@ class Chill(commands.Cog):
             member = ctx.message.author
 
         embed = (discord.Embed(title='Here\'s what I found!', color=accent_color).set_image(
-            url=member.avatar_url).set_footer(icon_url=ctx.author.avatar_url, text='This looks too fancy to be honest.'))
+            url=member.avatar_url).set_footer(icon_url=ctx.author.avatar_url, text=generate_random_footer()))
         await ctx.send(embed=embed)
 
     @commands.command(name='ping', help='Shows the current response time of the bot.')
@@ -271,13 +286,13 @@ class Chill(commands.Cog):
         uptime = str(datetime.timedelta(seconds=int(
             round(time.time() - last_restarted_obj))))
         embed = (discord.Embed(title='System Status', color=accent_color).add_field(name='Latency', value=f'{ping}ms ({calc_ping(ping)})', inline=False).add_field(
-            name='Startup Time', value=last_restarted_str, inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text='Vibing in full force!'))
+            name='Startup Time', value=last_restarted_str, inline=False).add_field(name='Uptime', value=uptime, inline=False).set_footer(icon_url=ctx.author.avatar_url, text=generate_random_footer()))
         await ctx.send(embed=embed)
 
     @commands.command(name='vote', help='Helps you vote for me on specific sites!')
     async def vote(self, ctx):
         if not await self.bot.topggpy.get_user_vote(ctx.author.id):
-            embed = (discord.Embed(title=':military_medal: Voting Section', description='Hey! Looks like you haven\'t voted for me today. If you\'re free, then be sure to check the links below to vote for me on Top.gg! It really helps my creator to get energetic and encourage him to launch more updates.', color=accent_color).add_field(name='Voting Links', value='Link ~1: [Click here to redirect!](https://top.gg/bot/828196184845713469/vote/)').set_footer(icon_url=ctx.author.avatar_url, text=f'{len(await self.bot.topggpy.get_bot_votes())} looks like a decent voting count for today!'))
+            embed = (discord.Embed(title=':military_medal: Voting Section', description='Hey! Looks like you haven\'t voted for me today. If you\'re free, then be sure to check the links below to vote for me on Top.gg! It really helps my creator to get energetic and encourage him to launch more updates.', color=accent_color).add_field(name='Voting Links', value='Link ~1: [Click here to redirect!](https://top.gg/bot/828196184845713469/vote/)').set_footer(icon_url=ctx.author.avatar_url, text=f'Vote count for this month: {len(await self.bot.topggpy.get_bot_votes())}'))
             await ctx.send(embed=embed)
 
         else:
@@ -353,7 +368,7 @@ class Moderation(commands.Cog):
         embed.add_field(name='Discord Joining Date',
                         value=user.created_at.strftime("%b %d, %Y"), inline=False)
         embed.set_thumbnail(url=user.avatar_url)
-        embed.set_footer(text=f'Imagine {user.name} being a hacker!',
+        embed.set_footer(text=generate_random_footer(),
                          icon_url=ctx.author.avatar_url)
 
         await ctx.send(embed=embed)
@@ -372,7 +387,7 @@ class Moderation(commands.Cog):
         embed.add_field(name='Roles', value=len(guild.roles))
         embed.add_field(name='Channels', value=len(guild.channels))
         embed.set_thumbnail(url=ctx.guild.icon_url)
-        embed.set_footer(text='Looks fine to me, at least.',
+        embed.set_footer(text=generate_random_footer(),
                          icon_url=ctx.author.avatar_url)
 
         await ctx.send(embed=embed)
@@ -417,7 +432,7 @@ class Moderation(commands.Cog):
 
         else:
             embed = (discord.Embed(title='Audit Log', description=f'Showing the latest {audit_limit} entries that were made in the audit log of {ctx.guild.name}.', color=accent_color).set_footer(
-                text='Investigating the uncommon!', icon_url=ctx.author.avatar_url))
+                text=generate_random_footer(), icon_url=ctx.author.avatar_url))
             async for audit_entry in ctx.guild.audit_logs(limit=audit_limit):
                 embed.add_field(
                     name=f'- {audit_entry.action}', value=f'User: {audit_entry.user} | Target: {audit_entry.target}', inline=False)
@@ -493,7 +508,7 @@ class Moderation(commands.Cog):
         if jail_toggle:
             jail_has_member = False
             embed = (discord.Embed(title='Now viewing the prison!', color=accent_color).set_footer(
-                icon_url=ctx.author.avatar_url, text='Imagine all being a hacker!'))
+                icon_url=ctx.author.avatar_url, text=generate_random_footer()))
             for jail_member in jail_members:
                 if jail_member[1] == ctx.guild:
                     embed.add_field(name=jail_member[0].name, value=(
@@ -562,7 +577,7 @@ class Moderation(commands.Cog):
     async def bans(self, ctx):
         bans = await ctx.guild.bans()
         embed = (discord.Embed(title='Now viewing banned members!', color=accent_color).set_footer(
-            icon_url=ctx.author.avatar_url, text='Good thing you banned them!'))
+            icon_url=ctx.author.avatar_url, text=generate_random_footer()))
         if bans:
             for ban in bans:
                 embed.add_field(
@@ -590,7 +605,7 @@ class Moderation(commands.Cog):
         embed.add_field(name='Role Position', value=role.position).add_field(
             name='Role ID', value=f'`{role.id}`')
         embed.set_footer(icon_url=ctx.author.avatar_url,
-                         text=f'Requested by {ctx.author.name}')
+                         text=generate_random_footer())
         await ctx.send(embed=embed)
 
     @commands.command(name='invites', help='Shows all active server invite codes.')
@@ -598,7 +613,7 @@ class Moderation(commands.Cog):
     async def invites(self, ctx):
         invites = await ctx.guild.invites()
         embed = (discord.Embed(title='Now viewing invite codes!', color=accent_color).set_footer(
-            icon_url=ctx.author.avatar_url, text='Who created this fancy invites?!'))
+            icon_url=ctx.author.avatar_url, text=generate_random_footer()))
 
         if not invites:
             await ctx.send('No invite codes have been generated.')
@@ -1137,7 +1152,7 @@ class Developer(commands.Cog):
     async def devtools(self, ctx):
         if await developer_check(ctx):
             embed = (discord.Embed(title='Developer Tools', description=f'Make sure to use these with consciousness. Type `{prefix}help toolname` to get help on a particular command/tool.', color=accent_color).set_footer(
-                text='This has to be the matrix!', icon_url=ctx.author.avatar_url).add_field(name='Commands', value=get_cog_commands('Developer')))
+                text=generate_random_footer(), icon_url=ctx.author.avatar_url).add_field(name='Commands', value=get_cog_commands('Developer')))
             await ctx.send(embed=embed)
 
     @commands.command(name='toggle', help='Toggles specific features.')
@@ -1155,7 +1170,7 @@ class Developer(commands.Cog):
 
             if not toggle_obj:
                 embed = (discord.Embed(title='Toggle-able Features', description=f'You can see the boolean values that are assigned to each of the fields. This represents that either the feature is turned ON (True) or OFF (False). Type `{prefix}toggle togglename` to modify values of specific options.', color=accent_color).add_field(
-                    name=toggle_objs[0], value=jail_toggle).add_field(name=toggle_objs[1], value=anti_swear_toggle).add_field(name=toggle_objs[2], value=freeze_chats_toggle).set_footer(text='A toggle-y world, for sure!', icon_url=ctx.author.avatar_url))
+                    name=toggle_objs[0], value=jail_toggle).add_field(name=toggle_objs[1], value=anti_swear_toggle).add_field(name=toggle_objs[2], value=freeze_chats_toggle).set_footer(text=generate_random_footer(), icon_url=ctx.author.avatar_url))
                 await ctx.send(embed=embed)
 
             else:
