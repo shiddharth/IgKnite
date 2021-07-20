@@ -71,6 +71,13 @@ def get_cog_commands(cog_name):
     return all_commands
 
 
+def developer_check(author_id):
+    if author_id == owner:
+        return True
+    else:
+        return False
+
+
 async def generate_random_footer(author):
     footers_list = [
         'Hey there pal :D',
@@ -84,14 +91,6 @@ async def generate_random_footer(author):
         'We need a hashmap.',
     ]
     return random.choice(footers_list)
-
-
-async def developer_check(ctx):
-    if ctx.author.id == owner:
-        return True
-    else:
-        await ctx.send('You aren\'t allowed to access the secret files!')
-        return False
 
 
 async def freezecheck(message):
@@ -226,7 +225,7 @@ async def help(ctx, cmd=None):
         for command in bot.commands:
             if str(command.name) == str(cmd.lower()):
                 if command.cog_name == 'Developer':
-                    if not await developer_check(ctx):
+                    if not developer_check(ctx.author.id):
                         allow_embed = False
 
                 if allow_embed:
@@ -1151,14 +1150,14 @@ class Developer(commands.Cog):
 
     @commands.command(name='devtools', help='Shows all the developer tools that can be used.')
     async def devtools(self, ctx):
-        if await developer_check(ctx):
+        if developer_check(ctx.author.id):
             embed = (discord.Embed(title='Developer Tools', description=f'Make sure to use these with consciousness. Type `{prefix}help toolname` to get help on a particular command/tool.', color=accent_color).set_footer(
                 text=generate_random_footer(), icon_url=ctx.author.avatar_url).add_field(name='Commands', value=get_cog_commands('Developer')))
             await ctx.send(embed=embed)
 
     @commands.command(name='toggle', help='Toggles specific features.')
     async def toggle(self, ctx, toggle_obj=None):
-        if await developer_check(ctx):
+        if developer_check(ctx.author.id):
             global jail_toggle
             global anti_swear_toggle
             global freeze_chats_toggle
@@ -1186,7 +1185,7 @@ class Developer(commands.Cog):
 
     @commands.command(name='update', help='Fetches the latest code from the GitHub repository of the project, if available.')
     async def update(self, ctx):
-        if await developer_check(ctx):
+        if developer_check(ctx.author.id):
             try:
                 _ = git.Repo(os.getcwd()).git_dir
                 embed = (discord.Embed(title=f'Fetching latest code for me...', description='I will automatically restart when the possible updates are done setting up! Please be patient.', color=accent_color).set_footer(text=generate_random_footer(), icon_url=ctx.author.avatar_url))
@@ -1199,14 +1198,14 @@ class Developer(commands.Cog):
 
     @commands.command(name='panel', help='Shows overall system status.')
     async def devpanel(self, ctx):
-        if await developer_check(ctx):
+        if developer_check(ctx.author.id):
             embed = (discord.Embed(title='Developer Panel', color=accent_color).add_field(name='Chats Frozen', value=len(frozen)).add_field(name='Jailer Count', value=len(
                 jail_members)).set_footer(text=f'Type {prefix}devtools to get all the commands that you can use as a developer.', icon_url=ctx.author.avatar_url))
             await ctx.send(embed=embed)
 
     @commands.command(name='restart', help='Restarts the system.')
     async def restart(self, ctx):
-        if await developer_check(ctx):
+        if developer_check(ctx.author.id):
             print('Log: Restarting!')
             embed = (discord.Embed(
                 title='Restarting! Please allow me upto 5 seconds.', color=accent_color))
@@ -1215,7 +1214,7 @@ class Developer(commands.Cog):
 
     @commands.command(name='logout', help='Logs out from the system.')
     async def logout(self, ctx):
-        if await developer_check(ctx):
+        if developer_check(ctx.author.id):
             print('Log: Signing out of the system.')
             await ctx.message.add_reaction('✅')
             await self.bot.close()
