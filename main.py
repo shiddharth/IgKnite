@@ -1186,10 +1186,10 @@ class Developer(commands.Cog):
 
     @commands.command(name='update', help='Fetches the latest code from the GitHub repository of the project, if available.')
     async def update(self, ctx):
-        if await developer_check:
+        if await developer_check(ctx):
             try:
                 _ = git.Repo(os.getcwd()).git_dir
-                embed = (discord.Embed(title=f'Fetching latest code for me...', description='I will automatically restart when the possible updates are done setting up! Please be patient.', color=accent_color))
+                embed = (discord.Embed(title=f'Fetching latest code for me...', description='I will automatically restart when the possible updates are done setting up! Please be patient.', color=accent_color).set_footer(text=generate_random_footer(), icon_url=ctx.author.avatar_url))
                 await ctx.send(embed=embed)
                 os.system('git pull origin master')
                 os.execv(sys.executable, ['python'] + sys.argv)
