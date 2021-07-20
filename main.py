@@ -78,7 +78,7 @@ def developer_check(author_id):
         return False
 
 
-async def generate_random_footer():
+def generate_random_footer():
     footers_list = [
         'Hey there pal :D',
         'If you wanna vote for me on a platform like Top.gg or somewhere else, be sure to check the vote command!',
