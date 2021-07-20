@@ -35,10 +35,10 @@ dbl_token = config('DBL_TOKEN', cast=str)
 # System variables.
 accent_color = 0xb6c1c6
 lock_roles = ['BotMod', 'BotAdmin']
-bot = commands.Bot(commands.when_mentioned_or(prefix), help_command=None)
-bot.topggpy = topgg.DBLClient(bot, dbl_token)
 
 # System startup data.
+bot = commands.Bot(commands.when_mentioned_or(prefix), help_command=None)
+bot.topggpy = topgg.DBLClient(bot, dbl_token)
 last_restarted_str = str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 last_restarted_obj = time.time()
 
@@ -70,7 +70,7 @@ def get_cog_commands(cog_name):
     return all_commands
 
 
-def generate_random_footer():
+async def generate_random_footer(author):
     footers_list = [
         'Hey there pal :D',
         'If you wanna vote for me on a platform like Top.gg or somewhere else, be sure to check the vote command!',
@@ -80,7 +80,7 @@ def generate_random_footer():
         'This has to be the matrix!',
         'Noob is you.',
         'Back to the future!',
-        'We need a hashmap.'
+        'We need a hashmap.',
     ]
     return random.choice(footers_list)
 
@@ -244,18 +244,6 @@ async def help(ctx, cmd=None):
                     await ctx.send(embed=embed)
 
 
-# Bug reports.
-youtube_dl.utils.bug_reports_message = lambda: ''
-
-
-class VoiceError(Exception):
-    pass
-
-
-class YTDLError(Exception):
-    pass
-
-
 # Chill category commands.
 class Chill(commands.Cog):
     def __init__(self, ctx):
@@ -292,7 +280,8 @@ class Chill(commands.Cog):
     @commands.command(name='vote', help='Helps you vote for me on specific sites!')
     async def vote(self, ctx):
         if not await self.bot.topggpy.get_user_vote(ctx.author.id):
-            embed = (discord.Embed(title=':military_medal: Voting Section', description='Hey! Looks like you haven\'t voted for me today. If you\'re free, then be sure to check the links below to vote for me on Top.gg! It really helps my creator to get energetic and encourage him to launch more updates.', color=accent_color).add_field(name='Voting Links', value='Link ~1: [Click here to redirect!](https://top.gg/bot/828196184845713469/vote/)').set_footer(icon_url=ctx.author.avatar_url, text=f'Vote count for this month: {len(await self.bot.topggpy.get_bot_votes())}'))
+            embed = (discord.Embed(title=':military_medal: Voting Section', description='Hey! Looks like you haven\'t voted for me today. If you\'re free, then be sure to check the links below to vote for me on Top.gg! It really helps my creator to get energetic and encourage him to launch more updates.',
+                     color=accent_color).add_field(name='Voting Links', value='Link ~1: [Click here to redirect!](https://top.gg/bot/828196184845713469/vote/)').set_footer(icon_url=ctx.author.avatar_url, text=f'Voting actually helps a lot, if you don\'t believe me either way.'))
             await ctx.send(embed=embed)
 
         else:
@@ -715,6 +704,17 @@ class Moderation(commands.Cog):
 
 
 # Music category commands.
+youtube_dl.utils.bug_reports_message = lambda: ''
+
+
+class VoiceError(Exception):
+    pass
+
+
+class YTDLError(Exception):
+    pass
+
+
 class YTDLSource(discord.PCMVolumeTransformer):
     YTDL_OPTIONS = {
         'format': 'bestaudio/best',
