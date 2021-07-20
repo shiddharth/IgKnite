@@ -1183,7 +1183,7 @@ class Developer(commands.Cog):
                 else:
                     await ctx.send(f'Invalid option! Try typing `{prefix}toggle` for more information.')
 
-    @commands.command(name='update', help='Fetches the latest code from the GitHub repository of the project, if available.')
+    @commands.command(name='update', help='Fetches the latest code from the Git repository of the project, if available.')
     async def update(self, ctx):
         if developer_check(ctx.author.id):
             try:
