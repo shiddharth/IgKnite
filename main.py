@@ -1195,7 +1195,7 @@ class Developer(commands.Cog):
                 os.execv(sys.executable, ['python'] + sys.argv)
 
             except git.exc.InvalidGitRepositoryError:
-                await ctx.send('I am not connected with a GitHub repository, so I can\'t retrieve the latest code.')
+                await ctx.send('I am not connected with a Git repository, so I can\'t retrieve the latest code.')
 
     @commands.command(name='panel', help='Shows overall system status.')
     async def devpanel(self, ctx):
