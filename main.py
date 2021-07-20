@@ -12,11 +12,12 @@ import math
 import random
 import asyncio
 import datetime
-import traceback
 import functools
 import itertools
+import traceback
 
 # Import third-party libraries.
+import git
 import topgg
 import discord
 import youtube_dl
@@ -1182,6 +1183,19 @@ class Developer(commands.Cog):
                     freeze_chats_toggle = await show_message_toggled(toggle_objs[2], freeze_chats_toggle)
                 else:
                     await ctx.send(f'Invalid option! Try typing `{prefix}toggle` for more information.')
+
+    @commands.command(name='update', help='Fetches the latest code from the GitHub repository of the project, if available.')
+    async def update(self, ctx):
+        if await developer_check:
+            try:
+                _ = git.Repo(os.getcwd()).git_dir
+                embed = (discord.Embed(title=f'Fetching latest code for me...', description='I will automatically restart when the possible updates are done setting up! Please be patient.', color=accent_color))
+                await ctx.send(embed=embed)
+                os.system('git pull origin master')
+                os.execv(sys.executable, ['python'] + sys.argv)
+
+            except git.exc.InvalidGitRepositoryError:
+                await ctx.send('I am not connected with a GitHub repository, so I can\'t retrieve the latest code.')
 
     @commands.command(name='panel', help='Shows overall system status.')
     async def devpanel(self, ctx):
