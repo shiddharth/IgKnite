@@ -1188,7 +1188,8 @@ class Developer(commands.Cog):
         if developer_check(ctx.author.id):
             try:
                 _ = git.Repo(os.getcwd()).git_dir
-                embed = (discord.Embed(title=f'Fetching latest code for me...', description='I will automatically restart when the possible updates are done setting up! Please be patient.', color=accent_color).set_footer(text=generate_random_footer(), icon_url=ctx.author.avatar_url))
+                embed = (discord.Embed(title=f'Fetching latest code for me...', description='I will automatically restart when the possible updates are done setting up! Please be patient.',
+                         color=accent_color).set_footer(text=generate_random_footer(), icon_url=ctx.author.avatar_url))
                 await ctx.send(embed=embed)
                 os.system('git pull origin master')
                 os.execv(sys.executable, ['python'] + sys.argv)
